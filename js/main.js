@@ -62,3 +62,13 @@ const view = localStorage.getItem("view");
 if (view === "tracker") {
     showTracker();
 }
+
+const logo = document.getElementById("logo");
+
+function showMain() {
+    tracker.classList.add("hidden");
+    main.style.display = "block";
+    localStorage.setItem("view", "main");
+}
+
+logo.addEventListener("click", showMain);
