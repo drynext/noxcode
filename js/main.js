@@ -11,23 +11,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const addBtn = document.getElementById("addPractice");
     const list = document.getElementById("practiceList");
 
-    const typingElement = document.getElementById("typingText");
-    const typingText = "Code in the dark. Track in silence.";
-    let index = 0;
-    let typingSpeed = 80;
-
     let practices = JSON.parse(localStorage.getItem("practices")) || [];
 
     function render() {
         list.innerHTML = "";
         document.getElementById("practiceCount").textContent = `You have ${practices.length} tasks.`;
-        practices.forEach((p, i) => {
+        practices.forEach((p, index) => {
             const li = document.createElement("li");
             li.textContent = `${p.problem} (${p.platform})`;
             const del = document.createElement("span");
             del.textContent = "✖";
             del.onclick = () => {
-                practices.splice(i, 1);
+                practices.splice(index, 1);
                 save();
             };
             li.appendChild(del);
@@ -60,7 +55,6 @@ document.addEventListener("DOMContentLoaded", () => {
         main.style.display = "block";
         localStorage.setItem("view", "main");
         resetFocusTimer();
-        startTyping();
     }
 
     trackerCard.addEventListener("click", showTracker);
@@ -77,17 +71,17 @@ document.addEventListener("DOMContentLoaded", () => {
         platformInput.value = "";
     });
 
-    document.addEventListener("keydown", e => {
-        if(e.key === "Enter") e.preventDefault();
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") e.preventDefault();
     });
 
     const view = localStorage.getItem("view");
-    if(view === "tracker") showTracker();
-    else if(view === "focus") showFocus();
+    if (view === "tracker") showTracker();
+    else if (view === "focus") showFocus();
     else showMain();
 
     render();
-
+    
     const timerDisplay = document.getElementById("timer");
     const startBtn = document.getElementById("startFocus");
     const stopBtn = document.getElementById("stopFocus");
@@ -96,10 +90,10 @@ document.addEventListener("DOMContentLoaded", () => {
     let focusTime = 25 * 60;
     let focusInterval = null;
 
-    function formatTime(s) {
-        const m = Math.floor(s/60).toString().padStart(2,'0');
-        const sec = (s%60).toString().padStart(2,'0');
-        return `${m}:${sec}`;
+    function formatTime(seconds) {
+        const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+        const s = (seconds % 60).toString().padStart(2, '0');
+        return `${m}:${s}`;
     }
 
     function updateTimerDisplay() {
@@ -107,13 +101,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function updateProgress() {
-        document.getElementById("progress").style.width = ((25*60 - focusTime)/(25*60)*100) + "%";
+        const percent = ((25*60 - focusTime) / (25*60)) * 100;
+        document.getElementById("progress").style.width = percent + "%";
     }
 
     function startFocusTimer() {
-        if(focusInterval) return;
+        if (focusInterval) return;
         focusInterval = setInterval(() => {
-            if(focusTime>0){
+            if (focusTime > 0) {
                 focusTime--;
                 updateTimerDisplay();
                 updateProgress();
@@ -131,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function resetFocusTimer() {
         stopFocusTimer();
-        focusTime = 25*60;
+        focusTime = 25 * 60;
         updateTimerDisplay();
         updateProgress();
     }
@@ -140,18 +135,18 @@ document.addEventListener("DOMContentLoaded", () => {
     stopBtn.addEventListener("click", stopFocusTimer);
     resetBtn.addEventListener("click", resetFocusTimer);
 
-    function startTyping() {
-        typingElement.textContent = "";
-        index = 0;
-        function type() {
-            if(index < typingText.length){
-                typingElement.textContent += typingText.charAt(index);
-                index++;
-                setTimeout(type, typingSpeed);
-            }
+    const typingText = "Code in the dark. Track in silence.";
+    const typingElement = document.getElementById("typingText");
+    let index = 0;
+    const typingSpeed = 80;
+
+    function type() {
+        if(index < typingText.length){
+            typingElement.textContent += typingText.charAt(index);
+            index++;
+            setTimeout(type, typingSpeed);
         }
-        type();
     }
 
-    if(main.style.display !== "none") startTyping();
+    type();
 });
