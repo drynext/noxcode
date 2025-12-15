@@ -69,6 +69,7 @@ body {
     font-size: 18px;
     transition: all 0.3s ease;
     background: #0a0f2a;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
 }
 
 .card:hover {
