@@ -5,12 +5,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const focus = document.getElementById("focus");
     const main = document.querySelector(".main");
     const logo = document.getElementById("logo");
-
     const problemInput = document.getElementById("problemName");
     const platformInput = document.getElementById("platform");
     const addBtn = document.getElementById("addPractice");
     const list = document.getElementById("practiceList");
-
     const timerDisplay = document.getElementById("timer");
     const startBtn = document.getElementById("startFocus");
     const stopBtn = document.getElementById("stopFocus");
@@ -28,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const typingSpeed = 80;
 
         function type() {
-            if(index < typingText.length){
+            if (index < typingText.length) {
                 typingElement.textContent += typingText.charAt(index);
                 index++;
                 setTimeout(type, typingSpeed);
@@ -75,8 +73,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     function formatTime(seconds) {
-        const m = Math.floor(seconds / 60).toString().padStart(2,'0');
-        const s = (seconds % 60).toString().padStart(2,'0');
+        const m = Math.floor(seconds / 60).toString().padStart(2, "0");
+        const s = (seconds % 60).toString().padStart(2, "0");
         return `${m}:${s}`;
     }
 
@@ -85,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function updateProgress() {
-        const percent = ((25*60 - focusTime)/(25*60))*100;
+        const percent = ((25 * 60 - focusTime) / (25 * 60)) * 100;
         document.getElementById("progress").style.width = percent + "%";
     }
 
@@ -110,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function resetFocusTimer() {
         stopFocusTimer();
-        focusTime = 25*60;
+        focusTime = 25 * 60;
         updateTimerDisplay();
         updateProgress();
     }
@@ -121,23 +119,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function showTracker() {
         main.style.display = "none";
-        tracker.classList.remove("hidden");
         focus.classList.add("hidden");
-        localStorage.setItem("view","tracker");
+        tracker.classList.remove("hidden");
+        localStorage.setItem("view", "tracker");
     }
 
     function showFocus() {
         main.style.display = "none";
-        focus.classList.remove("hidden");
         tracker.classList.add("hidden");
-        localStorage.setItem("view","focus");
+        focus.classList.remove("hidden");
+        localStorage.setItem("view", "focus");
     }
 
     function showMain() {
-        main.style.display = "flex";
         tracker.classList.add("hidden");
         focus.classList.add("hidden");
-        localStorage.setItem("view","main");
+        main.style.display = "block";
+        localStorage.setItem("view", "main");
         resetFocusTimer();
         startTyping();
     }
@@ -147,8 +145,8 @@ document.addEventListener("DOMContentLoaded", () => {
     logo.addEventListener("click", showMain);
 
     const view = localStorage.getItem("view");
-    if(view==="tracker") showTracker();
-    else if(view==="focus") showFocus();
+    if (view === "tracker") showTracker();
+    else if (view === "focus") showFocus();
     else showMain();
 
     render();
