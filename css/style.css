@@ -25,6 +25,7 @@ body {
     color: #22d3ee;
     font-size: 22px;
     margin-bottom: 30px;
+    cursor: pointer;
 }
 
 .sidebar nav a {
@@ -42,6 +43,7 @@ body {
 .main {
     flex: 1;
     padding: 40px;
+    display: block; 
 }
 
 .subtitle {
@@ -66,6 +68,7 @@ body {
 .card:hover {
     border-color: #22d3ee;
 }
+
 #tracker {
     padding: 40px;
     color: #eaeaea;
@@ -101,13 +104,3 @@ body {
 .hidden {
     display: none;
 }
-
-.main {
-    display: block;
-}
-
-document.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-        e.preventDefault();
-    }
-});
