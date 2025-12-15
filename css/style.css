@@ -226,10 +226,8 @@ body {
     font-size: 18px;
     text-align: center;
     white-space: nowrap;
-    overflow: hidden;
+    overflow: visible;
     border-right: 2px solid #22d3ee;
-    width: 0;
-    animation: typing 4s steps(40, end) forwards, blink 0.75s step-end infinite;
 }
 
 @keyframes typing {
