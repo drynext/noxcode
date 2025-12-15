@@ -144,6 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
     focusCard.addEventListener("click", showFocus);
     logo.addEventListener("click", showMain);
 
+    localStorage.removeItem("view");
     const view = localStorage.getItem("view");
     if (view === "tracker") showTracker();
     else if (view === "focus") showFocus();
