@@ -102,6 +102,10 @@ body {
     display: none;
 }
 
+.main {
+    display: block;
+}
+
 document.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
         e.preventDefault();
