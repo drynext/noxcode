@@ -55,6 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
         main.style.display = "block";
         localStorage.setItem("view", "main");
         resetFocusTimer();
+        startTyping();
     }
 
     trackerCard.addEventListener("click", showTracker);
