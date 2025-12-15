@@ -149,6 +149,13 @@ body {
     background: #0bc5ea;
 }
 
+#focus div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
 .hidden {
     display: none;
 }
