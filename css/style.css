@@ -97,6 +97,13 @@ body {
     background: #111;
     border-left: 3px solid #00f2ff;
 }
+
 .hidden {
     display: none;
 }
+
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+        e.preventDefault();
+    }
+});
