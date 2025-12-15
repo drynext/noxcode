@@ -100,7 +100,12 @@ document.addEventListener("DOMContentLoaded", () => {
     function updateTimerDisplay() {
         timerDisplay.textContent = formatTime(focusTime);
     }
-
+    
+    function updateProgress() {
+        const percent = ((25*60 - focusTime) / (25*60)) * 100;
+        document.getElementById("progress").style.width = percent + "%";
+    }
+    
     function startFocusTimer() {
         if (focusInterval) return;
         focusInterval = setInterval(() => {
