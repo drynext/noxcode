@@ -58,10 +58,13 @@ body {
 }
 
 .cards {
-    display: grid;
     display: flex;
     justify-content: space-between;
     gap: 20px;
+    flex-wrap: nowrap;
+    overflow-x: auto; 
+    width: 100%;
+    padding: 0 10px;
 }
 
 .card {
