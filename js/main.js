@@ -19,8 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let practices = JSON.parse(localStorage.getItem("practices")) || [];
     let focusTime = 25 * 60;
     let focusInterval = null;
-
-    // ---------- Typing effect ----------
+    
     function startTyping() {
         const typingText = "Code in the dark. Track in silence.";
         const typingElement = document.getElementById("typingText");
