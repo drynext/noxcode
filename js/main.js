@@ -112,6 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (focusTime > 0) {
                 focusTime--;
                 updateTimerDisplay();
+                updateProgress();
             } else {
                 clearInterval(focusInterval);
                 focusInterval = null;
@@ -128,6 +129,7 @@ document.addEventListener("DOMContentLoaded", () => {
         stopFocusTimer();
         focusTime = 25 * 60;
         updateTimerDisplay();
+        updateProgress();
     }
 
     startBtn.addEventListener("click", startFocusTimer);
