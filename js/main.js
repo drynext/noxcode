@@ -34,10 +34,14 @@ function save() {
     render();
 }
 
-trackerCard.addEventListener("click", () => {
+function showTracker() {
     main.style.display = "none";
     tracker.classList.remove("hidden");
-});
+    localStorage.setItem("view", "tracker");
+}
+
+trackerCard.addEventListener("click", showTracker);
+
 
 addBtn.addEventListener("click", () => {
     const problem = problemInput.value.trim();
@@ -53,3 +57,8 @@ addBtn.addEventListener("click", () => {
 });
 
 render();
+
+const view = localStorage.getItem("view");
+if (view === "tracker") {
+    showTracker();
+}
