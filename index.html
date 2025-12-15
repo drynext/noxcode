@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>NOXCODE</title>
-
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -27,7 +26,7 @@
             <h2 class="welcome-text">Welcome back.</h2>
             <p class="subtitle typing-text"><span id="typingText"></span></p>
         </div>
-    
+
         <div class="cards">
             <div class="card" id="trackerCard">
                 📊 Practice Tracker
@@ -46,15 +45,13 @@
 
     <section id="tracker" class="hidden">
         <h2>Practice Tracker</h2>
-    
         <input type="text" id="problemName" placeholder="Problem name">
         <input type="text" id="platform" placeholder="Platform (CF, LC, AC)">
         <button id="addPractice">Add</button>
-
         <p id="practiceCount">You have 0 tasks.</p>
         <ul id="practiceList"></ul>
     </section>
-    
+
     <section id="focus" class="hidden">
         <h2>Focus Timer</h2>
         <p class="focus-subtitle">Stay focused, code in silence.</p>
@@ -66,14 +63,12 @@
                 <button id="resetFocus">Reset</button>
             </div>
             <div class="progress-bar">
-                <div id="progress" style="width: 0%;"></div>
+                <div id="progress"></div>
             </div>
         </div>
     </section>
-
-
 </div>
 
-<script src="js/main.js"></script>
+<script src="main.js"></script>
 </body>
 </html>
