@@ -162,6 +162,40 @@ body {
     background: #111c3b;
 }
 
+.focus-subtitle {
+    color: #64748b;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.focus-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.focus-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 10px;
+    background: #111;
+    border-radius: 5px;
+    margin-top: 20px;
+    overflow: hidden;
+}
+
+#progress {
+    height: 100%;
+    background: #22d3ee;
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
 .hidden {
     display: none;
 }
