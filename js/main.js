@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const trackerCard = document.getElementById("trackerCard");
-    const cards = document.querySelectorAll(".card");
+    const focusCard = document.getElementById("focusCard");
     const tracker = document.getElementById("tracker");
     const focus = document.getElementById("focus");
     const main = document.querySelector(".main");
@@ -11,28 +11,29 @@ document.addEventListener("DOMContentLoaded", () => {
     const addBtn = document.getElementById("addPractice");
     const list = document.getElementById("practiceList");
 
+    const typingElement = document.getElementById("typingText");
+    const typingText = "Code in the dark. Track in silence.";
+    let index = 0;
+    let typingSpeed = 80;
+
     let practices = JSON.parse(localStorage.getItem("practices")) || [];
 
- function render() {
-      list.innerHTML = "";
-       document.getElementById("practiceCount").textContent = `You have ${practices.length} tasks.`;
-        
-      practices.forEach((p, index) => {
-        const li = document.createElement("li");
-           li.textContent = `${p.problem} (${p.platform})`;
-            
-           const del = document.createElement("span");
+    function render() {
+        list.innerHTML = "";
+        document.getElementById("practiceCount").textContent = `You have ${practices.length} tasks.`;
+        practices.forEach((p, i) => {
+            const li = document.createElement("li");
+            li.textContent = `${p.problem} (${p.platform})`;
+            const del = document.createElement("span");
             del.textContent = "✖";
             del.onclick = () => {
-                practices.splice(index, 1);
+                practices.splice(i, 1);
                 save();
             };
-            
             li.appendChild(del);
             list.appendChild(li);
         });
     }
-
 
     function save() {
         localStorage.setItem("practices", JSON.stringify(practices));
@@ -59,10 +60,10 @@ document.addEventListener("DOMContentLoaded", () => {
         main.style.display = "block";
         localStorage.setItem("view", "main");
         resetFocusTimer();
+        startTyping();
     }
 
     trackerCard.addEventListener("click", showTracker);
-    const focusCard = document.getElementById("focusCard");
     focusCard.addEventListener("click", showFocus);
     logo.addEventListener("click", showMain);
 
@@ -76,16 +77,17 @@ document.addEventListener("DOMContentLoaded", () => {
         platformInput.value = "";
     });
 
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") e.preventDefault();
+    document.addEventListener("keydown", e => {
+        if(e.key === "Enter") e.preventDefault();
     });
 
     const view = localStorage.getItem("view");
-    if (view === "tracker") showTracker();
-    else if (view === "focus") showFocus();
+    if(view === "tracker") showTracker();
+    else if(view === "focus") showFocus();
     else showMain();
 
     render();
+
     const timerDisplay = document.getElementById("timer");
     const startBtn = document.getElementById("startFocus");
     const stopBtn = document.getElementById("stopFocus");
@@ -94,25 +96,24 @@ document.addEventListener("DOMContentLoaded", () => {
     let focusTime = 25 * 60;
     let focusInterval = null;
 
-    function formatTime(seconds) {
-        const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-        const s = (seconds % 60).toString().padStart(2, '0');
-        return `${m}:${s}`;
+    function formatTime(s) {
+        const m = Math.floor(s/60).toString().padStart(2,'0');
+        const sec = (s%60).toString().padStart(2,'0');
+        return `${m}:${sec}`;
     }
 
     function updateTimerDisplay() {
         timerDisplay.textContent = formatTime(focusTime);
     }
-    
+
     function updateProgress() {
-        const percent = ((25*60 - focusTime) / (25*60)) * 100;
-        document.getElementById("progress").style.width = percent + "%";
+        document.getElementById("progress").style.width = ((25*60 - focusTime)/(25*60)*100) + "%";
     }
-    
+
     function startFocusTimer() {
-        if (focusInterval) return;
+        if(focusInterval) return;
         focusInterval = setInterval(() => {
-            if (focusTime > 0) {
+            if(focusTime>0){
                 focusTime--;
                 updateTimerDisplay();
                 updateProgress();
@@ -130,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function resetFocusTimer() {
         stopFocusTimer();
-        focusTime = 25 * 60;
+        focusTime = 25*60;
         updateTimerDisplay();
         updateProgress();
     }
@@ -138,4 +139,19 @@ document.addEventListener("DOMContentLoaded", () => {
     startBtn.addEventListener("click", startFocusTimer);
     stopBtn.addEventListener("click", stopFocusTimer);
     resetBtn.addEventListener("click", resetFocusTimer);
+
+    function startTyping() {
+        typingElement.textContent = "";
+        index = 0;
+        function type() {
+            if(index < typingText.length){
+                typingElement.textContent += typingText.charAt(index);
+                index++;
+                setTimeout(type, typingSpeed);
+            }
+        }
+        type();
+    }
+
+    if(main.style.display !== "none") startTyping();
 });
