@@ -97,3 +97,6 @@ body {
     background: #111;
     border-left: 3px solid #00f2ff;
 }
+.hidden {
+    display: none;
+}
