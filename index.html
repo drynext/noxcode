@@ -4,71 +4,68 @@
     <meta charset="UTF-8">
     <title>NOXCODE</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
-<div class="app">
-    <aside class="sidebar">
-        <h1 class="logo" id="logo">NOXCODE</h1>
-        <nav>
-            <a href="#">Dashboard</a>
-            <a href="#">Tracker</a>
-            <a href="#">Focus</a>
-            <a href="#">Sudoku</a>
-            <a href="#">Decide</a>
-        </nav>
-    </aside>
-
-    <main class="main">
-        <div class="main-center">
-            <h1 class="logo-center" id="logoCenter">NOXCODE</h1>
-            <h2 class="welcome-text">Welcome back.</h2>
-            <p class="subtitle typing-text"><span id="typingText"></span></p>
-        </div>
-
-        <div class="cards">
-            <div class="card" id="trackerCard">
-                📊 Practice Tracker
+    <div class="app">
+        <aside class="sidebar">
+            <h1 class="logo" id="logo">NOXCODE</h1>
+            <nav>
+                <a href="#">Dashboard</a>
+                <a href="#">Tracker</a>
+                <a href="#">Focus</a>
+                <a href="#">Sudoku</a>
+                <a href="#">Decide</a>
+            </nav>
+        </aside>
+        <main class="main">
+            <div class="main-center">
+                <h1 class="logo-center" id="logoCenter">NOXCODE</h1>
+                <h2 class="welcome-text">Welcome back.</h2>
+                <p class="subtitle typing-text"><span id="typingText"></span></p>
             </div>
-            <div class="card" id="focusCard">
-                ⏱ Focus Timer
+            <div class="cards">
+                <div class="card" id="trackerCard">
+                    📊 Practice Tracker
+                </div>
+                <div class="card" id="focusCard">
+                    ⏱ Focus Timer
+                </div>
+                <div class="card">
+                    🧩 Mini Sudoku
+                </div>
+                <div class="card">
+                    🎲 Decision Maker
+                </div>
             </div>
-            <div class="card">
-                🧩 Mini Sudoku
-            </div>
-            <div class="card">
-                🎲 Decision Maker
-            </div>
-        </div>
-    </main>
+        </main>
 
-    <section id="tracker" class="hidden">
-        <h2>Practice Tracker</h2>
-        <input type="text" id="problemName" placeholder="Problem name">
-        <input type="text" id="platform" placeholder="Platform (CF, LC, AC)">
-        <button id="addPractice">Add</button>
-        <p id="practiceCount">You have 0 tasks.</p>
-        <ul id="practiceList"></ul>
-    </section>
+        <section id="tracker" class="hidden">
+            <h2>Practice Tracker</h2>
+            <input type="text" id="problemName" placeholder="Problem name">
+            <input type="text" id="platform" placeholder="Platform (CF, LC, AC)">
+            <button id="addPractice">Add</button>
+            <p id="practiceCount">You have 0 tasks.</p>
+            <ul id="practiceList"></ul>
+        </section>
 
-    <section id="focus" class="hidden">
-        <h2>Focus Timer</h2>
-        <p class="focus-subtitle">Stay focused, code in silence.</p>
-        <div class="focus-container">
-            <span id="timer">25:00</span>
-            <div class="focus-buttons">
-                <button id="startFocus">Start</button>
-                <button id="stopFocus">Stop</button>
-                <button id="resetFocus">Reset</button>
+        <section id="focus" class="hidden">
+            <h2>Focus Timer</h2>
+            <p class="focus-subtitle">Stay focused, code in silence.</p>
+            <div class="focus-container">
+                <span id="timer">25:00</span>
+                <div class="focus-buttons">
+                    <button id="startFocus">Start</button>
+                    <button id="stopFocus">Stop</button>
+                    <button id="resetFocus">Reset</button>
+                </div>
+                <div class="progress-bar">
+                    <div id="progress" style="width: 0%;"></div>
+                </div>
             </div>
-            <div class="progress-bar">
-                <div id="progress"></div>
-            </div>
-        </div>
-    </section>
-</div>
+        </section>
+    </div>
 
-<script src="main.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
