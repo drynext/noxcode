@@ -59,12 +59,11 @@ body {
 
 .cards {
     display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    flex-wrap: nowrap;
-    overflow-x: auto; 
-    width: 100%;
-    max-width: 1200px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: auto;
+    margin-bottom: 20px; 
 }
 
 .card {
@@ -197,7 +196,7 @@ body {
 
 
 .logo-center {
-    font-size: 100px;
+    font-size: 90px;
     color: #22d3ee;
     font-weight: bold;
     text-align: center;
