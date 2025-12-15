@@ -13,23 +13,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let practices = JSON.parse(localStorage.getItem("practices")) || [];
 
-    function render() {
-        list.innerHTML = "";
-        practices.forEach((p, index) => {
-            const li = document.createElement("li");
-            li.textContent = `${p.problem} (${p.platform})`;
-
-            const del = document.createElement("span");
+ function render() {
+      list.innerHTML = "";
+       document.getElementById("practiceCount").textContent = `You have ${practices.length} tasks.`;
+        
+      practices.forEach((p, index) => {
+        const li = document.createElement("li");
+           li.textContent = `${p.problem} (${p.platform})`;
+            
+           const del = document.createElement("span");
             del.textContent = "✖";
             del.onclick = () => {
                 practices.splice(index, 1);
                 save();
             };
-
+            
             li.appendChild(del);
             list.appendChild(li);
         });
     }
+
 
     function save() {
         localStorage.setItem("practices", JSON.stringify(practices));
