@@ -185,6 +185,8 @@ body {
     text-align: center;
     margin-bottom: 20px;
     cursor: pointer;
+    letter-spacing: 2px;  
+    text-shadow: 2px 2px 10px rgba(34, 211, 238, 0.7);
 }
 
 .welcome-text {
