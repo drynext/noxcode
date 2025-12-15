@@ -7,6 +7,33 @@ const platformInput = document.getElementById("platform");
 const addBtn = document.getElementById("addPractice");
 const list = document.getElementById("practiceList");
 
+let practices = JSON.parse(localStorage.getItem("practices")) || [];
+
+function render() {
+    list.innerHTML = "";
+    practices.forEach((p, index) => {
+        const li = document.createElement("li");
+        li.textContent = `${p.problem} (${p.platform})`;
+
+        const del = document.createElement("span");
+        del.textContent = " ✖";
+        del.style.cursor = "pointer";
+        del.style.color = "#ff5555";
+        del.onclick = () => {
+            practices.splice(index, 1);
+            save();
+        };
+
+        li.appendChild(del);
+        list.appendChild(li);
+    });
+}
+
+function save() {
+    localStorage.setItem("practices", JSON.stringify(practices));
+    render();
+}
+
 trackerCard.addEventListener("click", () => {
     main.style.display = "none";
     tracker.classList.remove("hidden");
@@ -16,13 +43,13 @@ addBtn.addEventListener("click", () => {
     const problem = problemInput.value.trim();
     const platform = platformInput.value.trim();
 
-    if (problem === "" || platform === "") return;
+    if (!problem || !platform) return;
 
-    const li = document.createElement("li");
-    li.textContent = `${problem} (${platform})`;
-
-    list.appendChild(li);
+    practices.push({ problem, platform });
+    save();
 
     problemInput.value = "";
     platformInput.value = "";
 });
+
+render();
