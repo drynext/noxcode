@@ -36,7 +36,6 @@ body {
     text-decoration: none;
     margin-bottom: 16px;
     font-size: 14px;
-    padding: 4px 0;
 }
 
 .sidebar nav a:hover {
@@ -45,13 +44,36 @@ body {
 
 .main {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     padding: 40px;
-    display: block;
 }
 
-.subtitle {
-    color: #64748b;
-    margin-bottom: 30px;
+.main-center {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.logo-center {
+    font-size: 48px;
+    color: #22d3ee;
+    font-weight: bold;
+}
+
+.welcome-text {
+    color: #94a3b8;
+    margin-bottom: 10px;
+}
+
+.typing-text {
+    color: #22d3ee;
+    font-size: 18px;
+    white-space: nowrap;
+    border-right: 2px solid #22d3ee;
+    display: inline-block;
+    overflow: hidden;
 }
 
 .cards {
@@ -99,14 +121,14 @@ body {
     color: #fff;
 }
 
-#tracker button {
+#tracker button, #focus button {
     background: #22d3ee;
     color: #000;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
-#tracker button:hover {
+#tracker button:hover, #focus button:hover {
     background: #0bc5ea;
 }
 
@@ -134,33 +156,6 @@ body {
 #focus span#timer {
     font-size: 50px;
     margin-right: 20px;
-    display: inline-block;
-}
-
-#focus button {
-    background: #22d3ee;
-    color: #000;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border-radius: 6px;
-    padding: 8px 14px;
-}
-
-#focus button:hover {
-    background: #0bc5ea;
-}
-
-#focus div {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-}
-
-#tracker input:focus {
-    outline: none;
-    border: 1px solid #22d3ee;
-    background: #111c3b;
 }
 
 .focus-subtitle {
@@ -186,57 +181,14 @@ body {
     height: 10px;
     background: #111;
     border-radius: 5px;
-    margin-top: 20px;
     overflow: hidden;
 }
 
 #progress {
     height: 100%;
-    background: #22d3ee;
     width: 0%;
+    background: #22d3ee;
     transition: width 0.3s ease;
-}
-
-.main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 40px;
-}
-
-.logo-center {
-    font-size: 48px;
-    color: #22d3ee;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 20px;
-    cursor: pointer;
-}
-
-.welcome-text {
-    color: #94a3b8;
-    text-align: center;
-    margin-bottom: 10px;
-}
-
-.typing-text {
-    color: #22d3ee;
-    font-size: 18px;
-    text-align: center;
-    white-space: nowrap;
-    overflow: visible;
-    border-right: 2px solid #22d3ee;
-}
-
-@keyframes typing {
-    from { width: 0; }
-    to { width: 100%; }
-}
-
-@keyframes blink {
-    50% { border-color: transparent; }
 }
 
 .hidden {
