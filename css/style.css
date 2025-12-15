@@ -66,21 +66,20 @@ body {
     margin-bottom: 20px; 
 }
 
-.card {
-    flex: 1 1 22%; 
-    max-width: 250px; 
+.cards {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    width: 100%;
+    max-width: 1200px;
+    margin-top: 40px;
 }
 
 .card {
-    border: 1px solid #0f172a;
-    padding: 40px 20px;
-    border-radius: 15px;
-    text-align: center;
-    cursor: pointer;
-    font-size: 18px;
-    transition: all 0.3s ease;
-    background: #0a0f2a;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    flex: 1 1 22%; 
+    max-width: 250px;
 }
 
 .card:hover {
@@ -190,8 +189,9 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    height: 100vh; 
+    justify-content: flex-start; 
+    padding-top: 80px;
+    height: auto; 
 }
 
 
