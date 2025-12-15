@@ -66,3 +66,34 @@ body {
 .card:hover {
     border-color: #22d3ee;
 }
+#tracker {
+    padding: 40px;
+    color: #eaeaea;
+}
+
+#tracker input {
+    margin-right: 8px;
+    padding: 6px;
+    background: #111;
+    color: #fff;
+    border: 1px solid #333;
+}
+
+#tracker button {
+    padding: 6px 10px;
+    background: #00f2ff;
+    color: #000;
+    border: none;
+    cursor: pointer;
+}
+
+#practiceList {
+    margin-top: 20px;
+}
+
+#practiceList li {
+    padding: 8px;
+    margin-bottom: 6px;
+    background: #111;
+    border-left: 3px solid #00f2ff;
+}
