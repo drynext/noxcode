@@ -19,11 +19,13 @@ body {
     width: 220px;
     border-right: 1px solid #0f172a;
     padding: 20px;
+    background-color: #0a0f2a;
 }
 
 .logo {
     color: #22d3ee;
-    font-size: 22px;
+    font-size: 24px;
+    font-weight: bold;
     margin-bottom: 30px;
     cursor: pointer;
 }
@@ -34,6 +36,7 @@ body {
     text-decoration: none;
     margin-bottom: 16px;
     font-size: 14px;
+    padding: 4px 0;
 }
 
 .sidebar nav a:hover {
@@ -43,7 +46,7 @@ body {
 .main {
     flex: 1;
     padding: 40px;
-    display: block; 
+    display: block;
 }
 
 .subtitle {
@@ -53,74 +56,99 @@ body {
 
 .cards {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 20px;
 }
 
 .card {
     border: 1px solid #0f172a;
-    padding: 30px;
-    border-radius: 12px;
+    padding: 40px 20px;
+    border-radius: 15px;
     text-align: center;
     cursor: pointer;
+    font-size: 18px;
+    transition: all 0.3s ease;
+    background: #0a0f2a;
 }
 
 .card:hover {
     border-color: #22d3ee;
+    background: #111c3b;
+    transform: translateY(-4px);
 }
 
-#tracker {
+#tracker, #focus {
     padding: 40px;
     color: #eaeaea;
+    background: #0a0f2a;
+    border-radius: 15px;
+    margin: 20px;
+}
+
+#tracker input, #focus button {
+    margin-right: 8px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: none;
+    font-size: 14px;
 }
 
 #tracker input {
-    margin-right: 8px;
-    padding: 6px;
     background: #111;
     color: #fff;
-    border: 1px solid #333;
 }
 
 #tracker button {
-    padding: 6px 10px;
-    background: #00f2ff;
+    background: #22d3ee;
     color: #000;
-    border: none;
     cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#tracker button:hover {
+    background: #0bc5ea;
 }
 
 #practiceList {
     margin-top: 20px;
+    list-style: none;
 }
 
 #practiceList li {
-    padding: 8px;
-    margin-bottom: 6px;
+    padding: 10px;
+    margin-bottom: 8px;
     background: #111;
-    border-left: 3px solid #00f2ff;
+    border-left: 4px solid #22d3ee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 6px;
+}
+
+#practiceList li span {
+    cursor: pointer;
+    color: #ff5555;
+}
+
+#focus span#timer {
+    font-size: 50px;
+    margin-right: 20px;
+    display: inline-block;
+}
+
+#focus button {
+    background: #22d3ee;
+    color: #000;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 6px;
+    padding: 8px 14px;
+}
+
+#focus button:hover {
+    background: #0bc5ea;
 }
 
 .hidden {
     display: none;
-}
-
-#focus {
-    padding: 40px;
-    color: #eaeaea;
-}
-
-#focus button {
-    padding: 8px 12px;
-    margin-right: 10px;
-    background: #00f2ff;
-    color: #000;
-    border: none;
-    cursor: pointer;
-}
-
-#focus span {
-    font-size: 48px;
-    display: inline-block;
-    margin-right: 20px;
 }
