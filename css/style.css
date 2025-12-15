@@ -156,6 +156,12 @@ body {
     gap: 12px;
 }
 
+#tracker input:focus {
+    outline: none;
+    border: 1px solid #22d3ee;
+    background: #111c3b;
+}
+
 .hidden {
     display: none;
 }
