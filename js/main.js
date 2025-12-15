@@ -59,7 +59,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     trackerCard.addEventListener("click", showTracker);
-    cards[1].addEventListener("click", showFocus); 
+    const focusCard = document.getElementById("focusCard");
+    focusCard.addEventListener("click", showFocus);
     logo.addEventListener("click", showMain);
 
     addBtn.addEventListener("click", () => {
