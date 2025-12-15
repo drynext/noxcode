@@ -47,7 +47,7 @@ addBtn.addEventListener("click", () => {
     const problem = problemInput.value.trim();
     const platform = platformInput.value.trim();
 
-    if (!problem || !platform) return;
+    if (problem.length < 3 || platform.length < 2) return;
 
     practices.push({ problem, platform });
     save();
