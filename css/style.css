@@ -1,0 +1,68 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+body {
+    background-color: #020617;
+    color: #e5e7eb;
+}
+
+.app {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 220px;
+    border-right: 1px solid #0f172a;
+    padding: 20px;
+}
+
+.logo {
+    color: #22d3ee;
+    font-size: 22px;
+    margin-bottom: 30px;
+}
+
+.sidebar nav a {
+    display: block;
+    color: #94a3b8;
+    text-decoration: none;
+    margin-bottom: 16px;
+    font-size: 14px;
+}
+
+.sidebar nav a:hover {
+    color: #22d3ee;
+}
+
+.main {
+    flex: 1;
+    padding: 40px;
+}
+
+.subtitle {
+    color: #64748b;
+    margin-bottom: 30px;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.card {
+    border: 1px solid #0f172a;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.card:hover {
+    border-color: #22d3ee;
+}
