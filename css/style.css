@@ -104,3 +104,23 @@ body {
 .hidden {
     display: none;
 }
+
+#focus {
+    padding: 40px;
+    color: #eaeaea;
+}
+
+#focus button {
+    padding: 8px 12px;
+    margin-right: 10px;
+    background: #00f2ff;
+    color: #000;
+    border: none;
+    cursor: pointer;
+}
+
+#focus span {
+    font-size: 48px;
+    display: inline-block;
+    margin-right: 20px;
+}
