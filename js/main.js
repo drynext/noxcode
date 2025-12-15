@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let practices = JSON.parse(localStorage.getItem("practices")) || [];
     let focusTime = 25 * 60;
     let focusInterval = null;
-    
+
     function startTyping() {
         const typingText = "Code in the dark. Track in silence.";
         const typingElement = document.getElementById("typingText");
@@ -75,8 +75,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     function formatTime(seconds) {
-        const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-        const s = (seconds % 60).toString().padStart(2, '0');
+        const m = Math.floor(seconds / 60).toString().padStart(2,'0');
+        const s = (seconds % 60).toString().padStart(2,'0');
         return `${m}:${s}`;
     }
 
@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function updateProgress() {
-        const percent = ((25*60 - focusTime) / (25*60)) * 100;
+        const percent = ((25*60 - focusTime)/(25*60))*100;
         document.getElementById("progress").style.width = percent + "%";
     }
 
@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function resetFocusTimer() {
         stopFocusTimer();
-        focusTime = 25 * 60;
+        focusTime = 25*60;
         updateTimerDisplay();
         updateProgress();
     }
@@ -121,23 +121,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function showTracker() {
         main.style.display = "none";
-        focus.classList.add("hidden");
         tracker.classList.remove("hidden");
-        localStorage.setItem("view", "tracker");
+        focus.classList.add("hidden");
+        localStorage.setItem("view","tracker");
     }
 
     function showFocus() {
         main.style.display = "none";
-        tracker.classList.add("hidden");
         focus.classList.remove("hidden");
-        localStorage.setItem("view", "focus");
+        tracker.classList.add("hidden");
+        localStorage.setItem("view","focus");
     }
 
     function showMain() {
+        main.style.display = "flex";
         tracker.classList.add("hidden");
         focus.classList.add("hidden");
-        main.style.display = "block";
-        localStorage.setItem("view", "main");
+        localStorage.setItem("view","main");
         resetFocusTimer();
         startTyping();
     }
@@ -147,8 +147,8 @@ document.addEventListener("DOMContentLoaded", () => {
     logo.addEventListener("click", showMain);
 
     const view = localStorage.getItem("view");
-    if (view === "tracker") showTracker();
-    else if (view === "focus") showFocus();
+    if(view==="tracker") showTracker();
+    else if(view==="focus") showFocus();
     else showMain();
 
     render();
