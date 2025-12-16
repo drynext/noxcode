@@ -1,412 +1,265 @@
-:root {
-    --bg-color: #050505;
-    --sidebar-bg: #0a0a0a;
-    --card-bg: #0f0f13;
-    --primary: #00ff41;
-    --secondary: #008f11;
-    --text-main: #e0e0e0;
-    --text-dim: #666;
-    --border: #1a1a1a;
-    --font-stack: 'JetBrains Mono', monospace;
-}
+document.addEventListener("DOMContentLoaded", () => {
+    const canvas = document.getElementById("matrix-bg");
+    const ctx = canvas.getContext("2d");
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: var(--font-stack);
-}
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-body {
-    background-color: var(--bg-color);
-    color: var(--text-main);
-    height: 100vh;
-    overflow: hidden;
-}
+    const chars = "10";
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    const drops = [];
 
-#matrix-bg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: -1;
-    opacity: 0.15;
-}
+    for (let i = 0; i < columns; i++) {
+        drops[i] = 1;
+    }
 
-.app-container {
-    display: flex;
-    height: 100vh;
-    width: 100%;
-}
+    function drawMatrix() {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-.sidebar {
-    width: 280px;
-    background: var(--sidebar-bg);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    padding: 2rem;
-}
+        ctx.fillStyle = "#0F0";
+        ctx.font = fontSize + "px monospace";
 
-.logo-area {
-    margin-bottom: 3rem;
-}
+        for (let i = 0; i < drops.length; i++) {
+            const text = chars.charAt(Math.floor(Math.random() * chars.length));
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
 
-h1.glitch {
-    font-size: 2rem;
-    color: var(--primary);
-    font-weight: 800;
-    letter-spacing: -1px;
-    text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
-}
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                drops[i] = 0;
+            }
+            drops[i]++;
+        }
+    }
+    setInterval(drawMatrix, 50);
+    
+    window.addEventListener("resize", () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
 
-.status-indicator {
-    font-size: 0.75rem;
-    color: var(--secondary);
-    margin-top: 5px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
+    const navBtns = document.querySelectorAll(".nav-btn");
+    const panels = document.querySelectorAll(".panel");
 
-.dot {
-    width: 8px;
-    height: 8px;
-    background: var(--primary);
-    border-radius: 50%;
-    box-shadow: 0 0 8px var(--primary);
-}
+    navBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            navBtns.forEach(b => b.classList.remove("active"));
+            panels.forEach(p => p.classList.remove("active"));
+            
+            btn.classList.add("active");
+            document.getElementById(btn.dataset.target).classList.add("active");
+        });
+    });
 
-.nav-menu {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    flex: 1;
-}
+    const taskInput = document.getElementById("task-input");
+    const addTaskBtn = document.getElementById("btn-add-task");
+    const taskList = document.getElementById("task-list");
+    const statDone = document.getElementById("stat-done");
+    const statPending = document.getElementById("stat-pending");
 
-.nav-btn {
-    background: transparent;
-    border: none;
-    color: var(--text-dim);
-    text-align: left;
-    font-size: 0.9rem;
-    padding: 10px;
-    cursor: pointer;
-    transition: all 0.3s;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+    function updateStats() {
+        const total = taskList.children.length;
+        const done = document.querySelectorAll("#task-list li.done").length;
+        statDone.textContent = done;
+        statPending.textContent = total - done;
+    }
 
-.nav-btn:hover, .nav-btn.active {
-    color: var(--primary);
-    background: rgba(0, 255, 65, 0.05);
-    border-left: 2px solid var(--primary);
-    padding-left: 15px;
-}
+    addTaskBtn.addEventListener("click", () => {
+        const txt = taskInput.value.trim();
+        if (txt) {
+            const li = document.createElement("li");
+            li.innerHTML = `<span>${txt}</span> <span style="cursor:pointer; color:#555;">[X]</span>`;
+            
+            li.addEventListener("click", (e) => {
+                if(e.target.tagName !== 'SPAN' || e.target.innerText !== '[X]') {
+                    li.classList.toggle("done");
+                    updateStats();
+                }
+            });
 
-.session-stats {
-    background: #000;
-    padding: 15px;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    margin-bottom: 20px;
-}
+            li.querySelector("span:last-child").addEventListener("click", () => {
+                li.remove();
+                updateStats();
+            });
 
-.session-stats h3 {
-    font-size: 0.7rem;
-    color: #444;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-}
+            taskList.appendChild(li);
+            taskInput.value = "";
+            updateStats();
+        }
+    });
 
-.stat-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.8rem;
-    margin-bottom: 5px;
-    color: #888;
-}
+    let timerInterval;
+    let timeLeft = 1500; 
+    let isRunning = false;
+    const timeDisplay = document.getElementById("time-display");
+    const circleProgress = document.getElementById("timer-path");
+    const btnStart = document.getElementById("btn-start-focus");
+    const btnPause = document.getElementById("btn-pause-focus");
+    const btnReset = document.getElementById("btn-reset-focus");
+    const statFocus = document.getElementById("stat-focus");
+    let totalFocusMinutes = 0;
 
-.stat-row .val {
-    color: var(--text-main);
-    font-weight: bold;
-}
+    const fullDash = 283; 
 
-.hint-box {
-    font-size: 0.7rem;
-    color: #333;
-    margin-top: auto;
-}
+    function formatTime(s) {
+        const m = Math.floor(s / 60).toString().padStart(2, "0");
+        const sec = (s % 60).toString().padStart(2, "0");
+        return `${m}:${sec}`;
+    }
 
-.main-content {
-    flex: 1;
-    padding: 3rem;
-    overflow-y: auto;
-    position: relative;
-}
+    function setCircle(time) {
+        const fraction = time / 1500;
+        const offset = fullDash - (fraction * fullDash);
+        circleProgress.style.strokeDashoffset = offset;
+    }
 
-.panel {
-    display: none;
-    animation: fadeIn 0.4s ease;
-}
+    function startTimer() {
+        if (!isRunning) {
+            isRunning = true;
+            btnStart.style.display = "none";
+            btnPause.style.display = "inline-block";
+            timerInterval = setInterval(() => {
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    timeDisplay.textContent = formatTime(timeLeft);
+                    setCircle(timeLeft);
+                } else {
+                    clearInterval(timerInterval);
+                    isRunning = false;
+                    totalFocusMinutes += 25;
+                    statFocus.textContent = totalFocusMinutes + "m";
+                    alert("Focus session completed!");
+                    resetTimer();
+                }
+            }, 1000);
+        }
+    }
 
-.panel.active {
-    display: block;
-}
+    function pauseTimer() {
+        clearInterval(timerInterval);
+        isRunning = false;
+        btnStart.style.display = "inline-block";
+        btnPause.style.display = "none";
+    }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+    function resetTimer() {
+        pauseTimer();
+        timeLeft = 1500;
+        timeDisplay.textContent = "25:00";
+        circleProgress.style.strokeDashoffset = 0;
+    }
 
-.welcome-header {
-    margin-bottom: 3rem;
-}
+    btnStart.addEventListener("click", startTimer);
+    btnPause.addEventListener("click", pauseTimer);
+    btnReset.addEventListener("click", resetTimer);
 
-.welcome-header h2 {
-    font-size: 2.5rem;
-    font-weight: 300;
-    letter-spacing: 2px;
-}
+    const sudokuBoard = document.getElementById("sudoku-board");
+    const diffBtns = document.querySelectorAll(".diff-btn");
+    let currentLevel = 'easy';
 
-.sub-text {
-    color: var(--primary);
-    font-size: 0.9rem;
-    margin-top: 10px;
-}
+    diffBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            diffBtns.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            currentLevel = btn.dataset.level;
+        });
+    });
 
-.grid-cards {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-}
+    function isValid(board, row, col, num) {
+        for (let x = 0; x < 9; x++) if (board[row][x] === num || board[x][col] === num) return false;
+        const startRow = row - row % 3, startCol = col - col % 3;
+        for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) if (board[i + startRow][j + startCol] === num) return false;
+        return true;
+    }
 
-.card {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    padding: 2rem;
-    cursor: pointer;
-    transition: 0.3s;
-    position: relative;
-    overflow: hidden;
-}
+    function solve(board) {
+        for (let r = 0; r < 9; r++) {
+            for (let c = 0; c < 9; c++) {
+                if (board[r][c] === 0) {
+                    let nums = [1,2,3,4,5,6,7,8,9].sort(() => Math.random() - 0.5);
+                    for (let num of nums) {
+                        if (isValid(board, r, c, num)) {
+                            board[r][c] = num;
+                            if (solve(board)) return true;
+                            board[r][c] = 0;
+                        }
+                    }
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
-.card:hover {
-    border-color: var(--primary);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-}
+    function generateSudoku() {
+        let board = Array.from({length: 9}, () => Array(9).fill(0));
+        solve(board);
+        
+        let attempts = currentLevel === 'easy' ? 30 : currentLevel === 'medium' ? 45 : 55;
+        while (attempts > 0) {
+            let r = Math.floor(Math.random() * 9);
+            let c = Math.floor(Math.random() * 9);
+            if (board[r][c] !== 0) {
+                board[r][c] = 0;
+                attempts--;
+            }
+        }
+        renderBoard(board);
+    }
 
-.card h3 {
-    margin: 15px 0 5px;
-    color: var(--text-main);
-}
+    function renderBoard(board) {
+        sudokuBoard.innerHTML = "";
+        for (let i = 0; i < 9; i++) {
+            for (let j = 0; j < 9; j++) {
+                const div = document.createElement("div");
+                div.classList.add("cell");
+                if ((i + 1) % 3 === 0 && i < 8) div.classList.add("cell-row-3");
+                
+                if (board[i][j] !== 0) {
+                    div.textContent = board[i][j];
+                    div.style.fontWeight = "bold";
+                    div.dataset.val = board[i][j];
+                } else {
+                    const inp = document.createElement("input");
+                    inp.type = "text";
+                    inp.maxLength = 1;
+                    inp.addEventListener("input", function() {
+                        this.value = this.value.replace(/[^1-9]/g, "");
+                    });
+                    div.appendChild(inp);
+                }
+                sudokuBoard.appendChild(div);
+            }
+        }
+    }
 
-.card p {
-    font-size: 0.85rem;
-    color: var(--text-dim);
-}
+    document.getElementById("btn-new-game").addEventListener("click", generateSudoku);
+    
+    document.getElementById("btn-check-sudoku").addEventListener("click", () => {
+        alert("Tính năng check đang được cập nhật bởi Operator!");
+    });
 
-.card-icon {
-    font-size: 2rem;
-    color: var(--primary);
-}
+    generateSudoku(); 
 
-.panel-header {
-    margin-bottom: 2rem;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 10px;
-}
+    const decideInput = document.getElementById("decide-input");
+    const spinBtn = document.getElementById("btn-spin");
+    const resultDisplay = document.getElementById("decide-result");
 
-.tracker-input-area {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-#task-input {
-    flex: 1;
-    background: transparent;
-    border: 1px solid var(--border);
-    padding: 12px;
-    color: var(--primary);
-    outline: none;
-}
-
-#btn-add-task, #btn-check-sudoku, #btn-spin, #btn-new-game, .diff-btn, #btn-start-focus, #btn-reset-focus, #btn-pause-focus {
-    background: var(--border);
-    color: var(--text-main);
-    border: none;
-    padding: 0 20px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: 0.2s;
-}
-
-#btn-add-task:hover, #btn-check-sudoku:hover, #btn-spin:hover, #btn-new-game:hover, .diff-btn:hover, #btn-start-focus:hover {
-    background: var(--primary);
-    color: #000;
-}
-
-#task-list {
-    list-style: none;
-}
-
-#task-list li {
-    background: rgba(255,255,255,0.03);
-    padding: 12px;
-    margin-bottom: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-left: 2px solid transparent;
-}
-
-#task-list li.done {
-    border-left-color: var(--primary);
-    opacity: 0.5;
-    text-decoration: line-through;
-}
-
-.focus-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    margin-top: 2rem;
-}
-
-.timer-circle-box {
-    position: relative;
-    width: 300px;
-    height: 300px;
-}
-
-.timer-svg {
-    width: 100%;
-    height: 100%;
-    transform: rotate(-90deg);
-}
-
-.circle-bg {
-    fill: none;
-    stroke: #111;
-    stroke-width: 3;
-}
-
-.circle-progress {
-    fill: none;
-    stroke: var(--primary);
-    stroke-width: 3;
-    stroke-dasharray: 283;
-    stroke-dashoffset: 0;
-    transition: stroke-dashoffset 1s linear;
-}
-
-.timer-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 3.5rem;
-    font-weight: bold;
-    color: var(--text-main);
-}
-
-.focus-controls {
-    margin-top: 30px;
-    display: flex;
-    gap: 15px;
-}
-
-.focus-controls button {
-    padding: 12px 30px;
-}
-
-.game-wrapper {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-}
-
-#sudoku-board {
-    display: grid;
-    grid-template-columns: repeat(9, 45px);
-    grid-template-rows: repeat(9, 45px);
-    gap: 0;
-    border: 2px solid var(--primary);
-}
-
-.cell {
-    width: 45px;
-    height: 45px;
-    background: transparent;
-    border: 1px solid #222;
-    color: var(--text-main);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    position: relative;
-}
-
-.cell input {
-    width: 100%;
-    height: 100%;
-    background: transparent;
-    border: none;
-    text-align: center;
-    color: var(--primary);
-    font-size: 1.2rem;
-    outline: none;
-}
-
-.cell:nth-child(3n) {
-    border-right: 1px solid var(--primary);
-}
-
-.cell:nth-child(9n) {
-    border-right: 1px solid #222; 
-}
-
-.cell-row-3, .cell-row-6 {
-    border-bottom: 1px solid var(--primary);
-}
-
-.sudoku-controls {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-
-.difficulty-tabs .diff-btn.active {
-    background: var(--primary);
-    color: #000;
-}
-
-#decide-input {
-    width: 100%;
-    height: 150px;
-    background: #000;
-    border: 1px solid var(--border);
-    color: var(--text-main);
-    padding: 15px;
-    margin-bottom: 20px;
-    resize: none;
-    outline: none;
-}
-
-.result-box {
-    margin-top: 20px;
-    padding: 30px;
-    background: rgba(0,255,65,0.05);
-    border: 1px dashed var(--primary);
-    text-align: center;
-}
-
-#decide-result {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: var(--primary);
-}
+    spinBtn.addEventListener("click", () => {
+        const lines = decideInput.value.split("\n").filter(line => line.trim() !== "");
+        if (lines.length < 2) {
+            resultDisplay.textContent = "Nhập ít nhất 2 lựa chọn!";
+            return;
+        }
+        
+        let counter = 0;
+        const interval = setInterval(() => {
+            resultDisplay.textContent = lines[Math.floor(Math.random() * lines.length)];
+            counter++;
+            if (counter > 20) {
+                clearInterval(interval);
+                resultDisplay.style.color = "#00ff41";
+            }
+        }, 100);
+    });
+});
