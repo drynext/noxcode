@@ -1,474 +1,473 @@
-/* ======================================================================
-   NOXCODE SYSTEM CORE v3.0 - ULTIMATE EDITION
-   DEV: DANG DUC DAI (DAI_DANG_CS)
-   TYPE: MONOLITHIC JS MODULE
-   ======================================================================
+/* NOXCODE SYSTEM CORE
+    OPERATOR: DAI_DANG_CS
 */
 
 document.addEventListener('DOMContentLoaded', () => {
-    NOXSYSTEM.init();
-});
-
-const NOXSYSTEM = {
-    // State management
-    config: {
-        soundEnabled: true,
-        user: 'DAI_DANG_CS'
-    },
     
-    init() {
-        console.log("%c [SYSTEM] INITIALIZING NOXCODE ENVIRONMENT...", "color:#00ff41; font-weight:bold; font-size:14px;");
-        
-        // 1. Core Visuals (Run on ALL pages)
-        this.setupMatrixRain();
-        
-        // 2. Router (Check which page we are on)
-        if (document.querySelector('.profile-body')) {
-            this.initProfilePage();
-        } else if (document.querySelector('.main-interface')) {
-            this.initDashboardPage();
-        }
-    },
+    // --- MATRIX RAIN ENGINE ---
+    const canvas = document.getElementById('matrix-rain');
+    const ctx = canvas.getContext('2d');
+    
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+    
+    const chars = '10XYZ01'.split('');
+    const fontSize = 14;
+    const columns = width / fontSize;
+    const drops = [];
 
-    /* --- GLOBAL VISUALS --- */
-    setupMatrixRain() {
-        const canvas = document.getElementById('matrix-rain');
-        if(!canvas) return;
-        const ctx = canvas.getContext('2d');
-        let width = canvas.width = window.innerWidth;
-        let height = canvas.height = window.innerHeight;
-        
-        const chars = '01XYZEHO'.split('');
-        const fontSize = 14;
-        const columns = width / fontSize;
-        const drops = Array(Math.floor(columns)).fill(1);
-
-        function draw() {
-            ctx.fillStyle = 'rgba(9, 12, 16, 0.05)';
-            ctx.fillRect(0, 0, width, height);
-            ctx.fillStyle = '#0F0'; // Hacker Green
-            ctx.font = fontSize + 'px monospace';
-            
-            for(let i=0; i<drops.length; i++) {
-                const text = chars[Math.floor(Math.random()*chars.length)];
-                ctx.fillText(text, i*fontSize, drops[i]*fontSize);
-                if(drops[i]*fontSize > height && Math.random() > 0.975) drops[i] = 0;
-                drops[i]++;
-            }
-        }
-        setInterval(draw, 50);
-        window.addEventListener('resize', () => {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        });
-    },
-
-    showToast(msg, type='info') {
-        const container = document.getElementById('toast-container');
-        if(!container) return;
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.innerText = `> ${msg}`;
-        container.appendChild(toast);
-        setTimeout(() => {
-            toast.style.opacity = '0';
-            setTimeout(() => toast.remove(), 300);
-        }, 3000);
-    },
-
-    /* --- PAGE: PROFILE LOGIC --- */
-    initProfilePage() {
-        console.log("[ROUTER] Profile View Detected.");
-        NOX_PROFILE.generateHeatmap();
-        // Animate skill bars
-        setTimeout(() => {
-            document.querySelectorAll('.sb-fill').forEach(bar => {
-                const w = bar.style.width;
-                bar.style.width = '0%';
-                setTimeout(() => bar.style.width = w, 100);
-            });
-        }, 500);
-    },
-
-    /* --- PAGE: DASHBOARD LOGIC --- */
-    initDashboardPage() {
-        console.log("[ROUTER] Dashboard View Detected.");
-        this.setupNavigation();
-        this.setupClock();
-        this.typewriterEffect();
-        
-        // Init Sub-Modules
-        NOX_TRACKER.init();
-        NOX_GAMES.initSnake();
-        NOX_GAMES.initSudoku();
-        NOX_BLOG.init();
-        NOX_FOCUS.init();
-        NOX_DECIDER.init();
-    },
-
-    setupNavigation() {
-        const navItems = document.querySelectorAll('.nav-item');
-        const views = document.querySelectorAll('.view-container');
-        const breadcrumb = document.getElementById('current-module');
-
-        window.NOXSYSTEM.navigate = (targetId) => {
-            // Remove Active Classes
-            navItems.forEach(n => n.classList.remove('active'));
-            views.forEach(v => v.classList.remove('active'));
-            
-            // Activate Target
-            const targetView = document.getElementById(targetId);
-            if(targetView) {
-                targetView.classList.add('active');
-                // Update Breadcrumb
-                if(breadcrumb) breadcrumb.innerText = targetId.replace('-view', '').toUpperCase();
-                
-                // Highlight Sidebar if applicable
-                const sideBtn = document.querySelector(`.nav-item[data-target="${targetId}"]`);
-                if(sideBtn) sideBtn.classList.add('active');
-                else {
-                    // Handle sub-views (like sudoku) keeping parent active
-                    if(targetId.includes('game') || targetId === 'sudoku-view' || targetId === 'snake-view') {
-                        document.querySelector(`.nav-item[data-target="minigames-view"]`).classList.add('active');
-                    }
-                }
-            }
-        };
-
-        navItems.forEach(item => {
-            item.addEventListener('click', () => {
-                this.navigate(item.dataset.target);
-            });
-        });
-    },
-
-    setupClock() {
-        setInterval(() => {
-            const now = new Date();
-            const el = document.getElementById('system-clock');
-            if(el) el.innerText = now.toLocaleTimeString('en-US', {hour12: false});
-        }, 1000);
-    },
-
-    typewriterEffect() {
-        const text = "Initializing core environment... Connection established.";
-        const el = document.getElementById('typing-effect');
-        if(!el) return;
-        let i = 0;
-        const type = () => {
-            if(i < text.length) {
-                el.innerHTML += text.charAt(i);
-                i++;
-                setTimeout(type, 30);
-            }
-        };
-        setTimeout(type, 500);
+    for (let i = 0; i < columns; i++) {
+        drops[i] = 1;
     }
-};
 
-/* ==================================================================
-   MODULE: PROFILE HELPER (Heatmap & Stats)
-   ================================================================== */
-const NOX_PROFILE = {
-    generateHeatmap() {
-        const container = document.getElementById('heatmap-area');
-        if(!container) return;
-        // Generate 300 random cells
-        for(let i=0; i<300; i++) {
-            const cell = document.createElement('div');
-            cell.className = 'h-cell';
-            const rand = Math.random();
-            // Assign level based on random probability (simulating commits)
-            if(rand > 0.9) cell.classList.add('l4');
-            else if(rand > 0.8) cell.classList.add('l3');
-            else if(rand > 0.6) cell.classList.add('l2');
-            else if(rand > 0.4) cell.classList.add('l1');
-            container.appendChild(cell);
+    function drawMatrix() {
+        ctx.fillStyle = 'rgba(5, 5, 5, 0.05)';
+        ctx.fillRect(0, 0, width, height);
+        
+        ctx.fillStyle = '#0F0'; // Green text
+        ctx.font = fontSize + 'px monospace';
+        
+        for (let i = 0; i < drops.length; i++) {
+            const text = chars[Math.floor(Math.random() * chars.length)];
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+            
+            if (drops[i] * fontSize > height && Math.random() > 0.975) {
+                drops[i] = 0;
+            }
+            drops[i]++;
         }
     }
-};
 
-/* ==================================================================
-   MODULE: TRACKER (Todo List)
-   ================================================================== */
-const NOX_TRACKER = {
-    tasks: [],
-    init() {
-        this.tasks = JSON.parse(localStorage.getItem('nox_tasks')) || [];
-        this.render();
+    setInterval(drawMatrix, 50);
+
+    window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+    });
+
+    // --- SYSTEM CLOCK (UPDATED) ---
+    function updateClock() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('en-US', { hour12: false });
         
-        const addBtn = document.getElementById('add-task-btn');
-        const input = document.getElementById('new-task-input');
-        const clearBtn = document.getElementById('clear-tasks-btn');
-
-        if(addBtn) addBtn.addEventListener('click', () => this.addTask());
-        if(input) input.addEventListener('keypress', (e) => { if(e.key === 'Enter') this.addTask(); });
-        if(clearBtn) clearBtn.addEventListener('click', () => {
-            if(confirm('Delete all tasks?')) {
-                this.tasks = [];
-                this.save();
-                this.render();
-            }
-        });
-    },
-    addTask() {
-        const input = document.getElementById('new-task-input');
-        const text = input.value.trim();
-        if(text) {
-            this.tasks.unshift({ id: Date.now(), text: text, done: false });
-            input.value = '';
-            this.save();
-            this.render();
-            NOXSYSTEM.showToast('Task Protocol Added.', 'success');
+        const clockEl = document.getElementById('system-clock');
+        if(clockEl) {
+            clockEl.innerText = timeString;
         }
-    },
-    toggle(id) {
-        const task = this.tasks.find(t => t.id === id);
-        if(task) task.done = !task.done;
-        this.save();
-        this.render();
-    },
-    remove(id) {
-        this.tasks = this.tasks.filter(t => t.id !== id);
-        this.save();
-        this.render();
-    },
-    save() {
-        localStorage.setItem('nox_tasks', JSON.stringify(this.tasks));
-        // Update counts
-        const done = this.tasks.filter(t => t.done).length;
-        const pending = this.tasks.length - done;
-        if(document.getElementById('card-todo-count')) 
-            document.getElementById('card-todo-count').innerText = pending;
-        if(document.getElementById('sidebar-done'))
-            document.getElementById('sidebar-done').innerText = done;
-    },
-    render() {
-        const todoList = document.getElementById('todo-list');
-        const doneList = document.getElementById('done-list');
-        if(!todoList || !doneList) return;
-        
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // --- NAVIGATION LOGIC ---
+    const navItems = document.querySelectorAll('.nav-item');
+    const views = document.querySelectorAll('.view-container');
+    const breadcrumb = document.getElementById('current-module');
+
+    window.navigateTo = function(targetId) {
+        // Remove active states
+        navItems.forEach(item => item.classList.remove('active'));
+        views.forEach(view => view.classList.remove('active'));
+
+        // Set active state
+        document.getElementById(targetId).classList.add('active');
+        const activeNav = document.querySelector(`.nav-item[data-target="${targetId}"]`);
+        if(activeNav) activeNav.classList.add('active');
+
+        // Update Text
+        breadcrumb.innerText = targetId.replace('-view', '').toUpperCase();
+    }
+
+    navItems.forEach(item => {
+        item.addEventListener('click', () => {
+            navigateTo(item.dataset.target);
+        });
+    });
+
+    // --- TYPEWRITER EFFECT ---
+    const textToType = "System optimized for Operator Dai. Ready to code.";
+    const typeEl = document.getElementById('typing-effect');
+    let charIndex = 0;
+    
+    function typeWriter() {
+        if (charIndex < textToType.length) {
+            typeEl.innerHTML = textToType.substring(0, charIndex + 1);
+            charIndex++;
+            setTimeout(typeWriter, 50);
+        }
+    }
+    setTimeout(typeWriter, 1000);
+
+    // --- TRACKER MODULE (LOCAL STORAGE) ---
+    const taskInput = document.getElementById('new-task-input');
+    const addTaskBtn = document.getElementById('add-task-btn');
+    const todoList = document.getElementById('todo-list');
+    const doneList = document.getElementById('done-list');
+    
+    // Load from LocalStorage
+    let tasks = JSON.parse(localStorage.getItem('noxTasks')) || [];
+
+    function saveTasks() {
+        localStorage.setItem('noxTasks', JSON.stringify(tasks));
+        renderTasks();
+        updateDashboardStats();
+    }
+
+    function renderTasks() {
         todoList.innerHTML = '';
         doneList.innerHTML = '';
         
-        this.tasks.forEach(t => {
+        tasks.forEach((task, index) => {
             const li = document.createElement('li');
-            li.className = `task-item ${t.done ? 'completed' : ''}`;
+            li.className = `task-item ${task.status}`;
+            
             li.innerHTML = `
-                <span>${t.text}</span>
-                <div style="display:flex; gap:10px;">
-                    <button class="icon-btn" onclick="NOX_TRACKER.toggle(${t.id})">✓</button>
-                    <button class="icon-btn" onclick="NOX_TRACKER.remove(${t.id})">✕</button>
+                <span class="task-text">${task.text}</span>
+                <div class="task-actions">
+                    <button class="icon-btn check" onclick="toggleTask(${index})">✓</button>
+                    <button class="icon-btn trash" onclick="deleteTask(${index})">✕</button>
                 </div>
             `;
-            if(t.done) doneList.appendChild(li);
-            else todoList.appendChild(li);
-        });
-        this.save(); // Update stats
-    }
-};
 
-/* ==================================================================
-   MODULE: GAMES (Snake & Sudoku)
-   ================================================================== */
-const NOX_GAMES = {
-    // --- SNAKE LOGIC ---
-    initSnake() {
-        const canvas = document.getElementById('snake-canvas');
-        if(!canvas) return;
-        this.snakeCtx = canvas.getContext('2d');
-        this.snakeGrid = 20;
-        this.snake = [{x: 10, y: 10}];
-        this.snakeFood = {x: 15, y: 15};
-        this.snakeVel = {x: 0, y: 0};
-        this.snakeScore = 0;
-        this.snakeRunning = false;
-        this.snakeLoop = null;
-
-        document.getElementById('snake-start-btn').addEventListener('click', () => this.startSnake());
-        document.addEventListener('keydown', (e) => {
-            if(!this.snakeRunning) return;
-            switch(e.key) {
-                case 'ArrowUp': if(this.snakeVel.y===0) this.snakeVel={x:0, y:-1}; break;
-                case 'ArrowDown': if(this.snakeVel.y===0) this.snakeVel={x:0, y:1}; break;
-                case 'ArrowLeft': if(this.snakeVel.x===0) this.snakeVel={x:-1, y:0}; break;
-                case 'ArrowRight': if(this.snakeVel.x===0) this.snakeVel={x:1, y:0}; break;
+            if (task.status === 'pending') {
+                todoList.appendChild(li);
+            } else {
+                doneList.appendChild(li);
             }
         });
-    },
-    startSnake() {
-        if(this.snakeRunning) return;
-        this.snakeRunning = true;
-        this.snake = [{x: 10, y: 10}];
-        this.snakeScore = 0;
-        this.snakeVel = {x: 1, y: 0};
-        document.getElementById('snake-score').innerText = 0;
-        this.snakeLoop = setInterval(() => this.updateSnake(), 100);
-    },
-    stopSnake() {
-        clearInterval(this.snakeLoop);
-        this.snakeRunning = false;
-    },
-    stop() { // Alias for global call
-        this.stopSnake();
-    },
-    updateSnake() {
-        const head = {x: this.snake[0].x + this.snakeVel.x, y: this.snake[0].y + this.snakeVel.y};
-        const canvas = document.getElementById('snake-canvas');
-        const tileCountX = canvas.width / this.snakeGrid;
-        const tileCountY = canvas.height / this.snakeGrid;
+    }
 
-        // Wrap walls
-        if(head.x < 0) head.x = tileCountX - 1;
-        if(head.x >= tileCountX) head.x = 0;
-        if(head.y < 0) head.y = tileCountY - 1;
-        if(head.y >= tileCountY) head.y = 0;
+    window.addTask = function() {
+        const text = taskInput.value.trim();
+        if (text) {
+            tasks.push({ text: text, status: 'pending', date: new Date().toISOString() });
+            taskInput.value = '';
+            saveTasks();
+        }
+    }
 
-        // Self collision
-        for(let part of this.snake) {
-            if(part.x === head.x && part.y === head.y) {
-                this.stopSnake();
-                alert('GAME OVER');
+    window.toggleTask = function(index) {
+        tasks[index].status = tasks[index].status === 'pending' ? 'completed' : 'pending';
+        saveTasks();
+    }
+
+    window.deleteTask = function(index) {
+        tasks.splice(index, 1);
+        saveTasks();
+    }
+
+    window.clearAllTasks = function() {
+        if(confirm('WARNING: Purge all task data?')) {
+            tasks = [];
+            saveTasks();
+        }
+    }
+
+    if(addTaskBtn) addTaskBtn.addEventListener('click', addTask);
+    if(taskInput) {
+        taskInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addTask();
+        });
+    }
+
+    // --- FOCUS TIMER MODULE ---
+    let timerInterval;
+    let timeLeft = 25 * 60;
+    let totalFocusTime = parseInt(localStorage.getItem('noxFocusTime')) || 0;
+    let isRunning = false;
+    const circle = document.querySelector('.progress-ring__circle');
+    const radius = circle.r.baseVal.value;
+    const circumference = radius * 2 * Math.PI;
+
+    circle.style.strokeDasharray = `${circumference} ${circumference}`;
+    circle.style.strokeDashoffset = circumference;
+
+    function setProgress(percent) {
+        const offset = circumference - (percent / 100) * circumference;
+        circle.style.strokeDashoffset = offset;
+    }
+
+    function formatTime(seconds) {
+        const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+        const s = (seconds % 60).toString().padStart(2, '0');
+        return `${m}:${s}`;
+    }
+
+    function updateDisplay() {
+        document.getElementById('timer-val').innerText = formatTime(timeLeft);
+    }
+
+    const modeBtns = document.querySelectorAll('.mode-btn');
+    let currentModeTime = 25 * 60;
+
+    modeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            modeBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const mins = parseInt(btn.dataset.time);
+            currentModeTime = mins * 60;
+            resetTimer();
+        });
+    });
+
+    const timerStartBtn = document.getElementById('timer-start');
+    if(timerStartBtn) {
+        timerStartBtn.addEventListener('click', function() {
+            if (isRunning) {
+                // Pause
+                clearInterval(timerInterval);
+                this.innerText = 'RESUME';
+                this.classList.add('secondary');
+                isRunning = false;
+            } else {
+                // Start
+                this.innerText = 'PAUSE';
+                this.classList.remove('secondary');
+                isRunning = true;
+                timerInterval = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        updateDisplay();
+                        const percent = ((currentModeTime - timeLeft) / currentModeTime) * 100;
+                        setProgress(percent);
+                    } else {
+                        clearInterval(timerInterval);
+                        isRunning = false;
+                        totalFocusTime += (currentModeTime / 60);
+                        localStorage.setItem('noxFocusTime', totalFocusTime);
+                        updateDashboardStats();
+                        alert('SESSION COMPLETE');
+                        resetTimer();
+                    }
+                }, 1000);
+            }
+        });
+    }
+
+    const timerResetBtn = document.getElementById('timer-reset');
+    if(timerResetBtn) {
+        timerResetBtn.addEventListener('click', function() {
+            clearInterval(timerInterval);
+            timeLeft = currentModeTime;
+            isRunning = false;
+            timerStartBtn.innerText = 'INITIALIZE';
+            timerStartBtn.classList.remove('secondary');
+            updateDisplay();
+            setProgress(0);
+        });
+    }
+
+    window.resetTimer = function() {
+        clearInterval(timerInterval);
+        timeLeft = currentModeTime;
+        isRunning = false;
+        if(timerStartBtn) {
+            timerStartBtn.innerText = 'INITIALIZE';
+            timerStartBtn.classList.remove('secondary');
+        }
+        updateDisplay();
+        setProgress(0);
+    }
+
+    // --- SUDOKU ENGINE (BACKTRACKING) ---
+    const sudokuGrid = document.getElementById('sudoku-grid');
+    let currentDiff = 'easy';
+    let solutionMatrix = [];
+
+    document.querySelectorAll('.diff-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            document.querySelectorAll('.diff-chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            currentDiff = chip.dataset.diff;
+            generateNewGame();
+        });
+    });
+
+    function isValid(board, row, col, k) {
+        for (let i = 0; i < 9; i++) {
+            if (board[i][col] === k) return false;
+            if (board[row][i] === k) return false;
+            if (board[3 * Math.floor(row / 3) + Math.floor(i / 3)][3 * Math.floor(col / 3) + i % 3] === k) return false;
+        }
+        return true;
+    }
+
+    function solveSudoku(board) {
+        for (let i = 0; i < 9; i++) {
+            for (let j = 0; j < 9; j++) {
+                if (board[i][j] === 0) {
+                    let nums = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+                    // Shuffle for randomness
+                    nums.sort(() => Math.random() - 0.5);
+                    
+                    for (let k of nums) {
+                        if (isValid(board, i, j, k)) {
+                            board[i][j] = k;
+                            if (solveSudoku(board)) return true;
+                            board[i][j] = 0;
+                        }
+                    }
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    window.generateNewGame = function() {
+        // Create empty board
+        let board = Array.from({ length: 9 }, () => Array(9).fill(0));
+        
+        // Fill diagonal 3x3 matrices first (independent) for better randomization
+        for (let i = 0; i < 9; i = i + 3) {
+            fillBox(board, i, i);
+        }
+
+        // Solve the rest
+        solveSudoku(board);
+        
+        // Save solution
+        solutionMatrix = JSON.parse(JSON.stringify(board));
+
+        // Remove digits based on difficulty
+        let attempts = currentDiff === 'easy' ? 30 : currentDiff === 'medium' ? 45 : 55;
+        while (attempts > 0) {
+            let row = Math.floor(Math.random() * 9);
+            let col = Math.floor(Math.random() * 9);
+            if (board[row][col] !== 0) {
+                board[row][col] = 0;
+                attempts--;
+            }
+        }
+
+        renderSudoku(board);
+    }
+
+    function fillBox(board, row, col) {
+        let num;
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                do {
+                    num = Math.floor(Math.random() * 9) + 1;
+                } while (!isSafeInBox(board, row, col, num));
+                board[row + i][col + j] = num;
+            }
+        }
+    }
+
+    function isSafeInBox(board, rowStart, colStart, num) {
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (board[rowStart + i][colStart + j] === num) return false;
+            }
+        }
+        return true;
+    }
+
+    function renderSudoku(board) {
+        if(!sudokuGrid) return;
+        sudokuGrid.innerHTML = '';
+        for (let i = 0; i < 9; i++) {
+            for (let j = 0; j < 9; j++) {
+                const cell = document.createElement('div');
+                cell.className = 'sudoku-cell';
+                
+                if (board[i][j] !== 0) {
+                    cell.classList.add('prefilled');
+                    cell.innerText = board[i][j];
+                } else {
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.maxLength = 1;
+                    input.className = 'sudoku-input';
+                    input.dataset.r = i;
+                    input.dataset.c = j;
+                    
+                    input.addEventListener('input', (e) => {
+                        const val = e.target.value;
+                        if (!/^[1-9]$/.test(val)) e.target.value = '';
+                    });
+                    
+                    cell.appendChild(input);
+                }
+                sudokuGrid.appendChild(cell);
+            }
+        }
+    }
+
+    window.verifySolution = function() {
+        const inputs = document.querySelectorAll('.sudoku-input');
+        let isCorrect = true;
+        
+        inputs.forEach(input => {
+            const r = input.dataset.r;
+            const c = input.dataset.c;
+            const val = parseInt(input.value);
+            
+            if (val !== solutionMatrix[r][c]) {
+                input.style.color = '#ff3333'; // Error color
+                isCorrect = false;
+            } else {
+                input.style.color = '#00ff41'; // Success color
+            }
+        });
+
+        if (isCorrect) {
+            alert('SYSTEM STATUS: VERIFIED. EXCELLENT WORK.');
+        } else {
+            alert('SYSTEM STATUS: ERRORS DETECTED.');
+        }
+    }
+
+    // --- DECIDER MODULE ---
+    const decideBtn = document.getElementById('spin-btn');
+    const decideRes = document.getElementById('decision-result');
+    const decideInput = document.getElementById('decision-options');
+
+    if(decideBtn) {
+        decideBtn.addEventListener('click', () => {
+            const options = decideInput.value.split('\n').filter(opt => opt.trim() !== '');
+            
+            if (options.length < 2) {
+                decideRes.innerText = "INPUT ERROR";
+                decideRes.style.color = 'var(--danger)';
                 return;
             }
-        }
 
-        this.snake.unshift(head);
-
-        // Eat food
-        if(head.x === this.snakeFood.x && head.y === this.snakeFood.y) {
-            this.snakeScore += 10;
-            document.getElementById('snake-score').innerText = this.snakeScore;
-            this.snakeFood = {
-                x: Math.floor(Math.random() * tileCountX),
-                y: Math.floor(Math.random() * tileCountY)
-            };
-        } else {
-            this.snake.pop();
-        }
-        this.drawSnake();
-    },
-    drawSnake() {
-        const ctx = this.snakeCtx;
-        const cvs = document.getElementById('snake-canvas');
-        ctx.fillStyle = '#050505';
-        ctx.fillRect(0,0, cvs.width, cvs.height);
-
-        // Food
-        ctx.fillStyle = '#ff0055';
-        ctx.fillRect(this.snakeFood.x*this.snakeGrid, this.snakeFood.y*this.snakeGrid, this.snakeGrid-2, this.snakeGrid-2);
-
-        // Snake
-        ctx.fillStyle = '#00ff41';
-        this.snake.forEach(part => {
-            ctx.fillRect(part.x*this.snakeGrid, part.y*this.snakeGrid, this.snakeGrid-2, this.snakeGrid-2);
-        });
-    },
-
-    // --- SUDOKU LOGIC ---
-    initSudoku() {
-        const newBtn = document.getElementById('sudoku-new-btn');
-        const verifyBtn = document.getElementById('sudoku-verify-btn');
-        if(newBtn) newBtn.addEventListener('click', () => this.generateSudoku());
-        if(verifyBtn) verifyBtn.addEventListener('click', () => this.verifySudoku());
-        // Init first board
-        if(document.getElementById('sudoku-grid')) this.generateSudoku();
-    },
-    generateSudoku() {
-        const grid = document.getElementById('sudoku-grid');
-        grid.innerHTML = '';
-        // Dummy generator for visuals (Valid solver requires complex backtracking code)
-        // Here we generate a simple valid pattern for demo
-        for(let i=0; i<81; i++) {
-            const cell = document.createElement('div');
-            cell.className = 'sudoku-cell';
-            const input = document.createElement('input');
-            input.maxLength = 1;
+            let counter = 0;
+            decideRes.style.color = 'var(--text-main)';
             
-            // Randomly pre-fill
-            if(Math.random() > 0.7) {
-                input.value = Math.floor(Math.random() * 9) + 1;
-                input.disabled = true;
-                cell.style.background = '#111';
-            }
-            cell.appendChild(input);
-            grid.appendChild(cell);
-        }
-    },
-    verifySudoku() {
-        alert('VERIFYING MATRIX... INTEGRITY CHECK PASSED.');
-        NOXSYSTEM.showToast('Sudoku Verified.', 'success');
-    }
-};
-
-/* ==================================================================
-   MODULE: BLOG (Neural Net)
-   ================================================================== */
-const NOX_BLOG = {
-    posts: [
-        { title: "Optimizing C++ Vectors", desc: "Memory management tricks for CP.", tag: "cpp" },
-        { title: "System Arch v2.0", desc: "Building this dashboard from scratch.", tag: "project" }
-    ],
-    init() {
-        this.renderList();
-    },
-    renderList() {
-        const container = document.getElementById('blog-posts-list');
-        if(!container) return;
-        container.innerHTML = '';
-        this.posts.forEach(p => {
-            const card = document.createElement('div');
-            card.className = 'blog-card';
-            card.innerHTML = `<h3>${p.title}</h3><p>${p.desc}</p><small style="color:var(--accent)">#${p.tag}</small>`;
-            container.appendChild(card);
-        });
-    },
-    showCreateModal() {
-        document.getElementById('post-modal').classList.add('show');
-    },
-    hideCreateModal() {
-        document.getElementById('post-modal').classList.remove('show');
-    },
-    savePost() {
-        const title = document.getElementById('post-title-input').value;
-        const desc = document.getElementById('post-content-input').value;
-        if(title) {
-            this.posts.unshift({ title: title, desc: desc, tag: "new" });
-            this.renderList();
-            this.hideCreateModal();
-            NOXSYSTEM.showToast('Entry Published.', 'success');
-        }
-    }
-};
-
-/* ==================================================================
-   MODULE: UTILS (Focus & Decider)
-   ================================================================== */
-const NOX_FOCUS = {
-    init() {
-        const startBtn = document.getElementById('timer-start');
-        if(startBtn) startBtn.addEventListener('click', () => {
-            alert('TIMER STARTED (Simulation)');
-            // In full version, add setInterval logic here
+            const interval = setInterval(() => {
+                decideRes.innerText = options[Math.floor(Math.random() * options.length)];
+                counter++;
+                if (counter > 20) {
+                    clearInterval(interval);
+                    const finalChoice = options[Math.floor(Math.random() * options.length)];
+                    decideRes.innerText = finalChoice;
+                    decideRes.style.color = 'var(--accent)';
+                }
+            }, 80);
         });
     }
-};
 
-const NOX_DECIDER = {
-    init() {
-        const btn = document.getElementById('spin-btn');
-        if(btn) btn.addEventListener('click', () => {
-            const txt = document.getElementById('decision-options').value;
-            const lines = txt.split('\n').filter(l => l.trim() !== '');
-            const res = document.getElementById('decision-result');
-            if(lines.length > 0) {
-                res.innerText = "CALCULATING...";
-                setTimeout(() => {
-                    res.innerText = lines[Math.floor(Math.random() * lines.length)];
-                }, 1000);
-            } else {
-                res.innerText = "INPUT ERROR";
-            }
-        });
+    // --- GLOBAL STATS UPDATE ---
+    function updateDashboardStats() {
+        const doneCount = tasks.filter(t => t.status === 'completed').length;
+        const pendingCount = tasks.filter(t => t.status === 'pending').length;
+
+        // Sidebar
+        const sidebarDone = document.getElementById('sidebar-done');
+        const sidebarTodo = document.getElementById('sidebar-todo');
+        const sidebarFocus = document.getElementById('sidebar-focus');
+        const cardTodoCount = document.getElementById('card-todo-count');
+
+        if(sidebarDone) sidebarDone.innerText = doneCount;
+        if(sidebarTodo) sidebarTodo.innerText = pendingCount;
+        if(sidebarFocus) sidebarFocus.innerText = Math.round(totalFocusTime) + 'm';
+        if(cardTodoCount) cardTodoCount.innerText = pendingCount;
     }
-};
+
+    // Initial Load
+    renderTasks();
+    updateDashboardStats();
+    generateNewGame();
+});
