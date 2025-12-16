@@ -1,180 +1,187 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOXCODE OS V3.5 - ULTIMATE</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;300;500;700;800&display=swap" rel="stylesheet">
+    <title>NOXCODE - Ultimate Productivity</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <canvas id="matrixCanvas"></canvas>
-    <div class="scanline"></div>
-    <div class="vignette"></div>
+    <div class="app-overlay"></div>
 
-    <div id="cmdOverlay" class="cmd-overlay">
-        <div class="cmd-backdrop"></div>
-        <div class="cmd-box">
-            <div class="cmd-header">
-                <span>root@noxcode:~#</span>
-                <span class="cmd-esc">ESC</span>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="brand-container">
+                <h1 class="logo" id="logo">NOXCODE</h1>
+                <div class="logo-glitch-layer">NOXCODE</div>
             </div>
-            <input type="text" id="cmdInput" class="cmd-input" placeholder="Type command (goto, add, theme, clear)..." autocomplete="off">
-            <div id="cmdList" class="cmd-list"></div>
-        </div>
+            <nav class="main-nav">
+                <a href="#" data-view="main" class="nav-item active">
+                    <span class="nav-icon">▢</span> Dashboard
+                </a>
+                <a href="#" data-view="tracker" class="nav-item">
+                    <span class="nav-icon">∫</span> Tracker
+                </a>
+                <a href="#" data-view="focus" class="nav-item">
+                    <span class="nav-icon">⊙</span> Focus
+                </a>
+                <a href="#" data-view="sudoku" class="nav-item">
+                    <span class="nav-icon">▦</span> Sudoku Pro
+                </a>
+                <a href="#" data-view="decide" class="nav-item">
+                    <span class="nav-icon">⟁</span> Decide
+                </a>
+            </nav>
+            <div class="stats-panel" id="statsSummary">
+                <h3><span class="neon-text">⚡ TÓM TẮT</span></h3>
+                <div class="stat-row">
+                    <span>Hoàn thành:</span>
+                    <span id="doneCount" class="stat-value neon-green">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Cần làm:</span>
+                    <span id="toDoCount" class="stat-value neon-blue">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Tổng cộng:</span>
+                    <span id="totalCount" class="stat-value">0</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="content-area">
+            <section id="mainDashboard" class="view-section active" data-view="main">
+                <div class="hero-header">
+                    <h1 class="mega-logo glitch" data-text="NOXCODE">NOXCODE</h1>
+                    <h2 class="welcome-message">Chào mừng trở lại, Operator.</h2>
+                    <div class="typing-container">
+                        <p class="subtitle typing-text" id="typingText"></p>
+                        <span class="cursor">_</span>
+                    </div>
+                </div>
+                <div class="quick-access-grid">
+                    <div class="quick-card neon-border-blue" data-view-target="tracker">
+                        <div class="card-icon">📊</div>
+                        <h3>Practice Tracker</h3>
+                        <p>Quản lý tiến độ luyện tập.</p>
+                    </div>
+                    <div class="quick-card neon-border-cyan" data-view-target="focus">
+                        <div class="card-icon">⏱</div>
+                        <h3>Deep Focus</h3>
+                        <p>Bộ đếm Pomodoro chuẩn.</p>
+                    </div>
+                    <div class="quick-card neon-border-green" data-view-target="sudoku">
+                        <div class="card-icon">🧩</div>
+                        <h3>Sudoku Pro (9x9)</h3>
+                        <p>Thử thách trí tuệ ngẫu nhiên.</p>
+                    </div>
+                    <div class="quick-card neon-border-purple" data-view-target="decide">
+                        <div class="card-icon">🎲</div>
+                        <h3>Decision Maker</h3>
+                        <p>Để hệ thống lựa chọn.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="trackerSection" class="view-section hidden" data-view="tracker">
+                <header class="section-header">
+                    <h2><span class="neon-text">📊 PRACTICE TRACKER</span></h2>
+                </header>
+                <div class="tracker-interface module-box">
+                    <div class="input-group tracker-inputs">
+                        <input type="text" id="problemName" class="cyber-input" placeholder="Tên bài tập (VD: Two Sum)">
+                        <input type="text" id="platform" class="cyber-input" placeholder="Platform (VD: LeetCode)">
+                        <button id="addPractice" class="cyber-button primary">THÊM BÀI +</button>
+                    </div>
+                    <div class="list-header">
+                        <span>Danh sách công việc</span>
+                        <span id="practiceCountLabel" class="neon-blue">0 tasks waiting</span>
+                    </div>
+                    <ul id="practiceList" class="cyber-list"></ul>
+                </div>
+            </section>
+
+            <section id="focusSection" class="view-section hidden" data-view="focus">
+                <header class="section-header">
+                    <h2><span class="neon-text">⏱ DEEP FOCUS PROTOCOL</span></h2>
+                    <p class="section-subtitle">Kỹ thuật Pomodoro - Tối đa hóa sự tập trung.</p>
+                </header>
+                <div class="focus-interface module-box center-content">
+                    <div class="timer-wrapper">
+                        <svg class="timer-ring" width="300" height="300" viewBox="0 0 300 300">
+                            <circle class="ring-bg" cx="150" cy="150" r="140"></circle>
+                            <circle class="ring-progress" id="timerProgress" cx="150" cy="150" r="140"></circle>
+                        </svg>
+                        <div class="timer-readout">
+                            <span id="timer" class="neon-text-cyan mega-timer">25:00</span>
+                            <span id="sessionTypeLabel" class="session-label">READY</span>
+                        </div>
+                    </div>
+                    
+                    <div class="control-panel">
+                        <button id="startFocus" class="cyber-button primary large-btn">▶ BẮT ĐẦU</button>
+                        <button id="stopFocus" class="cyber-button danger hidden">■ DỪNG LẠI</button>
+                        <button id="resetFocus" class="cyber-button secondary hidden">↺ ĐẶT LẠI</button>
+                    </div>
+                    <div class="mode-selector">
+                        <button class="mode-btn active" data-mode="pomodoro" data-time="25">Pomodoro (25m)</button>
+                        <button class="mode-btn" data-mode="shortBreak" data-time="5">Nghỉ Ngắn (5m)</button>
+                        <button class="mode-btn" data-mode="longBreak" data-time="15">Nghỉ Dài (15m)</button>
+                    </div>
+                    <div class="stats-readout neon-purple">
+                        <span id="sessionCount">Phiên hoàn thành: 0</span>
+                    </div>
+                </div>
+            </section>
+
+            <section id="sudokuSection" class="view-section hidden" data-view="sudoku">
+                <header class="section-header">
+                    <h2><span class="neon-text">🧩 SUDOKU PRO (9x9)</span></h2>
+                    <p class="section-subtitle">Điền số 1-9 sao cho mỗi hàng, cột và khối 3x3 là duy nhất.</p>
+                </header>
+                <div class="sudoku-interface module-box center-content">
+                    <div class="difficulty-selector">
+                        <span class="selector-label">Độ khó:</span>
+                        <button class="diff-btn active neon-green" data-diff="easy">EASY</button>
+                        <button class="diff-btn neon-blue" data-diff="medium">MEDIUM</button>
+                        <button class="diff-btn neon-red" data-diff="hard">HARD</button>
+                    </div>
+
+                    <div id="sudokuGrid9x9" class="sudoku-grid-pro"></div>
+                    
+                    <div class="sudoku-actions">
+                        <button id="newGameBtn" class="cyber-button primary">VÁN MỚI ↻</button>
+                        <button id="checkGameBtn" class="cyber-button secondary">KIỂM TRA ✓</button>
+                    </div>
+                    <div id="sudokuStatus" class="status-message"></div>
+                </div>
+            </section>
+            
+            <section id="decideSection" class="view-section hidden" data-view="decide">
+                <header class="section-header">
+                    <h2><span class="neon-text">🎲 DECISION MAKER</span></h2>
+                    <p class="section-subtitle">Nhập các lựa chọn và để hệ thống quyết định.</p>
+                </header>
+                <div class="decide-interface module-box center-content">
+                    <textarea id="decisionInput" class="cyber-textarea" placeholder="Nhập lựa chọn 1&#10;Nhập lựa chọn 2&#10;Nhập lựa chọn 3..."></textarea>
+                    <div class="decide-actions">
+                        <button id="spinButton" class="cyber-button primary large-btn">QUAY NGẪU NHIÊN ⌘</button>
+                    </div>
+                    <div class="result-display neon-border-purple">
+                        <span class="result-label">KẾT QUẢ:</span>
+                        <h3 id="finalResult" class="neon-text">---</h3>
+                    </div>
+                </div>
+            </section>
+
+        </main>
     </div>
 
-    <aside class="sidebar">
-        <div class="brand-wrapper">
-            <div class="brand">NOXCODE</div>
-            <div class="version">BUILD 2025.3.5</div>
-        </div>
-        <div class="status"><span class="dot"></span> SYSTEM ONLINE</div>
-        
-        <nav class="nav-menu">
-            <button class="nav-btn active" onclick="Router.go('dashboard')">
-                <div class="nav-left"><span>▣</span> DASHBOARD</div>
-                <span class="nav-key">CMD+D</span>
-            </button>
-            <button class="nav-btn" onclick="Router.go('tracker')">
-                <div class="nav-left"><span>⚡</span> TRACKER</div>
-                <span class="nav-key">CMD+T</span>
-            </button>
-            <button class="nav-btn" onclick="Router.go('focus')">
-                <div class="nav-left"><span>◎</span> FOCUS</div>
-                <span class="nav-key">CMD+F</span>
-            </button>
-            <button class="nav-btn" onclick="Router.go('sudoku')">
-                <div class="nav-left"><span>▦</span> SUDOKU</div>
-                <span class="nav-key">CMD+S</span>
-            </button>
-            <button class="nav-btn" onclick="Router.go('decide')">
-                <div class="nav-left"><span>◈</span> DECIDE</div>
-                <span class="nav-key">CMD+X</span>
-            </button>
-        </nav>
-
-        <div class="stats-box">
-            <div class="stat-row"><span>Tasks Done</span> <span class="val v-green" id="statDone">0</span></div>
-            <div class="stat-row"><span>Pending</span> <span class="val v-red" id="statPending">0</span></div>
-            <div class="stat-row"><span>Focus Time</span> <span class="val v-blue" id="statTime">0m</span></div>
-            <div class="hint-text">Press Ctrl+K to execute commands</div>
-        </div>
-    </aside>
-
-    <main class="main">
-        
-        <div id="view-dashboard" class="view active">
-            <div class="hero">
-                <h1 class="glitch-text">WELCOME OPERATOR.</h1>
-                <div class="subtitle"><span style="color:var(--primary)">></span> <span id="typing">Initializing core modules...</span><span class="cursor">_</span></div>
-            </div>
-            <div class="shortcuts">
-                <div class="card" onclick="Router.go('tracker')">
-                    <span class="card-icon">⚡</span>
-                    <h3>Practice Tracker</h3>
-                    <p>Manage algorithms & tasks</p>
-                </div>
-                <div class="card" onclick="Router.go('focus')">
-                    <span class="card-icon">◎</span>
-                    <h3>Deep Focus</h3>
-                    <p>Pomodoro timer system</p>
-                </div>
-                <div class="card" onclick="Router.go('sudoku')">
-                    <span class="card-icon">▦</span>
-                    <h3>Sudoku Engine</h3>
-                    <p>9x9 Logic Puzzle</p>
-                </div>
-                <div class="card" onclick="Router.go('decide')">
-                    <span class="card-icon">◈</span>
-                    <h3>Decision Maker</h3>
-                    <p>Random selector</p>
-                </div>
-            </div>
-        </div>
-
-        <div id="view-tracker" class="view">
-            <div class="header">
-                <h2 class="title">PRACTICE TRACKER</h2>
-            </div>
-            <div class="tracker-input">
-                <input type="text" id="trackName" placeholder="Task Name (e.g. DP Problem)...">
-                <input type="text" id="trackPlat" placeholder="Platform (e.g. LeetCode)...">
-                <button class="btn-main" onclick="Tracker.add()">ADD TASK</button>
-            </div>
-            <ul id="taskList" class="task-list"></ul>
-        </div>
-
-        <div id="view-focus" class="view">
-            <div class="header"><h2 class="title">DEEP FOCUS</h2></div>
-            <div class="focus-container">
-                <div class="mode-row">
-                    <button class="mode-btn active" onclick="Focus.set(25, this)">Pomodoro</button>
-                    <button class="mode-btn" onclick="Focus.set(5, this)">Short Break</button>
-                    <button class="mode-btn" onclick="Focus.set(15, this)">Long Break</button>
-                </div>
-                <div class="timer-wrap">
-                    <svg class="timer-svg">
-                        <defs>
-                            <filter id="glow">
-                                <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-                                <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
-                            </filter>
-                        </defs>
-                        <circle class="timer-circle-bg" cx="150" cy="150" r="140"></circle>
-                        <circle id="timerPath" class="timer-circle-path" cx="150" cy="150" r="140"></circle>
-                    </svg>
-                    <div id="timerDisplay" class="timer-digits">25:00</div>
-                </div>
-                <div class="timer-controls">
-                    <button class="btn-main" id="btnStart" onclick="Focus.start()">START SESSION</button>
-                    <button class="btn-sec hidden" id="btnStop" onclick="Focus.stop()">PAUSE</button>
-                    <button class="btn-sec" onclick="Focus.reset()">RESET</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="view-sudoku" class="view">
-            <div class="header"><h2 class="title">SUDOKU ENGINE</h2></div>
-            <div class="sudoku-container">
-                <div class="sudoku-left">
-                    <div class="diff-box">
-                        <button class="diff-btn active" onclick="Sudoku.setDiff(30, this)">EASY</button>
-                        <button class="diff-btn" onclick="Sudoku.setDiff(45, this)">MEDIUM</button>
-                        <button class="diff-btn" onclick="Sudoku.setDiff(55, this)">HARD</button>
-                    </div>
-                    <button class="btn-main full-width" onclick="Sudoku.newGame()">GENERATE NEW</button>
-                    <div class="sudoku-info">Errors: <span id="errCount" style="color:var(--danger)">0</span></div>
-                </div>
-                <div id="sudokuGrid" class="sudoku-grid"></div>
-                <div class="numpad">
-                    <button class="num-btn" onclick="Sudoku.fill(1)">1</button>
-                    <button class="num-btn" onclick="Sudoku.fill(2)">2</button>
-                    <button class="num-btn" onclick="Sudoku.fill(3)">3</button>
-                    <button class="num-btn" onclick="Sudoku.fill(4)">4</button>
-                    <button class="num-btn" onclick="Sudoku.fill(5)">5</button>
-                    <button class="num-btn" onclick="Sudoku.fill(6)">6</button>
-                    <button class="num-btn" onclick="Sudoku.fill(7)">7</button>
-                    <button class="num-btn" onclick="Sudoku.fill(8)">8</button>
-                    <button class="num-btn" onclick="Sudoku.fill(9)">9</button>
-                    <button class="num-btn del" onclick="Sudoku.fill(0)">⌫</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="view-decide" class="view">
-            <div class="header"><h2 class="title">DECISION MAKER</h2></div>
-            <div class="decide-wrap">
-                <textarea id="decideInput" class="decide-input" placeholder="Enter options (one per line)..."></textarea>
-                <div class="decide-screen">
-                    <div class="scan-bar"></div>
-                    <div id="decideResult">AWAITING INPUT</div>
-                </div>
-                <button class="btn-main full-width" onclick="Decide.run()">EXECUTE SELECTION</button>
-            </div>
-        </div>
-
-    </main>
+    <audio id="sfxNice" src="https://assets.mixkit.co/sfx/preview/mixkit-positive-interface-beep-221.mp3" preload="auto"></audio>
+    <audio id="sfxAlarm" src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3" preload="auto"></audio>
+    <audio id="sfxError" src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3" preload="auto"></audio>
 
     <script src="js/main.js"></script>
 </body>
