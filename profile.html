@@ -60,7 +60,7 @@
                         <div class="sb-track"><div class="sb-fill" style="width: 90%"></div></div>
                     </div>
                     <div class="sb-item">
-                        <span>Data Structs</span>
+                        <span>Data Structures</span>
                         <div class="sb-track"><div class="sb-fill" style="width: 85%"></div></div>
                     </div>
                     <div class="sb-item">
@@ -115,8 +115,7 @@
             <div class="charts-row">
                 <div class="pro-panel chart-box">
                     <div class="panel-head">CONTRIBUTION_MAP (2025)</div>
-                    <div class="heatmap-wrapper" id="heatmap-area">
-                        </div>
+                    <div class="heatmap-wrapper" id="heatmap-area"></div>
                 </div>
                 <div class="pro-panel chart-box">
                     <div class="panel-head">RATING_HISTORY</div>
@@ -136,47 +135,14 @@
                 <table class="cf-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Problem</th>
-                            <th>Lang</th>
-                            <th>Verdict</th>
-                            <th>Time</th>
-                            <th>Memory</th>
+                            <th>ID</th><th>Problem</th><th>Lang</th><th>Verdict</th><th>Time</th><th>Memory</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><a href="#">#289102</a></td>
-                            <td><a href="#" class="prob-link">A. Watermelon</a></td>
-                            <td>C++17</td>
-                            <td class="verdict-ac">Accepted</td>
-                            <td>30 ms</td>
-                            <td>0 KB</td>
-                        </tr>
-                        <tr>
-                            <td><a href="#">#289098</a></td>
-                            <td><a href="#" class="prob-link">B. Matrix Rotation</a></td>
-                            <td>C++17</td>
-                            <td class="verdict-ac">Accepted</td>
-                            <td>15 ms</td>
-                            <td>200 KB</td>
-                        </tr>
-                        <tr>
-                            <td><a href="#">#288112</a></td>
-                            <td><a href="#" class="prob-link">C. Dynamic Array</a></td>
-                            <td>Python 3</td>
-                            <td class="verdict-wa">Wrong Answer</td>
-                            <td>1020 ms</td>
-                            <td>4000 KB</td>
-                        </tr>
-                        <tr>
-                            <td><a href="#">#288005</a></td>
-                            <td><a href="#" class="prob-link">A. A+B Problem</a></td>
-                            <td>C++17</td>
-                            <td class="verdict-ac">Accepted</td>
-                            <td>1 ms</td>
-                            <td>0 KB</td>
-                        </tr>
+                        <tr><td><a href="#">#289102</a></td><td><a href="#" class="prob-link">A. Watermelon</a></td><td>C++17</td><td class="verdict-ac">Accepted</td><td>30 ms</td><td>0 KB</td></tr>
+                        <tr><td><a href="#">#289098</a></td><td><a href="#" class="prob-link">B. Matrix Rotation</a></td><td>C++17</td><td class="verdict-ac">Accepted</td><td>15 ms</td><td>200 KB</td></tr>
+                        <tr><td><a href="#">#288112</a></td><td><a href="#" class="prob-link">C. Dynamic Array</a></td><td>Python 3</td><td class="verdict-wa">Wrong Answer</td><td>1020 ms</td><td>4000 KB</td></tr>
+                        <tr><td><a href="#">#288005</a></td><td><a href="#" class="prob-link">A. A+B Problem</a></td><td>C++17</td><td class="verdict-ac">Accepted</td><td>1 ms</td><td>0 KB</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -194,12 +160,11 @@
         for(let i=0; i<300; i++) {
             let d = document.createElement('div');
             d.className = 'hm-cell';
-
             let rand = Math.random();
-            if(rand > 0.9) d.style.background = '#00ff41'; 
-            else if(rand > 0.7) d.style.background = '#008f11'; 
-            else if(rand > 0.4) d.style.background = '#0e4429'; 
-            else d.style.background = '#161b22'; 
+            if(rand > 0.9) d.style.background = '#00ff41';
+            else if(rand > 0.7) d.style.background = '#008f11';
+            else if(rand > 0.4) d.style.background = '#0e4429';
+            else d.style.background = '#161b22';
             hm.appendChild(d);
         }
     </script>
