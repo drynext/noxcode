@@ -9,12 +9,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <div class="scanlines"></div>
     <div id="system-overlay"></div>
     <canvas id="matrix-rain"></canvas>
 
     <div class="pro-navbar">
         <div class="pro-brand">NOXCODE_SYSTEM // PROFILE</div>
-        <a href="index.html" class="pro-back-btn"><i class="fas fa-terminal"></i> RETURN_TO_ROOT</a>
+        <a href="index.html" class="pro-back-btn hover-sound"><i class="fas fa-terminal"></i> RETURN_TO_ROOT</a>
     </div>
 
     <div class="pro-container">
@@ -79,32 +80,32 @@
                     <span class="badge-count">Total: 6</span>
                 </div>
                 <div class="badges-grid">
-                    <div class="badge-item gold">
+                    <div class="badge-item gold hover-sound">
                         <i class="fas fa-star"></i>
                         <span>Problem Solving</span>
                         <small>5 Stars</small>
                     </div>
-                    <div class="badge-item gold">
+                    <div class="badge-item gold hover-sound">
                         <i class="fab fa-cuttlefish"></i>
                         <span>C++ (Basic)</span>
                         <small>Verified</small>
                     </div>
-                    <div class="badge-item silver">
+                    <div class="badge-item silver hover-sound">
                         <i class="fas fa-database"></i>
                         <span>SQL (Inter)</span>
                         <small>Silver</small>
                     </div>
-                    <div class="badge-item bronze">
+                    <div class="badge-item bronze hover-sound">
                         <i class="fab fa-java"></i>
                         <span>Java Intro</span>
                         <small>Bronze</small>
                     </div>
-                    <div class="badge-item special">
+                    <div class="badge-item special hover-sound">
                         <i class="fas fa-bug"></i>
                         <span>Bug Hunter</span>
                         <small>Event</small>
                     </div>
-                    <div class="badge-item special">
+                    <div class="badge-item special hover-sound">
                         <i class="fas fa-terminal"></i>
                         <span>100 Days</span>
                         <small>Streak</small>
@@ -121,11 +122,11 @@
                     <div class="panel-head">RATING_HISTORY</div>
                     <div class="fake-graph">
                         <div class="graph-line"></div>
-                        <div class="graph-point p1" title="1200"></div>
-                        <div class="graph-point p2" title="1450"></div>
-                        <div class="graph-point p3" title="1300"></div>
-                        <div class="graph-point p4" title="1800"></div>
-                        <div class="graph-point p5" title="2450"></div>
+                        <div class="graph-point p1 hover-sound" title="1200"></div>
+                        <div class="graph-point p2 hover-sound" title="1450"></div>
+                        <div class="graph-point p3 hover-sound" title="1300"></div>
+                        <div class="graph-point p4 hover-sound" title="1800"></div>
+                        <div class="graph-point p5 hover-sound" title="2450"></div>
                     </div>
                 </div>
             </div>
@@ -149,23 +150,23 @@
 
         </main>
     </div>
-
+    <script src="js/main.js"></script>
     <script>
-        const cvs=document.getElementById('matrix-rain'),ctx=cvs.getContext('2d');let w,h,drops=[];const chars='10NOXCODE';
-        function init(){w=cvs.width=window.innerWidth;h=cvs.height=window.innerHeight;drops=Array(Math.floor(w/14)).fill(1);}
-        function draw(){ctx.fillStyle='rgba(5,5,5,0.05)';ctx.fillRect(0,0,w,h);ctx.fillStyle='#0F0';ctx.font='14px monospace';drops.forEach((y,i)=>{const t=chars[Math.floor(Math.random()*chars.length)];ctx.fillText(t,i*14,y*14);if(y*14>h&&Math.random()>0.975)drops[i]=0;drops[i]++;});}
-        window.onresize=init;init();setInterval(draw,50);
-
+        // Heatmap riêng cho profile
         const hm = document.getElementById('heatmap-area');
-        for(let i=0; i<300; i++) {
-            let d = document.createElement('div');
-            d.className = 'hm-cell';
-            let rand = Math.random();
-            if(rand > 0.9) d.style.background = '#00ff41';
-            else if(rand > 0.7) d.style.background = '#008f11';
-            else if(rand > 0.4) d.style.background = '#0e4429';
-            else d.style.background = '#161b22';
-            hm.appendChild(d);
+        if(hm) {
+            for(let i=0; i<300; i++) {
+                let d = document.createElement('div');
+                d.className = 'hm-cell';
+                let rand = Math.random();
+                if(rand > 0.9) d.style.background = '#00ff41';
+                else if(rand > 0.7) d.style.background = '#008f11';
+                else if(rand > 0.4) d.style.background = '#0e4429';
+                else d.style.background = '#161b22';
+                // Thêm hiệu ứng hover sound cho từng ô
+                d.addEventListener('mouseenter', () => window.playBeep(800, 0.02)); 
+                hm.appendChild(d);
+            }
         }
     </script>
 </body>
