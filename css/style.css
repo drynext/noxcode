@@ -1,8 +1,3 @@
-@function random_range($min, $max) {
-  $rand: random();
-  $range: $max - $min + 1;
-  @return $min + floor($rand * $range);
-}
 * {
     margin: 0;
     padding: 0;
@@ -24,73 +19,38 @@ body {
     overflow: hidden;
     z-index: -1;
 }
-@for $i from 1 through 1000 {
-  $stars-x: random_range(1, 100vw);
-  $stars-y: random_range(1, 100vh);
-  $stars-size: random_range(1, 2) + px;
-  $stars-color: rgba(255, 255, 255, random_range(2, 6) / 10);
-  #stars {
-    &::after {
-      content: '';
-      position: absolute;
-      top: $stars-y;
-      left: $stars-x;
-      width: $stars-size;
-      height: $stars-size;
-      background: $stars-color;
-      border-radius: 50%;
-      box-shadow: 0 0 3px $stars-color;
-      animation: twinkle random_range(8, 20) + s ease-in-out infinite alternate random_range(0, 5) + s;
-    }
-  }
+#stars {
+    width: 1px;
+    height: 1px;
+    background: transparent;
+    box-shadow: 
+        10vw 10vh #fff, 60vw 40vh #fff, 30vw 70vh #fff, 85vw 20vh #fff, 15vw 90vh #fff, 40vw 60vh #fff, 70vw 10vh #fff, 20vw 40vh #fff, 95vw 80vh #fff, 50vw 30vh #fff, 12vw 50vh #fff, 75vw 90vh #fff, 45vw 20vh #fff, 80vw 65vh #fff, 25vw 35vh #fff, 55vw 55vh #fff, 5vw 75vh #fff, 90vw 5vh #fff, 35vw 45vh #fff, 65vw 85vh #fff, 78vw 32vh #fff, 22vw 68vh #fff, 48vw 12vh #fff, 62vw 92vh #fff, 18vw 28vh #fff, 98vw 58vh #fff, 8vw 88vh #fff, 72vw 48vh #fff, 38vw 98vh #fff, 88vw 78vh #fff, 52vw 8vh #fff, 42vw 82vh #fff, 77vw 52vh #fff, 27vw 22vh #fff, 58vw 72vh #fff, 83vw 38vh #fff, 33vw 62vh #fff, 92vw 18vh #fff, 13vw 87vh #fff, 68vw 42vh #fff, 57vw 97vh #fff, 82vw 77vh #fff, 23vw 13vh #fff, 47vw 63vh #fff, 97vw 33vh #fff, 17vw 57vh #fff, 73vw 83vh #fff, 37vw 93vh #fff, 63vw 27vh #fff, 87vw 47vh #fff, 43vw 73vh #fff, 93vw 17vh #fff, 7vw 37vh #fff, 53vw 67vh #fff, 88vw 97vh #fff, 2vw 2vw #fff;
+    animation: twinkle 10s ease-in-out infinite alternate;
+}
+#stars2 {
+    width: 2px;
+    height: 2px;
+    background: transparent;
+    box-shadow: 
+        15vw 5vh rgba(255,255,255,0.7), 65vw 35vh rgba(255,255,255,0.7), 25vw 75vh rgba(255,255,255,0.7), 80vw 25vh rgba(255,255,255,0.7), 10vw 95vh rgba(255,255,255,0.7), 45vw 55vh rgba(255,255,255,0.7), 75vw 5vh rgba(255,255,255,0.7), 25vw 45vh rgba(255,255,255,0.7), 90vw 85vh rgba(255,255,255,0.7), 55vw 25vh rgba(255,255,255,0.7), 17vw 55vh rgba(255,255,255,0.7), 70vw 95vh rgba(255,255,255,0.7), 40vw 25vh rgba(255,255,255,0.7), 85vw 60vh rgba(255,255,255,0.7), 30vw 40vh rgba(255,255,255,0.7), 60vw 50vh rgba(255,255,255,0.7), 10vw 70vh rgba(255,255,255,0.7), 95vw 10vh rgba(255,255,255,0.7), 30vw 50vh rgba(255,255,255,0.7), 60vw 80vh rgba(255,255,255,0.7), 83vw 37vh rgba(255,255,255,0.7), 27vw 63vh rgba(255,255,255,0.7), 53vw 7vh rgba(255,255,255,0.7), 67vw 97vh rgba(255,255,255,0.7), 23vw 33vh rgba(255,255,255,0.7), 93vw 63vh rgba(255,255,255,0.7), 13vw 93vh rgba(255,255,255,0.7), 77vw 53vh rgba(255,255,255,0.7), 43vw 3vh rgba(255,255,255,0.7), 83vw 83vh rgba(255,255,255,0.7), 57vw 13vh rgba(255,255,255,0.7), 47vw 87vh rgba(255,255,255,0.7), 82vw 57vh rgba(255,255,255,0.7), 32vw 27vh rgba(255,255,255,0.7), 63vw 77vh rgba(255,255,255,0.7), 88vw 43vh rgba(255,255,255,0.7), 37vw 67vh rgba(255,255,255,0.7), 97vw 23vh rgba(255,255,255,0.7), 18vw 82vh rgba(255,255,255,0.7), 73vw 47vh rgba(255,255,255,0.7), 62vw 92vh rgba(255,255,255,0.7), 87vw 82vh rgba(255,255,255,0.7), 28vw 18vh rgba(255,255,255,0.7), 52vw 68vh rgba(255,255,255,0.7), 98vw 38vh rgba(255,255,255,0.7), 22vw 52vh rgba(255,255,255,0.7), 78vw 88vh rgba(255,255,255,0.7), 42vw 98vh rgba(255,255,255,0.7), 68vw 32vh rgba(255,255,255,0.7), 92vw 48vh rgba(255,255,255,0.7), 58vw 78vh rgba(255,255,255,0.7), 8vw 12vh rgba(255,255,255,0.7), 48vw 48vh rgba(255,255,255,0.7);
+    animation: twinkle 15s ease-in-out infinite alternate;
+}
+#stars3 {
+    width: 3px;
+    height: 3px;
+    background: transparent;
+    box-shadow: 
+        20vw 15vh rgba(255,255,255,0.5), 70vw 30vh rgba(255,255,255,0.5), 35vw 65vh rgba(255,255,255,0.5), 75vw 35vh rgba(255,255,255,0.5), 5vw 80vh rgba(255,255,255,0.5), 50vw 70vh rgba(255,255,255,0.5), 80vw 25vh rgba(255,255,255,0.5), 15vw 30vh rgba(255,255,255,0.5), 95vw 60vh rgba(255,255,255,0.5), 45vw 40vh rgba(255,255,255,0.5), 20vw 60vh rgba(255,255,255,0.5), 65vw 80vh rgba(255,255,255,0.5), 35vw 15vh rgba(255,255,255,0.5), 75vw 50vh rgba(255,255,255,0.5), 30vw 50vh rgba(255,255,255,0.5), 65vw 65vh rgba(255,255,255,0.5), 15vw 60vh rgba(255,255,255,0.5), 85vw 15vh rgba(255,255,255,0.5), 40vw 30vh rgba(255,255,255,0.5), 70vw 75vh rgba(255,255,255,0.5), 88vw 45vh rgba(255,255,255,0.5), 32vw 75vh rgba(255,255,255,0.5), 58vw 25vh rgba(255,255,255,0.5), 72vw 85vh rgba(255,255,255,0.5), 28vw 40vh rgba(255,255,255,0.5), 98vw 70vh rgba(255,255,255,0.5), 18vw 98vh rgba(255,255,255,0.5), 82vw 60vh rgba(255,255,255,0.5), 48vw 5vh rgba(255,255,255,0.5), 92vw 88vh rgba(255,255,255,0.5), 57vw 18vh rgba(255,255,255,0.5), 47vw 92vh rgba(255,255,255,0.5), 77vw 62vh rgba(255,255,255,0.5), 37vw 32vh rgba(255,255,255,0.5), 67vw 82vh rgba(255,255,255,0.5), 93vw 48vh rgba(255,255,255,0.5), 43vw 77vh rgba(255,255,255,0.5), 53vw 22vh rgba(255,255,255,0.5), 83vw 93vh rgba(255,255,255,0.5), 23vw 43vh rgba(255,255,255,0.5), 73vw 87vh rgba(255,255,255,0.5), 40vw 90vh rgba(255,255,255,0.5), 10vw 40vh rgba(255,255,255,0.5), 90vw 20vh rgba(255,255,255,0.5);
+    animation: twinkle-subtle 20s ease-in-out infinite alternate;
 }
 @keyframes twinkle {
-  0%, 100% { opacity: 0.1; transform: scale(0.7); }
-  50% { opacity: 0.6; transform: scale(1); }
-}
-@for $i from 1 through 500 {
-  $stars2-x: random_range(1, 100vw);
-  $stars2-y: random_range(1, 100vh);
-  $stars2-size: random_range(1, 1) + px;
-  $stars2-color: rgba(170, 220, 255, random_range(1, 4) / 10);
-  #stars2 {
-    &::after {
-      content: '';
-      position: absolute;
-      top: $stars2-y;
-      left: $stars2-x;
-      width: $stars2-size;
-      height: $stars2-size;
-      background: $stars2-color;
-      border-radius: 50%;
-      animation: twinkle-subtle random_range(15, 30) + s ease-in-out infinite alternate random_range(0, 10) + s;
-    }
-  }
+  0%, 100% { opacity: 0.1; transform: scale(0.7); box-shadow: 0 0 1px #fff; }
+  50% { opacity: 0.6; transform: scale(1); box-shadow: 0 0 5px #fff; }
 }
 @keyframes twinkle-subtle {
     0%, 100% { opacity: 0.05; }
     50% { opacity: 0.3; }
 }
-@for $i from 1 through 300 {
-  $stars3-x: random_range(1, 100vw);
-  $stars3-y: random_range(1, 100vh);
-  $stars3-size: 0.5px;
-  $stars3-color: rgba(200, 240, 255, 0.05);
-  #stars3 {
-    &::after {
-      content: '';
-      position: absolute;
-      top: $stars3-y;
-      left: $stars3-x;
-      width: $stars3-size;
-      height: $stars3-size;
-      background: $stars3-color;
-      border-radius: 50%;
-    }
-  }
-}
-
-/* SAO BĂNG (SHOOTING STAR) */
 #stars-shooting {
     position: absolute;
     width: 100%;
@@ -100,28 +60,26 @@ body {
 #stars-shooting::before {
     content: '';
     position: absolute;
-    top: -100px;
-    left: 50%;
-    width: 2px;
-    height: 200px;
-    background: linear-gradient(to top, rgba(255, 255, 255, 0), rgba(103, 232, 249, 0.8));
-    border-radius: 50%;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 100px;
+    background: linear-gradient(to top, rgba(103, 232, 249, 0), rgba(103, 232, 249, 0.5));
     transform: rotate(45deg);
-    animation: shooting-star 20s linear infinite;
+    animation: shooting-star 25s linear infinite;
 }
 @keyframes shooting-star {
     0% {
         opacity: 0;
         transform: translate(-500px, 0) rotate(45deg);
     }
-    1% { opacity: 1; }
-    3% { opacity: 0; }
-    10% {
+    0.1% { opacity: 0.7; }
+    2% { opacity: 0; }
+    25% {
         opacity: 0;
-        transform: translate(2000px, 2000px) rotate(45deg);
+        transform: translate(2500px, 2500px) rotate(45deg);
     }
-    10.1% { opacity: 0; }
-    10.2% { opacity: 0; }
+    25.1% { opacity: 0; }
     100% { opacity: 0; }
 }
 
