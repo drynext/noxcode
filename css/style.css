@@ -28,7 +28,7 @@ body {
   $stars-x: random_range(1, 100vw);
   $stars-y: random_range(1, 100vh);
   $stars-size: random_range(1, 2) + px;
-  $stars-color: rgba(255, 255, 255, random_range(2, 8) / 10);
+  $stars-color: rgba(255, 255, 255, random_range(2, 6) / 10);
   #stars {
     &::after {
       content: '';
@@ -39,20 +39,20 @@ body {
       height: $stars-size;
       background: $stars-color;
       border-radius: 50%;
-      box-shadow: 0 0 4px $stars-color;
+      box-shadow: 0 0 3px $stars-color;
       animation: twinkle random_range(8, 20) + s ease-in-out infinite alternate random_range(0, 5) + s;
     }
   }
 }
 @keyframes twinkle {
-  0%, 100% { opacity: 0.2; transform: scale(0.8); }
-  50% { opacity: 0.8; transform: scale(1); }
+  0%, 100% { opacity: 0.1; transform: scale(0.7); }
+  50% { opacity: 0.6; transform: scale(1); }
 }
 @for $i from 1 through 500 {
   $stars2-x: random_range(1, 100vw);
   $stars2-y: random_range(1, 100vh);
   $stars2-size: random_range(1, 1) + px;
-  $stars2-color: rgba(170, 220, 255, random_range(1, 5) / 10);
+  $stars2-color: rgba(170, 220, 255, random_range(1, 4) / 10);
   #stars2 {
     &::after {
       content: '';
@@ -68,14 +68,14 @@ body {
   }
 }
 @keyframes twinkle-subtle {
-    0%, 100% { opacity: 0.1; }
-    50% { opacity: 0.4; }
+    0%, 100% { opacity: 0.05; }
+    50% { opacity: 0.3; }
 }
 @for $i from 1 through 300 {
   $stars3-x: random_range(1, 100vw);
   $stars3-y: random_range(1, 100vh);
   $stars3-size: 0.5px;
-  $stars3-color: rgba(200, 240, 255, 0.08);
+  $stars3-color: rgba(200, 240, 255, 0.05);
   #stars3 {
     &::after {
       content: '';
@@ -89,6 +89,42 @@ body {
     }
   }
 }
+
+/* SAO BĂNG (SHOOTING STAR) */
+#stars-shooting {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+#stars-shooting::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    width: 2px;
+    height: 200px;
+    background: linear-gradient(to top, rgba(255, 255, 255, 0), rgba(103, 232, 249, 0.8));
+    border-radius: 50%;
+    transform: rotate(45deg);
+    animation: shooting-star 20s linear infinite;
+}
+@keyframes shooting-star {
+    0% {
+        opacity: 0;
+        transform: translate(-500px, 0) rotate(45deg);
+    }
+    1% { opacity: 1; }
+    3% { opacity: 0; }
+    10% {
+        opacity: 0;
+        transform: translate(2000px, 2000px) rotate(45deg);
+    }
+    10.1% { opacity: 0; }
+    10.2% { opacity: 0; }
+    100% { opacity: 0; }
+}
+
 .app {
     display: flex;
     min-height: 100vh;
@@ -377,7 +413,6 @@ body {
     width: 0%;
     transition: width 0.3s ease;
 }
-
 .sudoku-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -428,7 +463,6 @@ body {
 }
 .sudoku-message.error { color: #f87171; }
 .sudoku-message.success { color: #10b981; }
-
 .decide-subtitle {
     color: #94a3b8;
     margin-bottom: 20px;
@@ -467,7 +501,6 @@ body {
     color: #67e8f9;
     margin-top: 10px;
 }
-
 @media (max-width: 900px) {
     .app {
         flex-direction: column;
