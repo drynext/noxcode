@@ -1,30 +1,46 @@
+const AppState = {
+    commands: [
+        { key: 'goto dashboard', desc: 'Switch to Dashboard' },
+        { key: 'goto tracker', desc: 'Switch to Tracker' },
+        { key: 'goto focus', desc: 'Switch to Focus Timer' },
+        { key: 'goto sudoku', desc: 'Switch to Sudoku Game' },
+        { key: 'goto decide', desc: 'Switch to Decision Maker' },
+        { key: 'add ', desc: 'Quick add task (e.g., add TwoSum)' },
+        { key: 'theme green', desc: 'Set theme to Matrix Green' },
+        { key: 'theme blue', desc: 'Set theme to Cyber Blue' },
+        { key: 'theme red', desc: 'Set theme to Warning Red' },
+        { key: 'theme gold', desc: 'Set theme to Industrial Gold' },
+        { key: 'clear', desc: 'Clear completed tasks' }
+    ]
+};
+
 const Router = {
     init: () => {
         document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const target = btn.dataset.target;
-                Router.navigate(target);
-            });
+            btn.addEventListener('click', () => Router.navigate(btn.dataset.target));
         });
         
         const text = "Initializing core modules... System Ready.";
         const el = document.getElementById('typingEffect');
-        el.textContent = '';
-        let i = 0;
-        const type = () => {
-            if(i < text.length) {
-                el.textContent += text.charAt(i);
-                i++;
-                setTimeout(type, 30);
-            }
-        };
-        setTimeout(type, 500);
+        if(el) {
+            el.textContent = '';
+            let i = 0;
+            const type = () => {
+                if(i < text.length) {
+                    el.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(type, 30);
+                }
+            };
+            setTimeout(type, 500);
+        }
         
         Matrix.init();
         Tracker.init();
         Focus.init();
         Sudoku.init();
         Decide.init();
+        CmdPalette.init();
     },
 
     navigate: (viewId) => {
@@ -39,7 +55,110 @@ const Router = {
     }
 };
 
-window.router = Router.navigate;
+const CmdPalette = {
+    isOpen: false,
+    selectedIndex: 0,
+    filteredCmds: [],
+
+    init: () => {
+        const overlay = document.getElementById('cmdOverlay');
+        const input = document.getElementById('cmdInput');
+        const results = document.getElementById('cmdResults');
+
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                CmdPalette.toggle();
+            }
+            if (e.key === 'Escape' && CmdPalette.isOpen) {
+                CmdPalette.close();
+            }
+            if (!CmdPalette.isOpen) return;
+
+            if (e.key === 'ArrowDown') {
+                CmdPalette.selectedIndex = (CmdPalette.selectedIndex + 1) % CmdPalette.filteredCmds.length;
+                CmdPalette.renderResults();
+            } else if (e.key === 'ArrowUp') {
+                CmdPalette.selectedIndex = (CmdPalette.selectedIndex - 1 + CmdPalette.filteredCmds.length) % CmdPalette.filteredCmds.length;
+                CmdPalette.renderResults();
+            } else if (e.key === 'Enter') {
+                if (CmdPalette.filteredCmds.length > 0) {
+                    CmdPalette.execute(CmdPalette.filteredCmds[CmdPalette.selectedIndex].key);
+                } else {
+                    CmdPalette.execute(input.value);
+                }
+            }
+        });
+
+        input.addEventListener('input', () => {
+            const val = input.value.toLowerCase();
+            CmdPalette.filteredCmds = AppState.commands.filter(c => c.key.startsWith(val));
+            CmdPalette.selectedIndex = 0;
+            CmdPalette.renderResults();
+        });
+
+        overlay.addEventListener('click', (e) => {
+            if(e.target === overlay || e.target.classList.contains('cmd-backdrop')) CmdPalette.close();
+        });
+    },
+
+    toggle: () => {
+        const overlay = document.getElementById('cmdOverlay');
+        const input = document.getElementById('cmdInput');
+        CmdPalette.isOpen = !CmdPalette.isOpen;
+        if (CmdPalette.isOpen) {
+            overlay.classList.remove('hidden');
+            input.value = '';
+            input.focus();
+            CmdPalette.filteredCmds = AppState.commands;
+            CmdPalette.renderResults();
+        } else {
+            overlay.classList.add('hidden');
+        }
+    },
+
+    close: () => {
+        CmdPalette.isOpen = false;
+        document.getElementById('cmdOverlay').classList.add('hidden');
+    },
+
+    renderResults: () => {
+        const container = document.getElementById('cmdResults');
+        container.innerHTML = '';
+        CmdPalette.filteredCmds.forEach((cmd, idx) => {
+            const div = document.createElement('div');
+            div.className = `cmd-item ${idx === CmdPalette.selectedIndex ? 'active' : ''}`;
+            div.innerHTML = `
+                <span class="cmd-icon">></span>
+                <span class="cmd-text">${cmd.key} <span style="opacity:0.5; font-size:10px"> - ${cmd.desc}</span></span>
+            `;
+            div.addEventListener('click', () => CmdPalette.execute(cmd.key));
+            container.appendChild(div);
+        });
+    },
+
+    execute: (cmdStr) => {
+        const parts = cmdStr.split(' ');
+        const action = parts[0];
+        const arg = parts.slice(1).join(' ');
+
+        switch(action) {
+            case 'goto':
+                Router.navigate(arg);
+                break;
+            case 'add':
+                if(arg) Tracker.quickAdd(arg);
+                break;
+            case 'theme':
+                document.body.setAttribute('data-theme', arg);
+                break;
+            case 'clear':
+                Tracker.clearDone();
+                break;
+        }
+        CmdPalette.close();
+    }
+};
 
 const Matrix = {
     init: () => {
@@ -62,7 +181,8 @@ const Matrix = {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
             ctx.fillRect(0, 0, width, height);
             
-            ctx.fillStyle = '#0F0';
+            const style = getComputedStyle(document.body);
+            ctx.fillStyle = style.getPropertyValue('--theme-main') || '#0f0';
             ctx.font = fontSize + 'px monospace';
             
             for(let i = 0; i < drops.length; i++) {
@@ -77,7 +197,6 @@ const Matrix = {
         };
         
         setInterval(draw, 33);
-        
         window.addEventListener('resize', () => {
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
@@ -85,7 +204,6 @@ const Matrix = {
     }
 };
 
-// --- TRACKER MODULE ---
 const Tracker = {
     data: JSON.parse(localStorage.getItem('nox_tracker')) || [],
     
@@ -107,7 +225,6 @@ const Tracker = {
     add: () => {
         const nameEl = document.getElementById('trackName');
         const platEl = document.getElementById('trackPlatform');
-        
         if(!nameEl.value.trim()) return;
         
         Tracker.data.unshift({
@@ -121,6 +238,17 @@ const Tracker = {
         platEl.value = '';
         Tracker.save();
     },
+
+    quickAdd: (name) => {
+        Tracker.data.unshift({
+            id: Date.now(),
+            name: name,
+            platform: 'Command',
+            status: 'todo'
+        });
+        Tracker.save();
+        Router.navigate('tracker');
+    },
     
     toggle: (id) => {
         const item = Tracker.data.find(x => x.id === id);
@@ -132,6 +260,11 @@ const Tracker = {
     
     remove: (id) => {
         Tracker.data = Tracker.data.filter(x => x.id !== id);
+        Tracker.save();
+    },
+
+    clearDone: () => {
+        Tracker.data = Tracker.data.filter(x => x.status !== 'done');
         Tracker.save();
     },
     
@@ -174,7 +307,6 @@ const Tracker = {
     }
 };
 
-// --- FOCUS MODULE ---
 const Focus = {
     timer: null,
     timeLeft: 1500,
@@ -293,11 +425,7 @@ const Sudoku = {
     
     generate: () => {
         const board = Array.from({length: 9}, () => Array(9).fill(0));
-        
-        for(let i=0; i<9; i=i+3) {
-            Sudoku.fillBox(board, i, i);
-        }
-        
+        for(let i=0; i<9; i=i+3) Sudoku.fillBox(board, i, i);
         Sudoku.solve(board);
         Sudoku.solution = JSON.parse(JSON.stringify(board));
         
@@ -403,7 +531,6 @@ const Sudoku = {
     }
 };
 
-// --- DECIDE MODULE ---
 const Decide = {
     init: () => {
         document.getElementById('btnDecide').addEventListener('click', Decide.spin);
@@ -425,11 +552,11 @@ const Decide = {
             counter++;
             if(counter > 20) {
                 clearInterval(interval);
-                resultEl.style.color = '#00ff41';
-                resultEl.style.textShadow = '0 0 20px #00ff41';
+                resultEl.style.color = getComputedStyle(document.body).getPropertyValue('--theme-main');
             }
         }, 50);
     }
 };
 
+window.router = Router.navigate;
 document.addEventListener('DOMContentLoaded', Router.init);
