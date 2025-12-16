@@ -3,170 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOXCODE | OPERATOR DATA</title>
+    <title>NOXCODE | OPERATOR PROFILE</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;300;400;500;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="profile-body">
     <div id="system-overlay"></div>
     <canvas id="matrix-rain"></canvas>
 
-    <div class="pro-navbar">
-        <div class="pro-brand">NOXCODE_SYSTEM // PROFILE</div>
+    <nav class="pro-navbar">
+        <div class="pro-brand">NOXCODE_SYSTEM // DATABASE // USER_01</div>
         <a href="index.html" class="pro-back-btn"><i class="fas fa-terminal"></i> RETURN_TO_ROOT</a>
-    </div>
+    </nav>
 
-    <div class="pro-container">
-        
-        <aside class="pro-sidebar">
-            <div class="user-card">
-                <div class="uc-avatar">
-                    <img src="https://i.pinimg.com/736x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg" alt="Operator">
-                    <div class="rank-badge">GRANDMASTER</div>
-                </div>
-                <h1 class="uc-name">Đặng Đức Đại</h1>
-                <div class="uc-handle">@dai_dang_cs</div>
-                
-                <div class="uc-stats-row">
-                    <div class="uc-stat">
-                        <span class="val" style="color:#ff0055">2450</span>
-                        <span class="lbl">RATING</span>
-                    </div>
-                    <div class="uc-stat">
-                        <span class="val" style="color:var(--primary)">156</span>
-                        <span class="lbl">SOLVED</span>
-                    </div>
-                </div>
-
-                <div class="uc-info-list">
-                    <div class="info-line"><i class="fas fa-university"></i> Bach Khoa Univ - DUT</div>
-                    <div class="info-line"><i class="fas fa-map-marker-alt"></i> Da Nang, VN</div>
-                    <div class="info-line"><i class="fas fa-code-branch"></i> Year 1 Student</div>
-                </div>
-
-                <div class="uc-languages">
-                    <span class="lang-tag cpp">C++</span>
-                    <span class="lang-tag py">Python</span>
-                    <span class="lang-tag js">JavaScript</span>
-                </div>
+    <div class="profile-wrapper">
+        <div class="cover-photo">
+            <div class="cover-overlay"></div>
+            <div class="profile-avatar-container">
+                <img src="https://i.pinimg.com/736x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg" alt="Operator Avatar">
+                <div class="online-status"></div>
             </div>
-
-            <div class="pro-panel">
-                <div class="panel-head">SKILL_MATRIX</div>
-                <div class="skill-bars">
-                    <div class="sb-item">
-                        <span>Algorithms</span>
-                        <div class="sb-track"><div class="sb-fill" style="width: 90%"></div></div>
-                    </div>
-                    <div class="sb-item">
-                        <span>Data Structures</span>
-                        <div class="sb-track"><div class="sb-fill" style="width: 85%"></div></div>
-                    </div>
-                    <div class="sb-item">
-                        <span>Mathematics</span>
-                        <div class="sb-track"><div class="sb-fill" style="width: 75%"></div></div>
-                    </div>
-                </div>
+            <div class="profile-header-info">
+                <h1 class="p-fullname">Đặng Đức Đại <i class="fas fa-check-circle verified-icon"></i></h1>
+                <p class="p-username">@dai_dang_cs • Level 10 SysAdmin</p>
             </div>
-        </aside>
+        </div>
 
-        <main class="pro-main">
+        <div class="profile-grid">
             
-            <div class="pro-panel badges-panel">
-                <div class="panel-head">
-                    <span><i class="fas fa-award"></i> EARNED_BADGES</span>
-                    <span class="badge-count">Total: 6</span>
-                </div>
-                <div class="badges-grid">
-                    <div class="badge-item gold">
-                        <i class="fas fa-star"></i>
-                        <span>Problem Solving</span>
-                        <small>5 Stars</small>
-                    </div>
-                    <div class="badge-item gold">
-                        <i class="fab fa-cuttlefish"></i>
-                        <span>C++ (Basic)</span>
-                        <small>Verified</small>
-                    </div>
-                    <div class="badge-item silver">
-                        <i class="fas fa-database"></i>
-                        <span>SQL (Inter)</span>
-                        <small>Silver</small>
-                    </div>
-                    <div class="badge-item bronze">
-                        <i class="fab fa-java"></i>
-                        <span>Java Intro</span>
-                        <small>Bronze</small>
-                    </div>
-                    <div class="badge-item special">
-                        <i class="fas fa-bug"></i>
-                        <span>Bug Hunter</span>
-                        <small>Event</small>
-                    </div>
-                    <div class="badge-item special">
-                        <i class="fas fa-terminal"></i>
-                        <span>100 Days</span>
-                        <small>Streak</small>
+            <aside class="left-col">
+                <div class="pro-panel info-card">
+                    <div class="panel-head">OPERATOR_BIO</div>
+                    <div class="info-line"><i class="fas fa-university"></i> Bach Khoa Univ - DUT</div>
+                    <div class="info-line"><i class="fas fa-code-branch"></i> Year 1 Student (K25)</div>
+                    <div class="info-line"><i class="fas fa-map-marker-alt"></i> Da Nang, VN</div>
+                    <div class="info-line"><i class="fas fa-laptop-code"></i> Competitive Programmer</div>
+                    
+                    <div class="bio-tags">
+                        <span class="tag cpp">C++</span>
+                        <span class="tag algo">Algorithms</span>
+                        <span class="tag web">FullStack</span>
                     </div>
                 </div>
-            </div>
 
-            <div class="charts-row">
+                <div class="pro-panel">
+                    <div class="panel-head">SKILL_MATRIX</div>
+                    <div class="skill-bar-wrap">
+                        <div class="sb-label"><span>C++ / STL</span> <span>95%</span></div>
+                        <div class="sb-track"><div class="sb-fill" style="width: 95%"></div></div>
+                    </div>
+                    <div class="skill-bar-wrap">
+                        <div class="sb-label"><span>Algorithms (DP/Graph)</span> <span>80%</span></div>
+                        <div class="sb-track"><div class="sb-fill" style="width: 80%"></div></div>
+                    </div>
+                    <div class="skill-bar-wrap">
+                        <div class="sb-label"><span>JavaScript / UI</span> <span>70%</span></div>
+                        <div class="sb-track"><div class="sb-fill" style="width: 70%"></div></div>
+                    </div>
+                </div>
+
+                <div class="pro-panel">
+                    <div class="panel-head">ACHIEVEMENTS</div>
+                    <div class="badges-grid-mini">
+                        <div class="badge-mini gold" title="Problem Solving 5*"><i class="fas fa-star"></i></div>
+                        <div class="badge-mini platinum" title="100 Day Streak"><i class="fas fa-fire"></i></div>
+                        <div class="badge-mini special" title="Bug Hunter"><i class="fas fa-bug"></i></div>
+                        <div class="badge-mini silver" title="Contest Winner"><i class="fas fa-trophy"></i></div>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="right-col">
+                <div class="stats-row-large">
+                    <div class="stat-box">
+                        <div class="stat-num" style="color:#ff0055">2450</div>
+                        <div class="stat-lbl">ELO RATING</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-num" style="color:var(--primary)">521</div>
+                        <div class="stat-lbl">PROBLEMS SOLVED</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-num" style="color:var(--accent)">Top 1%</div>
+                        <div class="stat-lbl">GLOBAL RANK</div>
+                    </div>
+                </div>
+
                 <div class="pro-panel chart-box">
-                    <div class="panel-head">CONTRIBUTION_MAP (2025)</div>
-                    <div class="heatmap-wrapper" id="heatmap-area"></div>
-                </div>
-                <div class="pro-panel chart-box">
-                    <div class="panel-head">RATING_HISTORY</div>
-                    <div class="fake-graph">
-                        <div class="graph-line"></div>
-                        <div class="graph-point p1" title="1200"></div>
-                        <div class="graph-point p2" title="1450"></div>
-                        <div class="graph-point p3" title="1300"></div>
-                        <div class="graph-point p4" title="1800"></div>
-                        <div class="graph-point p5" title="2450"></div>
+                    <div class="panel-head">
+                        <span>CONTRIBUTION_GRAPH (2025)</span>
+                        <span style="font-size:10px; opacity:0.7">1,240 contributions in last year</span>
+                    </div>
+                    <div class="heatmap-wrapper" id="heatmap-area">
+                        </div>
+                    <div class="heatmap-legend">
+                        <span>Less</span>
+                        <span class="h-dot l0"></span>
+                        <span class="h-dot l1"></span>
+                        <span class="h-dot l2"></span>
+                        <span class="h-dot l3"></span>
+                        <span class="h-dot l4"></span>
+                        <span>More</span>
                     </div>
                 </div>
-            </div>
 
-            <div class="pro-panel">
-                <div class="panel-head">RECENT_SUBMISSIONS</div>
-                <table class="cf-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th><th>Problem</th><th>Lang</th><th>Verdict</th><th>Time</th><th>Memory</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td><a href="#">#289102</a></td><td><a href="#" class="prob-link">A. Watermelon</a></td><td>C++17</td><td class="verdict-ac">Accepted</td><td>30 ms</td><td>0 KB</td></tr>
-                        <tr><td><a href="#">#289098</a></td><td><a href="#" class="prob-link">B. Matrix Rotation</a></td><td>C++17</td><td class="verdict-ac">Accepted</td><td>15 ms</td><td>200 KB</td></tr>
-                        <tr><td><a href="#">#288112</a></td><td><a href="#" class="prob-link">C. Dynamic Array</a></td><td>Python 3</td><td class="verdict-wa">Wrong Answer</td><td>1020 ms</td><td>4000 KB</td></tr>
-                        <tr><td><a href="#">#288005</a></td><td><a href="#" class="prob-link">A. A+B Problem</a></td><td>C++17</td><td class="verdict-ac">Accepted</td><td>1 ms</td><td>0 KB</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-        </main>
+                <div class="pro-panel">
+                    <div class="panel-head">RECENT_ACTIVITY_LOG</div>
+                    <table class="cf-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Problem Protocol</th>
+                                <th>Lang</th>
+                                <th>Verdict</th>
+                                <th>Exec Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#8921</td>
+                                <td><a href="#" class="prob-link">D. Tree Traversal (Hard)</a></td>
+                                <td><span class="lang-cpp">C++20</span></td>
+                                <td class="verdict-ac">ACCEPTED</td>
+                                <td>45 ms</td>
+                            </tr>
+                            <tr>
+                                <td>#8920</td>
+                                <td><a href="#" class="prob-link">C. Dynamic Planning</a></td>
+                                <td><span class="lang-cpp">C++17</span></td>
+                                <td class="verdict-ac">ACCEPTED</td>
+                                <td>112 ms</td>
+                            </tr>
+                            <tr>
+                                <td>#8919</td>
+                                <td><a href="#" class="prob-link">B. Matrix Rotation</a></td>
+                                <td><span class="lang-py">Python3</span></td>
+                                <td class="verdict-wa">WRONG ANSWER</td>
+                                <td>800 ms</td>
+                            </tr>
+                            <tr>
+                                <td>#8918</td>
+                                <td><a href="#" class="prob-link">A. Simple Math</a></td>
+                                <td><span class="lang-cpp">C++17</span></td>
+                                <td class="verdict-ac">ACCEPTED</td>
+                                <td>1 ms</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
     </div>
-
-    <script>
-        const cvs=document.getElementById('matrix-rain'),ctx=cvs.getContext('2d');let w,h,drops=[];const chars='10NOXCODE';
-        function init(){w=cvs.width=window.innerWidth;h=cvs.height=window.innerHeight;drops=Array(Math.floor(w/14)).fill(1);}
-        function draw(){ctx.fillStyle='rgba(5,5,5,0.05)';ctx.fillRect(0,0,w,h);ctx.fillStyle='#0F0';ctx.font='14px monospace';drops.forEach((y,i)=>{const t=chars[Math.floor(Math.random()*chars.length)];ctx.fillText(t,i*14,y*14);if(y*14>h&&Math.random()>0.975)drops[i]=0;drops[i]++;});}
-        window.onresize=init;init();setInterval(draw,50);
-
-        const hm = document.getElementById('heatmap-area');
-        for(let i=0; i<300; i++) {
-            let d = document.createElement('div');
-            d.className = 'hm-cell';
-            let rand = Math.random();
-            if(rand > 0.9) d.style.background = '#00ff41';
-            else if(rand > 0.7) d.style.background = '#008f11';
-            else if(rand > 0.4) d.style.background = '#0e4429';
-            else d.style.background = '#161b22';
-            hm.appendChild(d);
-        }
-    </script>
+    <script src="js/main.js"></script>
 </body>
 </html>
