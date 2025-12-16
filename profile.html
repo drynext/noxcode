@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOXCODE | OPERATOR PROFILE</title>
+    <title>NOXCODE | OPERATOR DATA</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;300;400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -12,167 +12,176 @@
     <div id="system-overlay"></div>
     <canvas id="matrix-rain"></canvas>
 
-    <div class="main-interface" style="display: block; overflow-y: auto;">
-        <div style="padding: 20px 40px;">
-            <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> DASHBOARD</a>
-        </div>
+    <div class="pro-navbar">
+        <div class="pro-brand">NOXCODE_SYSTEM // PROFILE</div>
+        <a href="index.html" class="pro-back-btn"><i class="fas fa-terminal"></i> RETURN_TO_ROOT</a>
+    </div>
 
-        <div class="fb-wrapper">
-            <div class="fb-header">
-                <div class="fb-cover">
-                    <img src="https://w.wallhaven.cc/full/l8/wallhaven-l83o92.jpg" alt="Cover Photo">
+    <div class="pro-container">
+        
+        <aside class="pro-sidebar">
+            <div class="user-card">
+                <div class="uc-avatar">
+                    <img src="https://i.pinimg.com/736x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg" alt="Operator">
+                    <div class="rank-badge">GRANDMASTER</div>
                 </div>
-                <div class="fb-profile-row">
-                    <div class="fb-avatar">
-                        <img src="https://i.pinimg.com/736x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg" alt="Avatar">
-                    </div>
-                    <div class="fb-info">
-                        <h1 class="fb-name">Đặng Đức Đại <i class="fas fa-check-circle verified-tick"></i></h1>
-                        <p class="fb-bio">Year 1 CS Student | Full-time Coder | Part-time Gamer 🎮</p>
-                        <div class="fb-actions">
-                            <button class="fb-btn primary"><i class="fas fa-plus"></i> Add to Story</button>
-                            <button class="fb-btn secondary"><i class="fas fa-pen"></i> Edit Profile</button>
-                        </div>
-                    </div>
-                </div>
-                <hr class="fb-divider">
-                <div class="fb-nav">
-                    <span class="active">Bài viết</span>
-                    <span>Giới thiệu</span>
-                    <span>Bạn bè</span>
-                    <span>Ảnh</span>
-                    <span>Video</span>
-                </div>
-            </div>
-
-            <div class="fb-body-grid">
+                <h1 class="uc-name">Đặng Đức Đại</h1>
+                <div class="uc-handle">@dai_dang_cs</div>
                 
-                <div class="fb-col-left">
-                    <div class="fb-card">
-                        <h3 class="fb-card-title">Giới thiệu</h3>
-                        <div class="fb-intro-list">
-                            <div class="intro-row">
-                                <i class="fas fa-briefcase"></i>
-                                <span>Làm việc tại <strong>NoxCode System</strong></span>
-                            </div>
-                            <div class="intro-row">
-                                <i class="fas fa-graduation-cap"></i>
-                                <span>Đã học tại <strong>Đại học Bách Khoa - ĐHĐN</strong></span>
-                            </div>
-                            <div class="intro-row">
-                                <i class="fas fa-home"></i>
-                                <span>Sống tại <strong>Đà Nẵng</strong></span>
-                            </div>
-                            <div class="intro-row">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>Đến từ <strong>Việt Nam</strong></span>
-                            </div>
-                            <div class="intro-row">
-                                <i class="fas fa-heart"></i>
-                                <span>Độc thân</span>
-                            </div>
-                            <div class="intro-row">
-                                <i class="fas fa-rss"></i>
-                                <span>Có <strong>1,204 người</strong> theo dõi</span>
-                            </div>
-                        </div>
-                        <button class="fb-full-width-btn">Chỉnh sửa chi tiết</button>
-                        
-                        <div class="fb-hobbies">
-                            <span class="hobby-tag">💻 Coding</span>
-                            <span class="hobby-tag">🎮 Liên Quân</span>
-                            <span class="hobby-tag">🎵 Arcaea</span>
-                            <span class="hobby-tag">📐 Math</span>
-                            <span class="hobby-tag">☕ Coffee</span>
-                        </div>
-                        <button class="fb-full-width-btn">Chỉnh sửa sở thích</button>
+                <div class="uc-stats-row">
+                    <div class="uc-stat">
+                        <span class="val" style="color:#ff0055">2450</span>
+                        <span class="lbl">RATING</span>
                     </div>
-
-                    <div class="fb-card">
-                        <div class="fb-card-header">
-                            <h3>Ảnh</h3>
-                            <a href="#">Xem tất cả ảnh</a>
-                        </div>
-                        <div class="fb-photo-grid">
-                            <div class="photo-item" style="background-image: url('https://w.wallhaven.cc/full/zy/wallhaven-zygevw.jpg')"></div>
-                            <div class="photo-item" style="background-image: url('https://w.wallhaven.cc/full/rd/wallhaven-rd9ywm.jpg')"></div>
-                            <div class="photo-item" style="background-image: url('https://w.wallhaven.cc/full/kx/wallhaven-kxg9q6.jpg')"></div>
-                            <div class="photo-item" style="background-image: url('https://w.wallhaven.cc/full/dg/wallhaven-dg9qlo.jpg')"></div>
-                        </div>
+                    <div class="uc-stat">
+                        <span class="val" style="color:var(--primary)">156</span>
+                        <span class="lbl">SOLVED</span>
                     </div>
                 </div>
 
-                <div class="fb-col-right">
-                    
-                    <div class="fb-card create-post">
-                        <div class="cp-top">
-                            <img src="https://i.pinimg.com/736x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg" class="cp-avatar">
-                            <input type="text" placeholder="Đại ơi, bạn đang nghĩ gì thế?">
-                        </div>
-                        <hr class="fb-divider-light">
-                        <div class="cp-actions">
-                            <div class="cp-btn"><i class="fas fa-video" style="color: #f02849"></i> Live</div>
-                            <div class="cp-btn"><i class="fas fa-images" style="color: #45bd62"></i> Ảnh/Video</div>
-                            <div class="cp-btn"><i class="fas fa-flag" style="color: #f7b928"></i> Sự kiện</div>
-                        </div>
-                    </div>
+                <div class="uc-info-list">
+                    <div class="info-line"><i class="fas fa-university"></i> Bach Khoa Univ - DUT</div>
+                    <div class="info-line"><i class="fas fa-map-marker-alt"></i> Da Nang, VN</div>
+                    <div class="info-line"><i class="fas fa-code-branch"></i> Year 1 Student</div>
+                </div>
 
-                    <div class="fb-card">
-                        <div class="fb-card-header">
-                            <h3><i class="fas fa-trophy" style="color:gold"></i> Thành tích & Huy hiệu</h3>
-                            <a href="#">Xem chi tiết</a>
-                        </div>
-                        
-                        <div class="achievement-list">
-                            <div class="ach-item">
-                                <div class="ach-icon"><i class="fas fa-code"></i></div>
-                                <div class="ach-info">
-                                    <h4>HackerRank Gold</h4>
-                                    <p>Problem Solving (5 Stars)</p>
-                                </div>
-                                <div class="ach-date">2025</div>
-                            </div>
-
-                            <div class="ach-item">
-                                <div class="ach-icon lq-icon">⚔️</div>
-                                <div class="ach-info">
-                                    <h4>Cao Thủ Liên Quân</h4>
-                                    <p>Winrate 65% - Best Nakroth</p>
-                                </div>
-                                <div class="ach-date">S24</div>
-                            </div>
-
-                            <div class="ach-item">
-                                <div class="ach-icon" style="border-color: #00f3ff; color: #00f3ff"><i class="fab fa-cuttlefish"></i></div>
-                                <div class="ach-info">
-                                    <h4>C++ Master</h4>
-                                    <p>Thuật toán O(N) tối ưu</p>
-                                </div>
-                                <div class="ach-date">Lv.10</div>
-                            </div>
-
-                             <div class="ach-item">
-                                <div class="ach-icon" style="border-color: #ff0055; color: #ff0055"><i class="fas fa-music"></i></div>
-                                <div class="ach-info">
-                                    <h4>Arcaea Potential</h4>
-                                    <p>Pure Memory Streak</p>
-                                </div>
-                                <div class="ach-date">11.5</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="fb-card">
-                        <div class="fb-card-header">
-                            <h3><i class="fab fa-github"></i> GitHub Contributions</h3>
-                        </div>
-                        <div class="mini-heatmap" id="mini-heatmap">
-                            </div>
-                    </div>
-
+                <div class="uc-languages">
+                    <span class="lang-tag cpp">C++</span>
+                    <span class="lang-tag py">Python</span>
+                    <span class="lang-tag js">JavaScript</span>
                 </div>
             </div>
-        </div>
+
+            <div class="pro-panel">
+                <div class="panel-head">SKILL_MATRIX</div>
+                <div class="skill-bars">
+                    <div class="sb-item">
+                        <span>Algorithms</span>
+                        <div class="sb-track"><div class="sb-fill" style="width: 90%"></div></div>
+                    </div>
+                    <div class="sb-item">
+                        <span>Data Structs</span>
+                        <div class="sb-track"><div class="sb-fill" style="width: 85%"></div></div>
+                    </div>
+                    <div class="sb-item">
+                        <span>Mathematics</span>
+                        <div class="sb-track"><div class="sb-fill" style="width: 75%"></div></div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="pro-main">
+            
+            <div class="pro-panel badges-panel">
+                <div class="panel-head">
+                    <span><i class="fas fa-award"></i> EARNED_BADGES</span>
+                    <span class="badge-count">Total: 6</span>
+                </div>
+                <div class="badges-grid">
+                    <div class="badge-item gold">
+                        <i class="fas fa-star"></i>
+                        <span>Problem Solving</span>
+                        <small>5 Stars</small>
+                    </div>
+                    <div class="badge-item gold">
+                        <i class="fab fa-cuttlefish"></i>
+                        <span>C++ (Basic)</span>
+                        <small>Verified</small>
+                    </div>
+                    <div class="badge-item silver">
+                        <i class="fas fa-database"></i>
+                        <span>SQL (Inter)</span>
+                        <small>Silver</small>
+                    </div>
+                    <div class="badge-item bronze">
+                        <i class="fab fa-java"></i>
+                        <span>Java Intro</span>
+                        <small>Bronze</small>
+                    </div>
+                    <div class="badge-item special">
+                        <i class="fas fa-bug"></i>
+                        <span>Bug Hunter</span>
+                        <small>Event</small>
+                    </div>
+                    <div class="badge-item special">
+                        <i class="fas fa-terminal"></i>
+                        <span>100 Days</span>
+                        <small>Streak</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="charts-row">
+                <div class="pro-panel chart-box">
+                    <div class="panel-head">CONTRIBUTION_MAP (2025)</div>
+                    <div class="heatmap-wrapper" id="heatmap-area">
+                        </div>
+                </div>
+                <div class="pro-panel chart-box">
+                    <div class="panel-head">RATING_HISTORY</div>
+                    <div class="fake-graph">
+                        <div class="graph-line"></div>
+                        <div class="graph-point p1" title="1200"></div>
+                        <div class="graph-point p2" title="1450"></div>
+                        <div class="graph-point p3" title="1300"></div>
+                        <div class="graph-point p4" title="1800"></div>
+                        <div class="graph-point p5" title="2450"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pro-panel">
+                <div class="panel-head">RECENT_SUBMISSIONS</div>
+                <table class="cf-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Problem</th>
+                            <th>Lang</th>
+                            <th>Verdict</th>
+                            <th>Time</th>
+                            <th>Memory</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><a href="#">#289102</a></td>
+                            <td><a href="#" class="prob-link">A. Watermelon</a></td>
+                            <td>C++17</td>
+                            <td class="verdict-ac">Accepted</td>
+                            <td>30 ms</td>
+                            <td>0 KB</td>
+                        </tr>
+                        <tr>
+                            <td><a href="#">#289098</a></td>
+                            <td><a href="#" class="prob-link">B. Matrix Rotation</a></td>
+                            <td>C++17</td>
+                            <td class="verdict-ac">Accepted</td>
+                            <td>15 ms</td>
+                            <td>200 KB</td>
+                        </tr>
+                        <tr>
+                            <td><a href="#">#288112</a></td>
+                            <td><a href="#" class="prob-link">C. Dynamic Array</a></td>
+                            <td>Python 3</td>
+                            <td class="verdict-wa">Wrong Answer</td>
+                            <td>1020 ms</td>
+                            <td>4000 KB</td>
+                        </tr>
+                        <tr>
+                            <td><a href="#">#288005</a></td>
+                            <td><a href="#" class="prob-link">A. A+B Problem</a></td>
+                            <td>C++17</td>
+                            <td class="verdict-ac">Accepted</td>
+                            <td>1 ms</td>
+                            <td>0 KB</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
     </div>
 
     <script>
@@ -181,11 +190,16 @@
         function draw(){ctx.fillStyle='rgba(5,5,5,0.05)';ctx.fillRect(0,0,w,h);ctx.fillStyle='#0F0';ctx.font='14px monospace';drops.forEach((y,i)=>{const t=chars[Math.floor(Math.random()*chars.length)];ctx.fillText(t,i*14,y*14);if(y*14>h&&Math.random()>0.975)drops[i]=0;drops[i]++;});}
         window.onresize=init;init();setInterval(draw,50);
 
-        // Render Mini Heatmap
-        const hm = document.getElementById('mini-heatmap');
-        for(let i=0; i<70; i++) {
+        const hm = document.getElementById('heatmap-area');
+        for(let i=0; i<300; i++) {
             let d = document.createElement('div');
-            d.style.backgroundColor = Math.random() > 0.7 ? '#00ff41' : (Math.random() > 0.4 ? '#008f11' : '#161b22');
+            d.className = 'hm-cell';
+
+            let rand = Math.random();
+            if(rand > 0.9) d.style.background = '#00ff41'; 
+            else if(rand > 0.7) d.style.background = '#008f11'; 
+            else if(rand > 0.4) d.style.background = '#0e4429'; 
+            else d.style.background = '#161b22'; 
             hm.appendChild(d);
         }
     </script>
