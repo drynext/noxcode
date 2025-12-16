@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>NOXCODE</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOXCODE - Productivity Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -11,61 +12,87 @@
         <aside class="sidebar">
             <h1 class="logo" id="logo">NOXCODE</h1>
             <nav>
-                <a href="#">Dashboard</a>
-                <a href="#">Tracker</a>
-                <a href="#">Focus</a>
-                <a href="#">Sudoku</a>
-                <a href="#">Decide</a>
+                <a href="#" data-view="main">Dashboard</a>
+                <a href="#" data-view="tracker">Tracker</a>
+                <a href="#" data-view="focus">Focus</a>
+                <a href="#" data-view="sudoku">Sudoku</a>
+                <a href="#">Decide (Upcoming)</a>
             </nav>
+            <div class="stats-summary" id="statsSummary">
+                <h3>💡 Tóm tắt</h3>
+                <p>Bài đã hoàn thành: <span id="doneCount">0</span></p>
+                <p>Tổng bài: <span id="totalCount">0</span></p>
+            </div>
         </aside>
-        <main class="main">
+
+        <main class="main" data-view="main">
             <div class="main-center">
                 <h1 class="logo-center" id="logoCenter">NOXCODE</h1>
-                <h2 class="welcome-text">Welcome back.</h2>
+                <h2 class="welcome-text">Chào mừng trở lại.</h2>
                 <p class="subtitle typing-text"><span id="typingText"></span></p>
             </div>
             <div class="cards">
-                <div class="card" id="trackerCard">
+                <div class="card" data-view-target="tracker">
                     📊 Practice Tracker
                 </div>
-                <div class="card" id="focusCard">
-                    ⏱ Focus Timer
+                <div class="card" data-view-target="focus">
+                    ⏱ Focus Timer (25m)
                 </div>
-                <div class="card">
+                <div class="card" data-view-target="sudoku">
                     🧩 Mini Sudoku
                 </div>
-                <div class="card">
+                <div class="card" data-view-target="decide">
                     🎲 Decision Maker
                 </div>
             </div>
         </main>
 
-        <section id="tracker" class="hidden">
-            <h2>Practice Tracker</h2>
-            <input type="text" id="problemName" placeholder="Problem name">
-            <input type="text" id="platform" placeholder="Platform (CF, LC, AC)">
-            <button id="addPractice">Add</button>
-            <p id="practiceCount">You have 0 tasks.</p>
-            <ul id="practiceList"></ul>
+        <section id="tracker" class="module hidden" data-view="tracker">
+            <h2>📊 Practice Tracker</h2>
+            <div class="tracker-controls">
+                <input type="text" id="problemName" placeholder="Tên bài tập (VD: Two Sum)">
+                <input type="text" id="platform" placeholder="Platform (VD: LC, CF, AC)">
+                <button id="addPractice">Thêm Bài</button>
+            </div>
+            <p id="practiceCount" class="tracker-info">Bạn có <span id="toDoCount">0</span> bài cần làm.</p>
+            <ul id="practiceList">
+                </ul>
         </section>
 
-        <section id="focus" class="hidden">
-            <h2>Focus Timer</h2>
-            <p class="focus-subtitle">Stay focused, code in silence.</p>
+        <section id="focus" class="module hidden" data-view="focus">
+            <h2>⏱ Focus Timer (Pomodoro)</h2>
+            <p class="focus-subtitle">Tập trung làm việc trong <span id="sessionType">25 phút</span>.</p>
             <div class="focus-container">
-                <span id="timer">25:00</span>
+                <div class="timer-display-box">
+                    <span id="timer">25:00</span>
+                </div>
                 <div class="focus-buttons">
-                    <button id="startFocus">Start</button>
-                    <button id="stopFocus">Stop</button>
-                    <button id="resetFocus">Reset</button>
+                    <button id="startFocus">▶ Bắt đầu</button>
+                    <button id="stopFocus">■ Dừng</button>
+                    <button id="resetFocus">↺ Đặt lại</button>
+                </div>
+                <div class="mode-buttons">
+                    <button id="pomodoroMode" class="active">Pomodoro (25m)</button>
+                    <button id="shortBreakMode">Nghỉ ngắn (5m)</button>
+                    <button id="longBreakMode">Nghỉ dài (15m)</button>
                 </div>
                 <div class="progress-bar">
-                    <div id="progress" style="width: 0%;"></div>
+                    <div id="progress"></div>
                 </div>
             </div>
         </section>
+
+        <section id="sudoku" class="module hidden" data-view="sudoku">
+            <h2>🧩 Mini Sudoku (4x4)</h2>
+            <p class="sudoku-subtitle">Tính năng đang được phát triển...</p>
+            <div class="sudoku-grid-placeholder">
+                <p>Nơi đây sẽ là ô Sudoku.</p>
+            </div>
+        </section>
+
     </div>
 
+    <audio id="alarmSound" src="assets/alarm.mp3" preload="auto"></audio> 
     <script src="js/main.js"></script>
 </body>
 </html>
