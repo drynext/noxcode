@@ -57,7 +57,7 @@ body {
     min-height: 100vh;
     position: relative;
     z-index: 1;
-    background: linear-gradient(to right, rgba(2, 6, 23, 0.95), rgba(2, 6, 23, 0.85));
+    background: linear-gradient(to right, rgba(2, 6, 23, 0.80), rgba(2, 6, 23, 0.70));
 }
 .sidebar {
     width: 250px;
