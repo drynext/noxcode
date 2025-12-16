@@ -3,173 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOXCODE - Ultimate Productivity</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    <title>NOXCODE SYSTEM</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <canvas id="matrixCanvas"></canvas>
-    <div class="app-overlay"></div>
-
+    <canvas id="matrix-bg"></canvas>
+    
     <div class="app-container">
         <aside class="sidebar">
-            <div class="brand-container">
-                <h1 class="logo" id="logo">NOXCODE</h1>
-                <div class="logo-glitch-layer">NOXCODE</div>
+            <div class="logo-area">
+                <h1 class="glitch" data-text="NOXCODE">NOXCODE</h1>
+                <div class="status-indicator">
+                    <span class="dot"></span> SYSTEM ONLINE
+                </div>
             </div>
-            <nav class="main-nav">
-                <a href="#" data-view="main" class="nav-item active">
-                    <span class="nav-icon">▢</span> Dashboard
-                </a>
-                <a href="#" data-view="tracker" class="nav-item">
-                    <span class="nav-icon">∫</span> Tracker
-                </a>
-                <a href="#" data-view="focus" class="nav-item">
-                    <span class="nav-icon">⊙</span> Focus
-                </a>
-                <a href="#" data-view="sudoku" class="nav-item">
-                    <span class="nav-icon">▦</span> Sudoku Pro
-                </a>
-                <a href="#" data-view="decide" class="nav-item">
-                    <span class="nav-icon">⟁</span> Decide
-                </a>
+
+            <nav class="nav-menu">
+                <button class="nav-btn active" data-target="dashboard">
+                    <span class="icon">▣</span> DASHBOARD
+                </button>
+                <button class="nav-btn" data-target="tracker">
+                    <span class="icon">⚡</span> TRACKER
+                </button>
+                <button class="nav-btn" data-target="focus">
+                    <span class="icon">◎</span> FOCUS
+                </button>
+                <button class="nav-btn" data-target="sudoku">
+                    <span class="icon">▦</span> SUDOKU
+                </button>
+                <button class="nav-btn" data-target="decide">
+                    <span class="icon">◈</span> DECIDE
+                </button>
             </nav>
-            <div class="stats-panel" id="statsSummary">
-                <h3><span class="neon-text">⚡ TÓM TẮT</span></h3>
+
+            <div class="session-stats">
+                <h3>SESSION STATS</h3>
                 <div class="stat-row">
-                    <span>Hoàn thành:</span>
-                    <span id="doneCount" class="stat-value neon-green">0</span>
+                    <span>Tasks Done</span>
+                    <span id="stat-done" class="val">0</span>
                 </div>
                 <div class="stat-row">
-                    <span>Cần làm:</span>
-                    <span id="toDoCount" class="stat-value neon-blue">0</span>
+                    <span>Pending</span>
+                    <span id="stat-pending" class="val">0</span>
                 </div>
                 <div class="stat-row">
-                    <span>Tổng cộng:</span>
-                    <span id="totalCount" class="stat-value">0</span>
+                    <span>Focus Time</span>
+                    <span id="stat-focus" class="val">0m</span>
                 </div>
+            </div>
+            
+            <div class="hint-box">
+                Hint: System optimized for Operator Dai.
             </div>
         </aside>
 
-        <main class="content-area">
-            <section id="mainDashboard" class="view-section active" data-view="main">
-                <div class="hero-header">
-                    <h1 class="mega-logo" data-text="NOXCODE">NOXCODE</h1>
-                    <h2 class="welcome-message">Chào mừng trở lại, Operator.</h2>
-                    <div class="typing-container">
-                        <p class="subtitle typing-text" id="typingText"></p>
-                        <span class="cursor">_</span>
-                    </div>
-                </div>
-                <div class="quick-access-grid">
-                    <div class="quick-card neon-border-blue" data-view-target="tracker">
-                        <div class="card-icon">📊</div>
-                        <h3>Practice Tracker</h3>
-                        <p>Quản lý tiến độ luyện tập.</p>
-                    </div>
-                    <div class="quick-card neon-border-cyan" data-view-target="focus">
-                        <div class="card-icon">⏱</div>
-                        <h3>Deep Focus</h3>
-                        <p>Bộ đếm Pomodoro chuẩn.</p>
-                    </div>
-                    <div class="quick-card neon-border-green" data-view-target="sudoku">
-                        <div class="card-icon">🧩</div>
-                        <h3>Sudoku Pro (9x9)</h3>
-                        <p>Thử thách trí tuệ ngẫu nhiên.</p>
-                    </div>
-                    <div class="quick-card neon-border-purple" data-view-target="decide">
-                        <div class="card-icon">🎲</div>
-                        <h3>Decision Maker</h3>
-                        <p>Để hệ thống lựa chọn.</p>
-                    </div>
-                </div>
-            </section>
-
-            <section id="trackerSection" class="view-section hidden" data-view="tracker">
-                <header class="section-header">
-                    <h2><span class="neon-text">📊 PRACTICE TRACKER</span></h2>
-                </header>
-                <div class="tracker-interface module-box">
-                    <div class="input-group tracker-inputs">
-                        <input type="text" id="problemName" class="cyber-input" placeholder="Tên bài tập">
-                        <input type="text" id="platform" class="cyber-input" placeholder="Platform">
-                        <button id="addPractice" class="cyber-button primary">THÊM +</button>
-                    </div>
-                    <div class="list-header">
-                        <span>Danh sách</span>
-                        <span id="practiceCountLabel" class="neon-blue">0 tasks waiting</span>
-                    </div>
-                    <ul id="practiceList" class="cyber-list"></ul>
-                </div>
-            </section>
-
-            <section id="focusSection" class="view-section hidden" data-view="focus">
-                <header class="section-header">
-                    <h2><span class="neon-text">⏱ DEEP FOCUS PROTOCOL</span></h2>
-                </header>
-                <div class="focus-interface module-box center-content">
-                    <div class="timer-wrapper">
-                        <svg class="timer-ring" width="300" height="300" viewBox="0 0 300 300">
-                            <circle class="ring-bg" cx="150" cy="150" r="140"></circle>
-                            <circle class="ring-progress" id="timerProgress" cx="150" cy="150" r="140"></circle>
-                        </svg>
-                        <div class="timer-readout">
-                            <span id="timer" class="neon-text-cyan mega-timer">25:00</span>
-                            <span id="sessionTypeLabel" class="session-label">READY</span>
-                        </div>
-                    </div>
-                    <div class="control-panel">
-                        <button id="startFocus" class="cyber-button primary large-btn">▶ BẮT ĐẦU</button>
-                        <button id="stopFocus" class="cyber-button danger hidden">■ DỪNG LẠI</button>
-                        <button id="resetFocus" class="cyber-button secondary hidden">↺ ĐẶT LẠI</button>
-                    </div>
-                    <div class="mode-selector">
-                        <button class="mode-btn active" data-mode="pomodoro" data-time="25">25m</button>
-                        <button class="mode-btn" data-mode="shortBreak" data-time="5">5m</button>
-                        <button class="mode-btn" data-mode="longBreak" data-time="15">15m</button>
-                    </div>
-                </div>
-            </section>
-
-            <section id="sudokuSection" class="view-section hidden" data-view="sudoku">
-                <header class="section-header">
-                    <h2><span class="neon-text">🧩 SUDOKU PRO</span></h2>
-                </header>
-                <div class="sudoku-interface module-box center-content">
-                    <div class="difficulty-selector">
-                        <button class="diff-btn active neon-green" data-diff="easy">EASY</button>
-                        <button class="diff-btn neon-blue" data-diff="medium">MEDIUM</button>
-                        <button class="diff-btn neon-red" data-diff="hard">HARD</button>
-                    </div>
-                    <div id="sudokuGrid9x9" class="sudoku-grid-pro"></div>
-                    <div class="sudoku-actions">
-                        <button id="newGameBtn" class="cyber-button primary">VÁN MỚI</button>
-                        <button id="checkGameBtn" class="cyber-button secondary">KIỂM TRA</button>
-                    </div>
-                    <div id="sudokuStatus" class="status-message"></div>
-                </div>
-            </section>
+        <main class="main-content">
             
-            <section id="decideSection" class="view-section hidden" data-view="decide">
-                <header class="section-header">
-                    <h2><span class="neon-text">🎲 DECISION MAKER</span></h2>
-                </header>
-                <div class="decide-interface module-box center-content">
-                    <textarea id="decisionInput" class="cyber-textarea" placeholder="Nhập mỗi lựa chọn 1 dòng..."></textarea>
-                    <button id="spinButton" class="cyber-button primary large-btn">QUAY NGẪU NHIÊN</button>
-                    <div class="result-display neon-border-purple">
-                        <span class="result-label">KẾT QUẢ:</span>
-                        <h3 id="finalResult" class="neon-text">---</h3>
+            <section id="dashboard" class="panel active">
+                <div class="welcome-header">
+                    <h2 class="typing-effect">WELCOME BACK, OPERATOR.</h2>
+                    <p class="sub-text">> Initializing core modules... System Ready.</p>
+                </div>
+
+                <div class="grid-cards">
+                    <div class="card" onclick="document.querySelector('[data-target=\'tracker\']').click()">
+                        <div class="card-icon">⚡</div>
+                        <h3>Practice Tracker</h3>
+                        <p>Quản lý bài tập thuật toán & tiến độ.</p>
+                    </div>
+                    <div class="card" onclick="document.querySelector('[data-target=\'focus\']').click()">
+                        <div class="card-icon">◎</div>
+                        <h3>Deep Focus</h3>
+                        <p>Kích hoạt trạng thái tập trung sâu.</p>
+                    </div>
+                    <div class="card" onclick="document.querySelector('[data-target=\'sudoku\']').click()">
+                        <div class="card-icon">▦</div>
+                        <h3>Sudoku Engine</h3>
+                        <p>Rèn luyện tư duy logic 9x9.</p>
+                    </div>
+                    <div class="card" onclick="document.querySelector('[data-target=\'decide\']').click()">
+                        <div class="card-icon">◈</div>
+                        <h3>Decision Maker</h3>
+                        <p>Hệ thống lựa chọn ngẫu nhiên.</p>
                     </div>
                 </div>
             </section>
+
+            <section id="tracker" class="panel">
+                <div class="panel-header">
+                    <h2>Practice Tracker</h2>
+                </div>
+                <div class="tracker-input-area">
+                    <input type="text" id="task-input" placeholder="Nhập tên bài tập/thuật toán...">
+                    <button id="btn-add-task">THÊM +</button>
+                </div>
+                <div class="tasks-container">
+                    <ul id="task-list"></ul>
+                </div>
+            </section>
+
+            <section id="focus" class="panel">
+                <div class="focus-container">
+                    <div class="timer-circle-box">
+                        <svg class="timer-svg" viewBox="0 0 100 100">
+                            <circle class="circle-bg" cx="50" cy="50" r="45"></circle>
+                            <circle class="circle-progress" id="timer-path" cx="50" cy="50" r="45"></circle>
+                        </svg>
+                        <div class="timer-text" id="time-display">25:00</div>
+                    </div>
+                    <div class="focus-controls">
+                        <button id="btn-start-focus">START</button>
+                        <button id="btn-pause-focus" style="display:none;">PAUSE</button>
+                        <button id="btn-reset-focus">RESET</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="sudoku" class="panel">
+                <div class="panel-header">
+                    <h2>Sudoku Engine</h2>
+                </div>
+                <div class="sudoku-controls">
+                    <div class="difficulty-tabs">
+                        <button class="diff-btn active" data-level="easy">EZ</button>
+                        <button class="diff-btn" data-level="medium">MED</button>
+                        <button class="diff-btn" data-level="hard">HARD</button>
+                    </div>
+                    <button id="btn-new-game">NEW GAME</button>
+                </div>
+                <div class="game-wrapper">
+                    <div id="sudoku-board"></div>
+                </div>
+                <div class="sudoku-actions">
+                    <button id="btn-check-sudoku">CHECK STATUS</button>
+                </div>
+            </section>
+
+            <section id="decide" class="panel">
+                <div class="panel-header">
+                    <h2>Decision Matrix</h2>
+                </div>
+                <div class="decide-box">
+                    <textarea id="decide-input" placeholder="Nhập các lựa chọn (mỗi lựa chọn 1 dòng)..."></textarea>
+                    <button id="btn-spin">RUN RANDOMIZER</button>
+                    <div class="result-box">
+                        <span id="decide-result">WAITING FOR INPUT...</span>
+                    </div>
+                </div>
+            </section>
+
         </main>
     </div>
-
-    <audio id="sfxNice" src="https://assets.mixkit.co/sfx/preview/mixkit-positive-interface-beep-221.mp3"></audio>
-    <audio id="sfxAlarm" src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3"></audio>
-    <audio id="sfxError" src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3"></audio>
-
-    <script src="js/main.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
