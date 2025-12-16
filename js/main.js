@@ -45,11 +45,15 @@ document.addEventListener('DOMContentLoaded', () => {
         height = canvas.height = window.innerHeight;
     });
 
-    // --- SYSTEM CLOCK ---
+    // --- SYSTEM CLOCK (UPDATED) ---
     function updateClock() {
         const now = new Date();
         const timeString = now.toLocaleTimeString('en-US', { hour12: false });
-        document.getElementById('system-clock').innerText = timeString;
+        
+        const clockEl = document.getElementById('system-clock');
+        if(clockEl) {
+            clockEl.innerText = timeString;
+        }
     }
     setInterval(updateClock, 1000);
     updateClock();
