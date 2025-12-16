@@ -3,120 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOXCODE - Productivity Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <title>NOXCODE - Ultimate Productivity</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <canvas id="matrixBackground"></canvas>
+    <canvas id="matrixCanvas"></canvas>
+    <div class="app-overlay"></div>
 
-    <div class="app">
+    <div class="app-container">
         <aside class="sidebar">
-            <h1 class="logo" id="logo">NOXCODE</h1>
-            <nav>
-                <a href="#" data-view="main">Dashboard</a>
-                <a href="#" data-view="tracker">Tracker</a>
-                <a href="#" data-view="focus">Focus</a>
-                <a href="#" data-view="sudoku">Sudoku</a>
-                <a href="#" data-view="decide">Decide</a>
+            <div class="brand-container">
+                <h1 class="logo" id="logo">NOXCODE</h1>
+                <div class="logo-glitch-layer">NOXCODE</div>
+            </div>
+            <nav class="main-nav">
+                <a href="#" data-view="main" class="nav-item active">
+                    <span class="nav-icon">▢</span> Dashboard
+                </a>
+                <a href="#" data-view="tracker" class="nav-item">
+                    <span class="nav-icon">∫</span> Tracker
+                </a>
+                <a href="#" data-view="focus" class="nav-item">
+                    <span class="nav-icon">⊙</span> Focus
+                </a>
+                <a href="#" data-view="sudoku" class="nav-item">
+                    <span class="nav-icon">▦</span> Sudoku Pro
+                </a>
+                <a href="#" data-view="decide" class="nav-item">
+                    <span class="nav-icon">⟁</span> Decide
+                </a>
             </nav>
-            <div class="stats-summary" id="statsSummary">
-                <h3>Tóm tắt</h3>
-                <p>Bài đã hoàn thành: <span id="doneCount">0</span></p>
-                <p>Tổng bài: <span id="totalCount">0</span></p>
+            <div class="stats-panel" id="statsSummary">
+                <h3><span class="neon-text">⚡ TÓM TẮT</span></h3>
+                <div class="stat-row">
+                    <span>Hoàn thành:</span>
+                    <span id="doneCount" class="stat-value neon-green">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Cần làm:</span>
+                    <span id="toDoCount" class="stat-value neon-blue">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Tổng cộng:</span>
+                    <span id="totalCount" class="stat-value">0</span>
+                </div>
             </div>
         </aside>
 
-        <main class="main" data-view="main">
-            <div class="main-center">
-                <h1 class="logo-center" id="logoCenter">NOXCODE</h1>
-                <h2 class="welcome-text">Chào mừng trở lại.</h2>
-                <p class="subtitle typing-text"><span id="typingText">Code in the dark. Track in silence. Achieve mastery.</span></p>
-            </div>
-            <div class="cards">
-                <div class="card" data-view-target="tracker">
-                    📊 Practice Tracker
-                </div>
-                <div class="card" data-view-target="focus">
-                    ⏱ Focus Timer (25m)
-                </div>
-                <div class="card" data-view-target="sudoku">
-                    🧩 Advanced Sudoku
-                </div>
-                <div class="card" data-view-target="decide">
-                    🎲 Decision Maker
-                </div>
-            </div>
-        </main>
-
-        <section id="tracker" class="module hidden" data-view="tracker">
-            <h2>📊 Practice Tracker</h2>
-            <div class="tracker-controls">
-                <input type="text" id="problemName" placeholder="Tên bài tập (VD: Two Sum)">
-                <input type="text" id="platform" placeholder="Platform (VD: LC, CF, AC)">
-                <button id="addPractice">Thêm Bài</button>
-            </div>
-            <p id="practiceCount" class="tracker-info">Bạn có <span id="toDoCount">0</span> bài cần làm.</p>
-            <ul id="practiceList">
-            </ul>
-        </section>
-
-        <section id="focus" class="module hidden" data-view="focus">
-            <h2>⏱ Deep Focus (Pomodoro)</h2>
-            <p class="focus-subtitle">Kỹ thuật Pomodoro - Đắm mình vào công việc.</p>
-            <div class="focus-container">
-                <div class="timer-circle-wrap">
-                    <svg class="timer-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                        <circle class="timer-base" cx="50" cy="50" r="45"></circle>
-                        <circle class="timer-progress" id="timerProgress" cx="50" cy="50" r="45"></circle>
-                    </svg>
-                    <div class="timer-display-box">
-                        <span id="timer">25:00</span>
+        <main class="content-area">
+            <section id="mainDashboard" class="view-section active" data-view="main">
+                <div class="hero-header">
+                    <h1 class="mega-logo glitch" data-text="NOXCODE">NOXCODE</h1>
+                    <h2 class="welcome-message">Chào mừng trở lại, Operator.</h2>
+                    <div class="typing-container">
+                        <p class="subtitle typing-text" id="typingText"></p>
+                        <span class="cursor">_</span>
                     </div>
                 </div>
-                
-                <div class="focus-buttons">
-                    <button id="startFocus" class="control-btn primary">▶ Bắt đầu</button>
-                    <button id="stopFocus" class="control-btn">■ Dừng</button>
-                    <button id="resetFocus" class="control-btn">↺ Đặt lại</button>
+                <div class="quick-access-grid">
+                    <div class="quick-card neon-border-blue" data-view-target="tracker">
+                        <div class="card-icon">📊</div>
+                        <h3>Practice Tracker</h3>
+                        <p>Quản lý tiến độ luyện tập.</p>
+                    </div>
+                    <div class="quick-card neon-border-cyan" data-view-target="focus">
+                        <div class="card-icon">⏱</div>
+                        <h3>Deep Focus</h3>
+                        <p>Bộ đếm Pomodoro chuẩn.</p>
+                    </div>
+                    <div class="quick-card neon-border-green" data-view-target="sudoku">
+                        <div class="card-icon">🧩</div>
+                        <h3>Sudoku Pro (9x9)</h3>
+                        <p>Thử thách trí tuệ ngẫu nhiên.</p>
+                    </div>
+                    <div class="quick-card neon-border-purple" data-view-target="decide">
+                        <div class="card-icon">🎲</div>
+                        <h3>Decision Maker</h3>
+                        <p>Để hệ thống lựa chọn.</p>
+                    </div>
                 </div>
-                <div class="mode-buttons">
-                    <button id="pomodoroMode" data-time="25" class="mode-btn active">Focus (25m)</button>
-                    <button id="shortBreakMode" data-time="5" class="mode-btn">Nghỉ ngắn (5m)</button>
-                    <button id="longBreakMode" data-time="15" class="mode-btn">Nghỉ dài (15m)</button>
+            </section>
+
+            <section id="trackerSection" class="view-section hidden" data-view="tracker">
+                <header class="section-header">
+                    <h2><span class="neon-text">📊 PRACTICE TRACKER</span></h2>
+                </header>
+                <div class="tracker-interface module-box">
+                    <div class="input-group tracker-inputs">
+                        <input type="text" id="problemName" class="cyber-input" placeholder="Tên bài tập (VD: Two Sum)">
+                        <input type="text" id="platform" class="cyber-input" placeholder="Platform (VD: LeetCode)">
+                        <button id="addPractice" class="cyber-button primary">THÊM BÀI +</button>
+                    </div>
+                    <div class="list-header">
+                        <span>Danh sách công việc</span>
+                        <span id="practiceCountLabel" class="neon-blue">0 tasks waiting</span>
+                    </div>
+                    <ul id="practiceList" class="cyber-list"></ul>
                 </div>
-                <p id="sessionInfo" class="session-info">Pomodoro: 0</p>
-            </div>
-        </section>
+            </section>
 
-        <section id="sudoku" class="module hidden" data-view="sudoku">
-            <h2>🧩 Advanced Sudoku (9x9)</h2>
-            <p class="sudoku-subtitle">Điền số 1-9 vào mỗi hàng, cột và khối 3x3. (Chỉ cho phép 1-9)</p>
-            <div id="sudokuGrid" class="sudoku-grid">
-            </div>
-            <div class="sudoku-controls">
-                <button id="newSudoku" class="control-btn primary">Tạo mới</button>
-                <button id="checkSudoku" class="control-btn">Kiểm tra</button>
-                <p id="sudokuMessage" class="sudoku-message"></p>
-            </div>
-        </section>
-        
-        <section id="decide" class="module hidden" data-view="decide">
-            <h2>🎲 Decision Maker</h2>
-            <p class="decide-subtitle">Khi bạn không thể quyết định, hãy để NOXCODE chọn hộ bạn.</p>
-            <textarea id="decisionOptions" placeholder="Nhập các lựa chọn, mỗi lựa chọn một dòng (VD: Codeforces, LeetCode, Nghỉ ngơi)"></textarea>
-            <div class="decide-controls">
-                <button id="spinDecide" class="control-btn primary">Quay Ngẫu Nhiên</button>
-            </div>
-            <div class="result-box">
-                <p>Lựa chọn chiến thắng:</p>
-                <p id="finalDecision">-- Bấm Quay --</p>
-            </div>
-        </section>
+            <section id="focusSection" class="view-section hidden" data-view="focus">
+                <header class="section-header">
+                    <h2><span class="neon-text">⏱ DEEP FOCUS PROTOCOL</span></h2>
+                    <p class="section-subtitle">Kỹ thuật Pomodoro - Tối đa hóa sự tập trung.</p>
+                </header>
+                <div class="focus-interface module-box center-content">
+                    <div class="timer-wrapper">
+                        <svg class="timer-ring" width="300" height="300" viewBox="0 0 300 300">
+                            <circle class="ring-bg" cx="150" cy="150" r="140"></circle>
+                            <circle class="ring-progress" id="timerProgress" cx="150" cy="150" r="140"></circle>
+                        </svg>
+                        <div class="timer-readout">
+                            <span id="timer" class="neon-text-cyan mega-timer">25:00</span>
+                            <span id="sessionTypeLabel" class="session-label">READY</span>
+                        </div>
+                    </div>
+                    
+                    <div class="control-panel">
+                        <button id="startFocus" class="cyber-button primary large-btn">▶ BẮT ĐẦU</button>
+                        <button id="stopFocus" class="cyber-button danger hidden">■ DỪNG LẠI</button>
+                        <button id="resetFocus" class="cyber-button secondary hidden">↺ ĐẶT LẠI</button>
+                    </div>
+                    <div class="mode-selector">
+                        <button class="mode-btn active" data-mode="pomodoro" data-time="25">Pomodoro (25m)</button>
+                        <button class="mode-btn" data-mode="shortBreak" data-time="5">Nghỉ Ngắn (5m)</button>
+                        <button class="mode-btn" data-mode="longBreak" data-time="15">Nghỉ Dài (15m)</button>
+                    </div>
+                    <div class="stats-readout neon-purple">
+                        <span id="sessionCount">Phiên hoàn thành: 0</span>
+                    </div>
+                </div>
+            </section>
 
+            <section id="sudokuSection" class="view-section hidden" data-view="sudoku">
+                <header class="section-header">
+                    <h2><span class="neon-text">🧩 SUDOKU PRO (9x9)</span></h2>
+                    <p class="section-subtitle">Điền số 1-9 sao cho mỗi hàng, cột và khối 3x3 là duy nhất.</p>
+                </header>
+                <div class="sudoku-interface module-box center-content">
+                    <div class="difficulty-selector">
+                        <span class="selector-label">Độ khó:</span>
+                        <button class="diff-btn active neon-green" data-diff="easy">EASY</button>
+                        <button class="diff-btn neon-blue" data-diff="medium">MEDIUM</button>
+                        <button class="diff-btn neon-red" data-diff="hard">HARD</button>
+                    </div>
+
+                    <div id="sudokuGrid9x9" class="sudoku-grid-pro"></div>
+                    
+                    <div class="sudoku-actions">
+                        <button id="newGameBtn" class="cyber-button primary">VÁN MỚI ↻</button>
+                        <button id="checkGameBtn" class="cyber-button secondary">KIỂM TRA ✓</button>
+                    </div>
+                    <div id="sudokuStatus" class="status-message"></div>
+                </div>
+            </section>
+            
+            <section id="decideSection" class="view-section hidden" data-view="decide">
+                <header class="section-header">
+                    <h2><span class="neon-text">🎲 DECISION MAKER</span></h2>
+                    <p class="section-subtitle">Nhập các lựa chọn và để hệ thống quyết định.</p>
+                </header>
+                <div class="decide-interface module-box center-content">
+                    <textarea id="decisionInput" class="cyber-textarea" placeholder="Nhập lựa chọn 1&#10;Nhập lựa chọn 2&#10;Nhập lựa chọn 3..."></textarea>
+                    <div class="decide-actions">
+                        <button id="spinButton" class="cyber-button primary large-btn">QUAY NGẪU NHIÊN ⌘</button>
+                    </div>
+                    <div class="result-display neon-border-purple">
+                        <span class="result-label">KẾT QUẢ:</span>
+                        <h3 id="finalResult" class="neon-text">---</h3>
+                    </div>
+                </div>
+            </section>
+
+        </main>
     </div>
 
-    <audio id="alarmSound" src="assets/alarm.mp3" preload="auto"></audio>
+    <audio id="sfxNice" src="https://assets.mixkit.co/sfx/preview/mixkit-positive-interface-beep-221.mp3" preload="auto"></audio>
+    <audio id="sfxAlarm" src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3" preload="auto"></audio>
+    <audio id="sfxError" src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3" preload="auto"></audio>
 
     <script src="js/main.js"></script>
 </body>
