@@ -1,444 +1,412 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const sfxNice = document.getElementById('sfxNice');
-    const sfxAlarm = document.getElementById('sfxAlarm');
-    const sfxError = document.getElementById('sfxError');
-    sfxAlarm.volume = 0.7;
+:root {
+    --bg-color: #050505;
+    --sidebar-bg: #0a0a0a;
+    --card-bg: #0f0f13;
+    --primary: #00ff41;
+    --secondary: #008f11;
+    --text-main: #e0e0e0;
+    --text-dim: #666;
+    --border: #1a1a1a;
+    --font-stack: 'JetBrains Mono', monospace;
+}
 
-    function playSound(sound) {
-        sound.currentTime = 0;
-        sound.play().catch(() => {});
-    }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--font-stack);
+}
 
-    const canvas = document.getElementById('matrixCanvas');
-    const ctx = canvas.getContext('2d');
-    let width, height;
-    let columns;
-    let drops = [];
-    const matrixChars = '10'.split('');
-    const matrixColors = ['#0f0', '#00ff41', '#39ff14'];
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    height: 100vh;
+    overflow: hidden;
+}
 
-    function initMatrix() {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-        columns = Math.floor(width / 14);
-        drops = [];
-        for (let i = 0; i < columns; i++) {
-            drops[i] = Math.random() * -100;
-        }
-    }
+#matrix-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    opacity: 0.15;
+}
 
-    function drawMatrix() {
-        ctx.fillStyle = 'rgba(2, 6, 23, 0.05)';
-        ctx.fillRect(0, 0, width, height);
-        ctx.font = '14px JetBrains Mono';
-        for (let i = 0; i < drops.length; i++) {
-            const char = matrixChars[Math.floor(Math.random() * matrixChars.length)];
-            ctx.fillStyle = matrixColors[Math.floor(Math.random() * matrixColors.length)];
-            ctx.fillText(char, i * 14, drops[i] * 14);
-            if (drops[i] * 14 > height && Math.random() > 0.985) {
-                drops[i] = 0;
-            }
-            drops[i]++;
-        }
-        requestAnimationFrame(drawMatrix);
-    }
-    initMatrix();
-    drawMatrix();
-    window.addEventListener('resize', initMatrix);
+.app-container {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+}
 
-    const views = document.querySelectorAll('.view-section');
-    const navItems = document.querySelectorAll('.nav-item');
-    const quickCards = document.querySelectorAll('.quick-card');
-    const logoBtn = document.getElementById('logo');
+.sidebar {
+    width: 280px;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+}
 
-    function switchView(viewId) {
-        views.forEach(v => v.classList.remove('active', 'hidden'));
-        navItems.forEach(n => n.classList.remove('active'));
-        const target = document.querySelector(`[data-view="${viewId}"]`);
-        if (target) target.classList.add('active');
-        const activeNav = document.querySelector(`.nav-item[data-view="${viewId}"]`);
-        if (activeNav) activeNav.classList.add('active');
-        if (viewId !== 'main') playSound(sfxNice);
-    }
+.logo-area {
+    margin-bottom: 3rem;
+}
 
-    navItems.forEach(nav => nav.addEventListener('click', (e) => {
-        e.preventDefault();
-        switchView(nav.dataset.view);
-    }));
+h1.glitch {
+    font-size: 2rem;
+    color: var(--primary);
+    font-weight: 800;
+    letter-spacing: -1px;
+    text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
+}
 
-    quickCards.forEach(card => card.addEventListener('click', () => {
-        switchView(card.dataset.viewTarget);
-    }));
+.status-indicator {
+    font-size: 0.75rem;
+    color: var(--secondary);
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
 
-    logoBtn.addEventListener('click', () => switchView('main'));
+.dot {
+    width: 8px;
+    height: 8px;
+    background: var(--primary);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--primary);
+}
 
-    const typingTextStr = "Initializing system... Protocol: NOXCODE. Status: Online. Ready to optimize.";
-    const typingTextEl = document.getElementById('typingText');
-    let charIdx = 0;
-    function typeWriter() {
-        if (charIdx < typingTextStr.length) {
-            typingTextEl.textContent += typingTextStr.charAt(charIdx);
-            charIdx++;
-            setTimeout(typeWriter, 40);
-        }
-    }
-    setTimeout(typeWriter, 500);
+.nav-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    flex: 1;
+}
 
-    let practices = JSON.parse(localStorage.getItem("nox_practices")) || [];
-    const problemInput = document.getElementById('problemName');
-    const platformInput = document.getElementById('platform');
-    const addBtn = document.getElementById('addPractice');
-    const practiceList = document.getElementById('practiceList');
-    const doneCountEl = document.getElementById('doneCount');
-    const toDoCountEl = document.getElementById('toDoCount');
-    const totalCountEl = document.getElementById('totalCount');
+.nav-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    text-align: left;
+    font-size: 0.9rem;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
-    function savePractices() {
-        localStorage.setItem("nox_practices", JSON.stringify(practices));
-        renderPractices();
-        updateStats();
-    }
+.nav-btn:hover, .nav-btn.active {
+    color: var(--primary);
+    background: rgba(0, 255, 65, 0.05);
+    border-left: 2px solid var(--primary);
+    padding-left: 15px;
+}
 
-    function updateStats() {
-        const total = practices.length;
-        const done = practices.filter(p => p.status === 'done').length;
-        totalCountEl.textContent = total;
-        doneCountEl.textContent = done;
-        toDoCountEl.textContent = total - done;
-    }
+.session-stats {
+    background: #000;
+    padding: 15px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
 
-    function renderPractices() {
-        practiceList.innerHTML = '';
-        if (practices.length === 0) {
-            practiceList.innerHTML = '<li style="justify-content: center; opacity: 0.6;">Chưa có dữ liệu. Hãy thêm bài tập mới.</li>';
-            return;
-        }
-        practices.forEach((p, index) => {
-            const li = document.createElement('li');
-            li.className = `status-${p.status}`;
-            li.innerHTML = `
-                <div class="practice-details">
-                    <span class="problem-name">${p.name}</span>
-                    <span class="platform-tag">${p.platform || 'N/A'}</span>
-                </div>
-                <div class="item-actions">
-                    <button class="status-btn">${p.status === 'done' ? 'Hoàn thành' : 'Đang chờ'}</button>
-                    <span class="del-btn">✖</span>
-                </div>
-            `;
-            const statusBtn = li.querySelector('.status-btn');
-            statusBtn.addEventListener('click', () => {
-                p.status = p.status === 'todo' ? 'done' : 'todo';
-                savePractices();
-                playSound(sfxNice);
-            });
-            const delBtn = li.querySelector('.del-btn');
-            delBtn.addEventListener('click', () => {
-                if(confirm('Xóa bài tập này?')) {
-                    practices.splice(index, 1);
-                    savePractices();
-                }
-            });
-            practiceList.appendChild(li);
-        });
-    }
+.session-stats h3 {
+    font-size: 0.7rem;
+    color: #444;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
 
-    addBtn.addEventListener('click', () => {
-        const name = problemInput.value.trim();
-        const platform = platformInput.value.trim();
-        if (name) {
-            practices.unshift({ name, platform, status: 'todo', id: Date.now() });
-            problemInput.value = '';
-            platformInput.value = '';
-            savePractices();
-            playSound(sfxNice);
-        } else {
-            playSound(sfxError);
-            problemInput.focus();
-        }
-    });
-    renderPractices();
-    updateStats();
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+    color: #888;
+}
 
-    let timerInterval;
-    let timeLeft = 25 * 60;
-    let totalTime = 25 * 60;
-    let isRunning = false;
-    let sessionCount = 0;
-    const timerEl = document.getElementById('timer');
-    const startBtn = document.getElementById('startFocus');
-    const stopBtn = document.getElementById('stopFocus');
-    const resetBtn = document.getElementById('resetFocus');
-    const modeBtns = document.querySelectorAll('.mode-btn');
-    const sessionLabel = document.getElementById('sessionTypeLabel');
-    const sessionCountEl = document.getElementById('sessionCount');
-    const timerProgress = document.getElementById('timerProgress');
-    const FULL_DASH_ARRAY = 2 * Math.PI * 140;
+.stat-row .val {
+    color: var(--text-main);
+    font-weight: bold;
+}
 
-    timerProgress.style.strokeDasharray = `${FULL_DASH_ARRAY} ${FULL_DASH_ARRAY}`;
+.hint-box {
+    font-size: 0.7rem;
+    color: #333;
+    margin-top: auto;
+}
 
-    function updateTimerUI() {
-        const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
-        const s = (timeLeft % 60).toString().padStart(2, '0');
-        timerEl.textContent = `${m}:${s}`;
-        document.title = isRunning ? `(${m}:${s}) NOXCODE Focus` : 'NOXCODE - Ultimate Productivity';
-        const rawOffset = FULL_DASH_ARRAY - (timeLeft / totalTime) * FULL_DASH_ARRAY;
-        const offset = Math.min(FULL_DASH_ARRAY, Math.max(0, rawOffset));
-        timerProgress.style.strokeDashoffset = offset;
-    }
+.main-content {
+    flex: 1;
+    padding: 3rem;
+    overflow-y: auto;
+    position: relative;
+}
 
-    function switchMode(mode, minutes, btn) {
-        if (isRunning) stopTimer();
-        timeLeft = totalTime = minutes * 60;
-        sessionLabel.textContent = mode === 'pomodoro' ? 'FOCUS SESSION' : 'BREAK TIME';
-        modeBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        updateTimerUI();
-        resetBtn.classList.add('hidden');
-        playSound(sfxNice);
-    }
+.panel {
+    display: none;
+    animation: fadeIn 0.4s ease;
+}
 
-    modeBtns.forEach(btn => {
-        btn.addEventListener('click', () => switchMode(btn.dataset.mode, parseInt(btn.dataset.time), btn));
-    });
+.panel.active {
+    display: block;
+}
 
-    function startTimer() {
-        if (isRunning) return;
-        isRunning = true;
-        startBtn.classList.add('hidden');
-        stopBtn.classList.remove('hidden');
-        resetBtn.classList.add('hidden');
-        sessionLabel.textContent = 'SESSION ACTIVE';
-        sessionLabel.style.color = 'var(--neon-green)';
-        playSound(sfxNice);
-        timerInterval = setInterval(() => {
-            timeLeft--;
-            updateTimerUI();
-            if (timeLeft <= 0) {
-                handleTimerComplete();
-            }
-        }, 1000);
-    }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
-    function stopTimer() {
-        clearInterval(timerInterval);
-        isRunning = false;
-        startBtn.classList.remove('hidden');
-        stopBtn.classList.add('hidden');
-        resetBtn.classList.remove('hidden');
-        sessionLabel.textContent = 'PAUSED';
-        sessionLabel.style.color = 'var(--neon-red)';
-    }
+.welcome-header {
+    margin-bottom: 3rem;
+}
 
-    function resetTimer() {
-        stopTimer();
-        const activeModeBtn = document.querySelector('.mode-btn.active');
-        timeLeft = totalTime = parseInt(activeModeBtn.dataset.time) * 60;
-        updateTimerUI();
-        resetBtn.classList.add('hidden');
-        sessionLabel.textContent = 'READY';
-        sessionLabel.style.color = 'var(--neon-purple)';
-        playSound(sfxNice);
-    }
+.welcome-header h2 {
+    font-size: 2.5rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+}
 
-    function handleTimerComplete() {
-        stopTimer();
-        playSound(sfxAlarm);
-        const activeMode = document.querySelector('.mode-btn.active').dataset.mode;
-        if (activeMode === 'pomodoro') {
-            sessionCount++;
-            sessionCountEl.textContent = `Phiên hoàn thành: ${sessionCount}`;
-            alert("🎉 Hoàn thành phiên làm việc! Hãy nghỉ ngơi chút đi.");
-        } else {
-            alert("🔔 Hết giờ nghỉ! Quay lại làm việc nào.");
-        }
-        resetTimer();
-    }
+.sub-text {
+    color: var(--primary);
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
 
-    startBtn.addEventListener('click', startTimer);
-    stopBtn.addEventListener('click', stopTimer);
-    resetBtn.addEventListener('click', resetTimer);
-    updateTimerUI();
+.grid-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
 
-    const sudokuGridEl = document.getElementById('sudokuGrid9x9');
-    const newGameBtn = document.getElementById('newGameBtn');
-    const checkGameBtn = document.getElementById('checkGameBtn');
-    const sudokuStatus = document.getElementById('sudokuStatus');
-    const diffBtns = document.querySelectorAll('.diff-btn');
-    let currentDifficulty = 'easy';
-    let solutionBoard = [];
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    padding: 2rem;
+    cursor: pointer;
+    transition: 0.3s;
+    position: relative;
+    overflow: hidden;
+}
 
-    diffBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            diffBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentDifficulty = btn.dataset.diff;
-            playSound(sfxNice);
-        });
-    });
+.card:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
 
-    function isValidPlace(board, row, col, num) {
-        for (let i = 0; i < 9; i++) {
-            if (board[row][i] === num || board[i][col] === num) return false;
-        }
-        const startRow = Math.floor(row / 3) * 3;
-        const startCol = Math.floor(col / 3) * 3;
-        for (let i = 0; i < 3; i++) {
-            for (let j = 0; j < 3; j++) {
-                if (board[startRow + i][startCol + j] === num) return false;
-            }
-        }
-        return true;
-    }
+.card h3 {
+    margin: 15px 0 5px;
+    color: var(--text-main);
+}
 
-    function solveSudoku(board) {
-        for (let row = 0; row < 9; row++) {
-            for (let col = 0; col < 9; col++) {
-                if (board[row][col] === 0) {
-                    const nums = [1, 2, 3, 4, 5, 6, 7, 8, 9].sort(() => Math.random() - 0.5);
-                    for (let num of nums) {
-                        if (isValidPlace(board, row, col, num)) {
-                            board[row][col] = num;
-                            if (solveSudoku(board)) return true;
-                            board[row][col] = 0;
-                        }
-                    }
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
+.card p {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+}
 
-    function generateSudoku() {
-        const board = Array.from({ length: 9 }, () => Array(9).fill(0));
-        solveSudoku(board);
-        solutionBoard = JSON.parse(JSON.stringify(board));
-        
-        let cellsToRemove;
-        switch (currentDifficulty) {
-            case 'hard': cellsToRemove = 55; break;
-            case 'medium': cellsToRemove = 40; break;
-            default: cellsToRemove = 25;
-        }
+.card-icon {
+    font-size: 2rem;
+    color: var(--primary);
+}
 
-        while (cellsToRemove > 0) {
-            const row = Math.floor(Math.random() * 9);
-            const col = Math.floor(Math.random() * 9);
-            if (board[row][col] !== 0) {
-                board[row][col] = 0;
-                cellsToRemove--;
-            }
-        }
-        return board;
-    }
+.panel-header {
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+}
 
-    function renderSudoku(board) {
-        sudokuGridEl.innerHTML = '';
-        sudokuStatus.textContent = ''; sudokuStatus.className = 'status-message';
-        for (let i = 0; i < 9; i++) {
-            for (let j = 0; j < 9; j++) {
-                const cell = document.createElement('div');
-                cell.className = 'sudoku-cell-pro';
-                if ((j + 1) % 3 === 0 && j < 8) cell.classList.add('thick-right');
-                if ((i + 1) % 3 === 0 && i < 8) cell.classList.add('thick-bottom');
-                
-                if (board[i][j] !== 0) {
-                    cell.classList.add('fixed');
-                    cell.textContent = board[i][j];
-                } else {
-                    const input = document.createElement('input');
-                    input.type = 'text';
-                    input.className = 'sudoku-input';
-                    input.maxLength = 1;
-                    input.dataset.row = i;
-                    input.dataset.col = j;
-                    input.addEventListener('input', (e) => {
-                        const val = e.target.value;
-                        if (!/^[1-9]$/.test(val)) e.target.value = '';
-                    });
-                    cell.appendChild(input);
-                }
-                sudokuGridEl.appendChild(cell);
-            }
-        }
-    }
+.tracker-input-area {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
 
-    newGameBtn.addEventListener('click', () => {
-        const board = generateSudoku();
-        renderSudoku(board);
-        playSound(sfxNice);
-    });
+#task-input {
+    flex: 1;
+    background: transparent;
+    border: 1px solid var(--border);
+    padding: 12px;
+    color: var(--primary);
+    outline: none;
+}
 
-    checkGameBtn.addEventListener('click', () => {
-        const inputs = sudokuGridEl.querySelectorAll('.sudoku-input');
-        let isFull = true;
-        let isCorrect = true;
-        inputs.forEach(input => {
-            if (!input.value) isFull = false;
-        });
+#btn-add-task, #btn-check-sudoku, #btn-spin, #btn-new-game, .diff-btn, #btn-start-focus, #btn-reset-focus, #btn-pause-focus {
+    background: var(--border);
+    color: var(--text-main);
+    border: none;
+    padding: 0 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+}
 
-        if (!isFull) {
-            sudokuStatus.textContent = 'Vui lòng điền đầy đủ các ô trống!';
-            sudokuStatus.className = 'status-message error';
-            playSound(sfxError);
-            return;
-        }
+#btn-add-task:hover, #btn-check-sudoku:hover, #btn-spin:hover, #btn-new-game:hover, .diff-btn:hover, #btn-start-focus:hover {
+    background: var(--primary);
+    color: #000;
+}
 
-        inputs.forEach(input => {
-            const row = parseInt(input.dataset.row);
-            const col = parseInt(input.dataset.col);
-            if (parseInt(input.value) !== solutionBoard[row][col]) {
-                isCorrect = false;
-            }
-        });
+#task-list {
+    list-style: none;
+}
 
-        if (isCorrect) {
-            sudokuStatus.textContent = '🎉 CHÍNH XÁC! Bạn là một thiên tài!';
-            sudokuStatus.className = 'status-message success';
-            playSound(sfxNice);
-        } else {
-            sudokuStatus.textContent = '❌ Vẫn còn sai sót. Hãy kiểm tra lại!';
-            sudokuStatus.className = 'status-message error';
-            playSound(sfxError);
-        }
-    });
+#task-list li {
+    background: rgba(255,255,255,0.03);
+    padding: 12px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 2px solid transparent;
+}
 
-    const spinBtn = document.getElementById('spinButton');
-    const decisionInput = document.getElementById('decisionInput');
-    const finalResult = document.getElementById('finalResult');
-    let isSpinning = false;
+#task-list li.done {
+    border-left-color: var(--primary);
+    opacity: 0.5;
+    text-decoration: line-through;
+}
 
-    spinBtn.addEventListener('click', () => {
-        if (isSpinning) return;
-        const options = decisionInput.value.split('\n').filter(opt => opt.trim() !== '');
-        if (options.length < 2) {
-            finalResult.textContent = 'Cần ít nhất 2 lựa chọn!';
-            finalResult.style.color = 'var(--neon-red)';
-            playSound(sfxError);
-            return;
-        }
+.focus-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    margin-top: 2rem;
+}
 
-        isSpinning = true;
-        spinBtn.disabled = true;
-        finalResult.classList.add('thinking');
-        finalResult.style.color = 'var(--neon-purple)';
-        
-        let count = 0;
-        const spinInterval = setInterval(() => {
-            finalResult.textContent = options[Math.floor(Math.random() * options.length)];
-            count++;
-            if (count > 20) {
-                clearInterval(spinInterval);
-                const winner = options[Math.floor(Math.random() * options.length)];
-                finalResult.textContent = winner;
-                finalResult.classList.remove('thinking');
-                finalResult.style.color = 'var(--neon-cyan)';
-                finalResult.style.textShadow = '0 0 30px var(--neon-cyan)';
-                playSound(sfxNice);
-                isSpinning = false;
-                spinBtn.disabled = false;
-            }
-        }, 100);
-    });
-});
+.timer-circle-box {
+    position: relative;
+    width: 300px;
+    height: 300px;
+}
+
+.timer-svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.circle-bg {
+    fill: none;
+    stroke: #111;
+    stroke-width: 3;
+}
+
+.circle-progress {
+    fill: none;
+    stroke: var(--primary);
+    stroke-width: 3;
+    stroke-dasharray: 283;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 1s linear;
+}
+
+.timer-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3.5rem;
+    font-weight: bold;
+    color: var(--text-main);
+}
+
+.focus-controls {
+    margin-top: 30px;
+    display: flex;
+    gap: 15px;
+}
+
+.focus-controls button {
+    padding: 12px 30px;
+}
+
+.game-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+#sudoku-board {
+    display: grid;
+    grid-template-columns: repeat(9, 45px);
+    grid-template-rows: repeat(9, 45px);
+    gap: 0;
+    border: 2px solid var(--primary);
+}
+
+.cell {
+    width: 45px;
+    height: 45px;
+    background: transparent;
+    border: 1px solid #222;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    position: relative;
+}
+
+.cell input {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    text-align: center;
+    color: var(--primary);
+    font-size: 1.2rem;
+    outline: none;
+}
+
+.cell:nth-child(3n) {
+    border-right: 1px solid var(--primary);
+}
+
+.cell:nth-child(9n) {
+    border-right: 1px solid #222; 
+}
+
+.cell-row-3, .cell-row-6 {
+    border-bottom: 1px solid var(--primary);
+}
+
+.sudoku-controls {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.difficulty-tabs .diff-btn.active {
+    background: var(--primary);
+    color: #000;
+}
+
+#decide-input {
+    width: 100%;
+    height: 150px;
+    background: #000;
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    padding: 15px;
+    margin-bottom: 20px;
+    resize: none;
+    outline: none;
+}
+
+.result-box {
+    margin-top: 20px;
+    padding: 30px;
+    background: rgba(0,255,65,0.05);
+    border: 1px dashed var(--primary);
+    text-align: center;
+}
+
+#decide-result {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary);
+}
