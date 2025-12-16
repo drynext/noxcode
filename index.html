@@ -8,6 +8,12 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <div class="stars-container">
+        <div id="stars"></div>
+        <div id="stars2"></div>
+        <div id="stars3"></div>
+    </div>
+
     <div class="app">
         <aside class="sidebar">
             <h1 class="logo" id="logo">NOXCODE</h1>
@@ -16,7 +22,7 @@
                 <a href="#" data-view="tracker">Tracker</a>
                 <a href="#" data-view="focus">Focus</a>
                 <a href="#" data-view="sudoku">Sudoku</a>
-                <a href="#">Decide (Upcoming)</a>
+                <a href="#" data-view="decide">Decide</a>
             </nav>
             <div class="stats-summary" id="statsSummary">
                 <h3>💡 Tóm tắt</h3>
@@ -56,7 +62,7 @@
             </div>
             <p id="practiceCount" class="tracker-info">Bạn có <span id="toDoCount">0</span> bài cần làm.</p>
             <ul id="practiceList">
-                </ul>
+            </ul>
         </section>
 
         <section id="focus" class="module hidden" data-view="focus">
@@ -84,15 +90,33 @@
 
         <section id="sudoku" class="module hidden" data-view="sudoku">
             <h2>🧩 Mini Sudoku (4x4)</h2>
-            <p class="sudoku-subtitle">Tính năng đang được phát triển...</p>
-            <div class="sudoku-grid-placeholder">
-                <p>Nơi đây sẽ là ô Sudoku.</p>
+            <p class="sudoku-subtitle">Điền số 1, 2, 3, 4 vào mỗi hàng, cột và khối 2x2.</p>
+            <div id="sudokuGrid" class="sudoku-grid">
+            </div>
+            <div class="sudoku-controls">
+                <button id="newSudoku">Tạo mới</button>
+                <button id="checkSudoku">Kiểm tra</button>
+                <p id="sudokuMessage" class="sudoku-message"></p>
+            </div>
+        </section>
+        
+        <section id="decide" class="module hidden" data-view="decide">
+            <h2>🎲 Decision Maker</h2>
+            <p class="decide-subtitle">Khi bạn không thể quyết định, hãy để NOXCODE chọn hộ bạn.</p>
+            <textarea id="decisionOptions" placeholder="Nhập các lựa chọn, mỗi lựa chọn một dòng (VD: Codeforces, LeetCode, Nghỉ ngơi)"></textarea>
+            <div class="decide-controls">
+                <button id="spinDecide">Quay Ngẫu Nhiên</button>
+            </div>
+            <div class="result-box">
+                <p>Lựa chọn chiến thắng:</p>
+                <p id="finalDecision">-- Bấm Quay --</p>
             </div>
         </section>
 
     </div>
 
     <audio id="alarmSound" src="assets/alarm.mp3" preload="auto"></audio> 
+
     <script src="js/main.js"></script>
 </body>
 </html>
