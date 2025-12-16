@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOXCODE SYSTEM | DASHBOARD</title>
+    <title>NOXCODE SYSTEM | DASHBOARD 2.0</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;300;400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <div class="scanlines"></div>
     <div id="system-overlay"></div>
     <canvas id="matrix-rain"></canvas>
+
+    <div id="toast-container"></div>
 
     <div class="main-interface">
         <aside class="sidebar-panel">
@@ -30,19 +33,19 @@
             </div>
 
             <nav class="navigation-menu">
-                <button class="nav-item active" data-target="dashboard-view">
+                <button class="nav-item active hover-sound" data-target="dashboard-view">
                     <span class="nav-icon">▣</span> <span class="nav-label">DASHBOARD</span>
                 </button>
-                <button class="nav-item" data-target="tracker-view">
+                <button class="nav-item hover-sound" data-target="tracker-view">
                     <span class="nav-icon">⚡</span> <span class="nav-label">TRACKER</span>
                 </button>
-                <button class="nav-item" data-target="focus-view">
+                <button class="nav-item hover-sound" data-target="focus-view">
                     <span class="nav-icon">◎</span> <span class="nav-label">FOCUS MODE</span>
                 </button>
-                <button class="nav-item" data-target="sudoku-view">
+                <button class="nav-item hover-sound" data-target="sudoku-view">
                     <span class="nav-icon">▦</span> <span class="nav-label">SUDOKU PRO</span>
                 </button>
-                <button class="nav-item" data-target="decide-view">
+                <button class="nav-item hover-sound" data-target="decide-view">
                     <span class="nav-icon">◈</span> <span class="nav-label">DECIDER</span>
                 </button>
             </nav>
@@ -54,6 +57,7 @@
                     <div class="stat-line"><span class="stat-label">Focus Total</span><span class="stat-value" id="sidebar-focus">0m</span></div>
                 </div>
                 <div class="user-id">OP: DAI_DANG_CS</div>
+                <button id="toggle-sound" class="control-btn" style="width:100%; margin-top:10px;">[ SOUND: ON ]</button>
             </div>
         </aside>
 
@@ -61,7 +65,7 @@
             <header class="top-bar">
                 <div class="breadcrumbs">SYSTEM / <span id="current-module">DASHBOARD</span></div>
                 
-                <a href="profile.html" class="profile-widget">
+                <a href="profile.html" class="profile-widget hover-sound">
                     <div class="profile-info">
                         <span class="p-name">Đặng Đức Đại</span>
                         <span class="p-role">LV.1 ADMIN</span>
@@ -82,20 +86,20 @@
                     </div>
                 </div>
                 <div class="modules-grid">
-                    <div class="module-card" onclick="navigateTo('tracker-view')"><div class="card-glow"></div><div class="card-content"><div class="card-icon">⚡</div><h3 class="card-title">Practice Tracker</h3><p class="card-desc">Manage algorithms & coding tasks.</p><div class="card-stat">Active: <span id="card-todo-count">0</span></div></div></div>
-                    <div class="module-card" onclick="navigateTo('focus-view')"><div class="card-glow"></div><div class="card-content"><div class="card-icon">◎</div><h3 class="card-title">Deep Focus</h3><p class="card-desc">Pomodoro timer protocol.</p><div class="card-stat">Status: READY</div></div></div>
-                    <div class="module-card" onclick="navigateTo('sudoku-view')"><div class="card-glow"></div><div class="card-content"><div class="card-icon">▦</div><h3 class="card-title">Sudoku Engine</h3><p class="card-desc">Logic training matrix (9x9).</p><div class="card-stat">Level: ADAPTIVE</div></div></div>
-                    <div class="module-card" onclick="navigateTo('decide-view')"><div class="card-glow"></div><div class="card-content"><div class="card-icon">◈</div><h3 class="card-title">Decision Maker</h3><p class="card-desc">Random choice generator.</p><div class="card-stat">Waiting input...</div></div></div>
+                    <div class="module-card hover-sound" onclick="navigateTo('tracker-view')"><div class="card-glow"></div><div class="card-content"><div class="card-icon">⚡</div><h3 class="card-title">Practice Tracker</h3><p class="card-desc">Manage algorithms & coding tasks.</p><div class="card-stat">Active: <span id="card-todo-count">0</span></div></div></div>
+                    <div class="module-card hover-sound" onclick="navigateTo('focus-view')"><div class="card-glow"></div><div class="card-content"><div class="card-icon">◎</div><h3 class="card-title">Deep Focus</h3><p class="card-desc">Pomodoro timer protocol.</p><div class="card-stat">Status: READY</div></div></div>
+                    <div class="module-card hover-sound" onclick="navigateTo('sudoku-view')"><div class="card-glow"></div><div class="card-content"><div class="card-icon">▦</div><h3 class="card-title">Sudoku Engine</h3><p class="card-desc">Logic training matrix (9x9).</p><div class="card-stat">Level: ADAPTIVE</div></div></div>
+                    <div class="module-card hover-sound" onclick="navigateTo('decide-view')"><div class="card-glow"></div><div class="card-content"><div class="card-icon">◈</div><h3 class="card-title">Decision Maker</h3><p class="card-desc">Random choice generator.</p><div class="card-stat">Waiting input...</div></div></div>
                 </div>
             </div>
 
-            <div id="tracker-view" class="view-container"><div class="section-header"><h2 class="section-title">PRACTICE TRACKER</h2><div class="section-controls"><button class="control-btn danger" onclick="clearAllTasks()">CLEAR ALL</button></div></div><div class="tracker-interface"><div class="input-wrapper"><input type="text" id="new-task-input" placeholder="Enter problem name or algorithm..."><button id="add-task-btn" class="action-btn">ADD TO QUEUE</button></div><div class="task-lists-container"><div class="list-column"><h3 class="list-head">PENDING TASKS</h3><ul id="todo-list" class="styled-list"></ul></div><div class="list-column"><h3 class="list-head">COMPLETED</h3><ul id="done-list" class="styled-list"></ul></div></div></div></div>
+            <div id="tracker-view" class="view-container"><div class="section-header"><h2 class="section-title">PRACTICE TRACKER</h2><div class="section-controls"><button class="control-btn danger hover-sound" onclick="clearAllTasks()">CLEAR ALL</button></div></div><div class="tracker-interface"><div class="input-wrapper"><input type="text" id="new-task-input" placeholder="Enter problem name or algorithm..."><button id="add-task-btn" class="action-btn hover-sound">ADD TO QUEUE</button></div><div class="task-lists-container"><div class="list-column"><h3 class="list-head">PENDING TASKS</h3><ul id="todo-list" class="styled-list"></ul></div><div class="list-column"><h3 class="list-head">COMPLETED</h3><ul id="done-list" class="styled-list"></ul></div></div></div></div>
             
-            <div id="focus-view" class="view-container"><div class="focus-layout"><div class="timer-display-area"><svg class="progress-ring" width="360" height="360"><circle class="progress-ring__circle-bg" stroke="#1a1a1a" stroke-width="8" fill="transparent" r="170" cx="180" cy="180"/><circle class="progress-ring__circle" stroke="#00ff41" stroke-width="8" fill="transparent" r="170" cx="180" cy="180"/></svg><div class="time-text" id="timer-val">25:00</div><div class="time-label" id="timer-label">FOCUS SESSION</div></div><div class="timer-controls"><div class="mode-switcher"><button class="mode-btn active" data-time="25">POMODORO</button><button class="mode-btn" data-time="5">SHORT BREAK</button><button class="mode-btn" data-time="15">LONG BREAK</button></div><div class="action-buttons"><button id="timer-start" class="large-btn">INITIALIZE</button><button id="timer-reset" class="large-btn secondary">RESET</button></div></div></div></div>
+            <div id="focus-view" class="view-container"><div class="focus-layout"><div class="timer-display-area"><svg class="progress-ring" width="360" height="360"><circle class="progress-ring__circle-bg" stroke="#1a1a1a" stroke-width="8" fill="transparent" r="170" cx="180" cy="180"/><circle class="progress-ring__circle" stroke="#00ff41" stroke-width="8" fill="transparent" r="170" cx="180" cy="180"/></svg><div class="time-text" id="timer-val">25:00</div><div class="time-label" id="timer-label">FOCUS SESSION</div></div><div class="timer-controls"><div class="mode-switcher"><button class="mode-btn active hover-sound" data-time="25">POMODORO</button><button class="mode-btn hover-sound" data-time="5">SHORT BREAK</button><button class="mode-btn hover-sound" data-time="15">LONG BREAK</button></div><div class="action-buttons"><button id="timer-start" class="large-btn hover-sound">INITIALIZE</button><button id="timer-reset" class="large-btn secondary hover-sound">RESET</button></div></div></div></div>
             
-            <div id="sudoku-view" class="view-container"><div class="section-header"><h2 class="section-title">SUDOKU ENGINE</h2><div class="difficulty-toggles"><button class="diff-chip active" data-diff="easy">EASY</button><button class="diff-chip" data-diff="medium">MEDIUM</button><button class="diff-chip" data-diff="hard">HARD</button></div></div><div class="sudoku-wrapper"><div id="sudoku-grid" class="game-grid"></div><div class="game-controls"><button class="game-btn" onclick="generateNewGame()">NEW GAME</button><button class="game-btn highlight" onclick="verifySolution()">VERIFY SOLUTION</button></div></div></div>
+            <div id="sudoku-view" class="view-container"><div class="section-header"><h2 class="section-title">SUDOKU ENGINE</h2><div class="difficulty-toggles"><button class="diff-chip active hover-sound" data-diff="easy">EASY</button><button class="diff-chip hover-sound" data-diff="medium">MEDIUM</button><button class="diff-chip hover-sound" data-diff="hard">HARD</button></div></div><div class="sudoku-wrapper"><div id="sudoku-grid" class="game-grid"></div><div class="game-controls"><button class="game-btn hover-sound" onclick="generateNewGame()">NEW GAME</button><button class="game-btn highlight hover-sound" onclick="verifySolution()">VERIFY SOLUTION</button></div></div></div>
             
-            <div id="decide-view" class="view-container"><div class="decide-layout"><h2 class="section-title">DECISION MATRIX</h2><div class="input-area"><textarea id="decision-options" placeholder="Enter options here (one per line)..."></textarea></div><button id="spin-btn" class="spin-button">EXECUTE RANDOMIZER</button><div class="result-area"><div class="result-label">RESULT:</div><div id="decision-result" class="result-value">---</div></div></div></div>
+            <div id="decide-view" class="view-container"><div class="decide-layout"><h2 class="section-title">DECISION MATRIX</h2><div class="input-area"><textarea id="decision-options" placeholder="Enter options here (one per line)..."></textarea></div><button id="spin-btn" class="spin-button hover-sound">EXECUTE RANDOMIZER</button><div class="result-area"><div class="result-label">RESULT:</div><div id="decision-result" class="result-value">---</div></div></div></div>
         </main>
     </div>
     <script src="js/main.js"></script>
