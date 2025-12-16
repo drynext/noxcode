@@ -158,10 +158,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    addTaskBtn.addEventListener('click', addTask);
-    taskInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') addTask();
-    });
+    if(addTaskBtn) addTaskBtn.addEventListener('click', addTask);
+    if(taskInput) {
+        taskInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addTask();
+        });
+    }
 
     // --- FOCUS TIMER MODULE ---
     let timerInterval;
@@ -203,43 +205,61 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    document.getElementById('timer-start').addEventListener('click', function() {
-        if (isRunning) {
-            // Pause
+    const timerStartBtn = document.getElementById('timer-start');
+    if(timerStartBtn) {
+        timerStartBtn.addEventListener('click', function() {
+            if (isRunning) {
+                // Pause
+                clearInterval(timerInterval);
+                this.innerText = 'RESUME';
+                this.classList.add('secondary');
+                isRunning = false;
+            } else {
+                // Start
+                this.innerText = 'PAUSE';
+                this.classList.remove('secondary');
+                isRunning = true;
+                timerInterval = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        updateDisplay();
+                        const percent = ((currentModeTime - timeLeft) / currentModeTime) * 100;
+                        setProgress(percent);
+                    } else {
+                        clearInterval(timerInterval);
+                        isRunning = false;
+                        totalFocusTime += (currentModeTime / 60);
+                        localStorage.setItem('noxFocusTime', totalFocusTime);
+                        updateDashboardStats();
+                        alert('SESSION COMPLETE');
+                        resetTimer();
+                    }
+                }, 1000);
+            }
+        });
+    }
+
+    const timerResetBtn = document.getElementById('timer-reset');
+    if(timerResetBtn) {
+        timerResetBtn.addEventListener('click', function() {
             clearInterval(timerInterval);
-            this.innerText = 'RESUME';
-            this.classList.add('secondary');
+            timeLeft = currentModeTime;
             isRunning = false;
-        } else {
-            // Start
-            this.innerText = 'PAUSE';
-            this.classList.remove('secondary');
-            isRunning = true;
-            timerInterval = setInterval(() => {
-                if (timeLeft > 0) {
-                    timeLeft--;
-                    updateDisplay();
-                    const percent = ((currentModeTime - timeLeft) / currentModeTime) * 100;
-                    setProgress(percent);
-                } else {
-                    clearInterval(timerInterval);
-                    isRunning = false;
-                    totalFocusTime += (currentModeTime / 60);
-                    localStorage.setItem('noxFocusTime', totalFocusTime);
-                    updateDashboardStats();
-                    alert('SESSION COMPLETE');
-                    resetTimer();
-                }
-            }, 1000);
-        }
-    });
+            timerStartBtn.innerText = 'INITIALIZE';
+            timerStartBtn.classList.remove('secondary');
+            updateDisplay();
+            setProgress(0);
+        });
+    }
 
     window.resetTimer = function() {
         clearInterval(timerInterval);
         timeLeft = currentModeTime;
         isRunning = false;
-        document.getElementById('timer-start').innerText = 'INITIALIZE';
-        document.getElementById('timer-start').classList.remove('secondary');
+        if(timerStartBtn) {
+            timerStartBtn.innerText = 'INITIALIZE';
+            timerStartBtn.classList.remove('secondary');
+        }
         updateDisplay();
         setProgress(0);
     }
@@ -340,6 +360,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderSudoku(board) {
+        if(!sudokuGrid) return;
         sudokuGrid.innerHTML = '';
         for (let i = 0; i < 9; i++) {
             for (let j = 0; j < 9; j++) {
@@ -398,29 +419,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const decideRes = document.getElementById('decision-result');
     const decideInput = document.getElementById('decision-options');
 
-    decideBtn.addEventListener('click', () => {
-        const options = decideInput.value.split('\n').filter(opt => opt.trim() !== '');
-        
-        if (options.length < 2) {
-            decideRes.innerText = "INPUT ERROR";
-            decideRes.style.color = 'var(--danger)';
-            return;
-        }
-
-        let counter = 0;
-        decideRes.style.color = 'var(--text-main)';
-        
-        const interval = setInterval(() => {
-            decideRes.innerText = options[Math.floor(Math.random() * options.length)];
-            counter++;
-            if (counter > 20) {
-                clearInterval(interval);
-                const finalChoice = options[Math.floor(Math.random() * options.length)];
-                decideRes.innerText = finalChoice;
-                decideRes.style.color = 'var(--accent)';
+    if(decideBtn) {
+        decideBtn.addEventListener('click', () => {
+            const options = decideInput.value.split('\n').filter(opt => opt.trim() !== '');
+            
+            if (options.length < 2) {
+                decideRes.innerText = "INPUT ERROR";
+                decideRes.style.color = 'var(--danger)';
+                return;
             }
-        }, 80);
-    });
+
+            let counter = 0;
+            decideRes.style.color = 'var(--text-main)';
+            
+            const interval = setInterval(() => {
+                decideRes.innerText = options[Math.floor(Math.random() * options.length)];
+                counter++;
+                if (counter > 20) {
+                    clearInterval(interval);
+                    const finalChoice = options[Math.floor(Math.random() * options.length)];
+                    decideRes.innerText = finalChoice;
+                    decideRes.style.color = 'var(--accent)';
+                }
+            }, 80);
+        });
+    }
 
     // --- GLOBAL STATS UPDATE ---
     function updateDashboardStats() {
@@ -428,12 +451,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const pendingCount = tasks.filter(t => t.status === 'pending').length;
 
         // Sidebar
-        document.getElementById('sidebar-done').innerText = doneCount;
-        document.getElementById('sidebar-todo').innerText = pendingCount;
-        document.getElementById('sidebar-focus').innerText = Math.round(totalFocusTime) + 'm';
+        const sidebarDone = document.getElementById('sidebar-done');
+        const sidebarTodo = document.getElementById('sidebar-todo');
+        const sidebarFocus = document.getElementById('sidebar-focus');
+        const cardTodoCount = document.getElementById('card-todo-count');
 
-        // Dashboard Card
-        document.getElementById('card-todo-count').innerText = pendingCount;
+        if(sidebarDone) sidebarDone.innerText = doneCount;
+        if(sidebarTodo) sidebarTodo.innerText = pendingCount;
+        if(sidebarFocus) sidebarFocus.innerText = Math.round(totalFocusTime) + 'm';
+        if(cardTodoCount) cardTodoCount.innerText = pendingCount;
     }
 
     // Initial Load
