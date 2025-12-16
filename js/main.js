@@ -1,13 +1,19 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const canvas = document.getElementById("matrix-bg");
-    const ctx = canvas.getContext("2d");
+/* NOXCODE SYSTEM CORE
+    OPERATOR: DAI_DANG_CS
+*/
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    const chars = "10";
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // --- MATRIX RAIN ENGINE ---
+    const canvas = document.getElementById('matrix-rain');
+    const ctx = canvas.getContext('2d');
+    
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+    
+    const chars = '10XYZ01'.split('');
     const fontSize = 14;
-    const columns = canvas.width / fontSize;
+    const columns = width / fontSize;
     const drops = [];
 
     for (let i = 0; i < columns; i++) {
@@ -15,173 +21,265 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function drawMatrix() {
-        ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        ctx.fillStyle = "#0F0";
-        ctx.font = fontSize + "px monospace";
-
+        ctx.fillStyle = 'rgba(5, 5, 5, 0.05)';
+        ctx.fillRect(0, 0, width, height);
+        
+        ctx.fillStyle = '#0F0'; // Green text
+        ctx.font = fontSize + 'px monospace';
+        
         for (let i = 0; i < drops.length; i++) {
-            const text = chars.charAt(Math.floor(Math.random() * chars.length));
+            const text = chars[Math.floor(Math.random() * chars.length)];
             ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+            
+            if (drops[i] * fontSize > height && Math.random() > 0.975) {
                 drops[i] = 0;
             }
             drops[i]++;
         }
     }
+
     setInterval(drawMatrix, 50);
-    
-    window.addEventListener("resize", () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
     });
 
-    const navBtns = document.querySelectorAll(".nav-btn");
-    const panels = document.querySelectorAll(".panel");
+    // --- SYSTEM CLOCK ---
+    function updateClock() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('en-US', { hour12: false });
+        document.getElementById('system-clock').innerText = timeString;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
 
-    navBtns.forEach(btn => {
-        btn.addEventListener("click", () => {
-            navBtns.forEach(b => b.classList.remove("active"));
-            panels.forEach(p => p.classList.remove("active"));
-            
-            btn.classList.add("active");
-            document.getElementById(btn.dataset.target).classList.add("active");
+    // --- NAVIGATION LOGIC ---
+    const navItems = document.querySelectorAll('.nav-item');
+    const views = document.querySelectorAll('.view-container');
+    const breadcrumb = document.getElementById('current-module');
+
+    window.navigateTo = function(targetId) {
+        // Remove active states
+        navItems.forEach(item => item.classList.remove('active'));
+        views.forEach(view => view.classList.remove('active'));
+
+        // Set active state
+        document.getElementById(targetId).classList.add('active');
+        const activeNav = document.querySelector(`.nav-item[data-target="${targetId}"]`);
+        if(activeNav) activeNav.classList.add('active');
+
+        // Update Text
+        breadcrumb.innerText = targetId.replace('-view', '').toUpperCase();
+    }
+
+    navItems.forEach(item => {
+        item.addEventListener('click', () => {
+            navigateTo(item.dataset.target);
         });
     });
 
-    const taskInput = document.getElementById("task-input");
-    const addTaskBtn = document.getElementById("btn-add-task");
-    const taskList = document.getElementById("task-list");
-    const statDone = document.getElementById("stat-done");
-    const statPending = document.getElementById("stat-pending");
+    // --- TYPEWRITER EFFECT ---
+    const textToType = "System optimized for Operator Dai. Ready to code.";
+    const typeEl = document.getElementById('typing-effect');
+    let charIndex = 0;
+    
+    function typeWriter() {
+        if (charIndex < textToType.length) {
+            typeEl.innerHTML = textToType.substring(0, charIndex + 1);
+            charIndex++;
+            setTimeout(typeWriter, 50);
+        }
+    }
+    setTimeout(typeWriter, 1000);
 
-    function updateStats() {
-        const total = taskList.children.length;
-        const done = document.querySelectorAll("#task-list li.done").length;
-        statDone.textContent = done;
-        statPending.textContent = total - done;
+    // --- TRACKER MODULE (LOCAL STORAGE) ---
+    const taskInput = document.getElementById('new-task-input');
+    const addTaskBtn = document.getElementById('add-task-btn');
+    const todoList = document.getElementById('todo-list');
+    const doneList = document.getElementById('done-list');
+    
+    // Load from LocalStorage
+    let tasks = JSON.parse(localStorage.getItem('noxTasks')) || [];
+
+    function saveTasks() {
+        localStorage.setItem('noxTasks', JSON.stringify(tasks));
+        renderTasks();
+        updateDashboardStats();
     }
 
-    addTaskBtn.addEventListener("click", () => {
-        const txt = taskInput.value.trim();
-        if (txt) {
-            const li = document.createElement("li");
-            li.innerHTML = `<span>${txt}</span> <span style="cursor:pointer; color:#555;">[X]</span>`;
+    function renderTasks() {
+        todoList.innerHTML = '';
+        doneList.innerHTML = '';
+        
+        tasks.forEach((task, index) => {
+            const li = document.createElement('li');
+            li.className = `task-item ${task.status}`;
             
-            li.addEventListener("click", (e) => {
-                if(e.target.tagName !== 'SPAN' || e.target.innerText !== '[X]') {
-                    li.classList.toggle("done");
-                    updateStats();
-                }
-            });
+            li.innerHTML = `
+                <span class="task-text">${task.text}</span>
+                <div class="task-actions">
+                    <button class="icon-btn check" onclick="toggleTask(${index})">✓</button>
+                    <button class="icon-btn trash" onclick="deleteTask(${index})">✕</button>
+                </div>
+            `;
 
-            li.querySelector("span:last-child").addEventListener("click", () => {
-                li.remove();
-                updateStats();
-            });
+            if (task.status === 'pending') {
+                todoList.appendChild(li);
+            } else {
+                doneList.appendChild(li);
+            }
+        });
+    }
 
-            taskList.appendChild(li);
-            taskInput.value = "";
-            updateStats();
+    window.addTask = function() {
+        const text = taskInput.value.trim();
+        if (text) {
+            tasks.push({ text: text, status: 'pending', date: new Date().toISOString() });
+            taskInput.value = '';
+            saveTasks();
         }
+    }
+
+    window.toggleTask = function(index) {
+        tasks[index].status = tasks[index].status === 'pending' ? 'completed' : 'pending';
+        saveTasks();
+    }
+
+    window.deleteTask = function(index) {
+        tasks.splice(index, 1);
+        saveTasks();
+    }
+
+    window.clearAllTasks = function() {
+        if(confirm('WARNING: Purge all task data?')) {
+            tasks = [];
+            saveTasks();
+        }
+    }
+
+    addTaskBtn.addEventListener('click', addTask);
+    taskInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') addTask();
     });
 
+    // --- FOCUS TIMER MODULE ---
     let timerInterval;
-    let timeLeft = 1500; 
+    let timeLeft = 25 * 60;
+    let totalFocusTime = parseInt(localStorage.getItem('noxFocusTime')) || 0;
     let isRunning = false;
-    const timeDisplay = document.getElementById("time-display");
-    const circleProgress = document.getElementById("timer-path");
-    const btnStart = document.getElementById("btn-start-focus");
-    const btnPause = document.getElementById("btn-pause-focus");
-    const btnReset = document.getElementById("btn-reset-focus");
-    const statFocus = document.getElementById("stat-focus");
-    let totalFocusMinutes = 0;
+    const circle = document.querySelector('.progress-ring__circle');
+    const radius = circle.r.baseVal.value;
+    const circumference = radius * 2 * Math.PI;
 
-    const fullDash = 283; 
+    circle.style.strokeDasharray = `${circumference} ${circumference}`;
+    circle.style.strokeDashoffset = circumference;
 
-    function formatTime(s) {
-        const m = Math.floor(s / 60).toString().padStart(2, "0");
-        const sec = (s % 60).toString().padStart(2, "0");
-        return `${m}:${sec}`;
+    function setProgress(percent) {
+        const offset = circumference - (percent / 100) * circumference;
+        circle.style.strokeDashoffset = offset;
     }
 
-    function setCircle(time) {
-        const fraction = time / 1500;
-        const offset = fullDash - (fraction * fullDash);
-        circleProgress.style.strokeDashoffset = offset;
+    function formatTime(seconds) {
+        const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+        const s = (seconds % 60).toString().padStart(2, '0');
+        return `${m}:${s}`;
     }
 
-    function startTimer() {
-        if (!isRunning) {
+    function updateDisplay() {
+        document.getElementById('timer-val').innerText = formatTime(timeLeft);
+    }
+
+    const modeBtns = document.querySelectorAll('.mode-btn');
+    let currentModeTime = 25 * 60;
+
+    modeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            modeBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const mins = parseInt(btn.dataset.time);
+            currentModeTime = mins * 60;
+            resetTimer();
+        });
+    });
+
+    document.getElementById('timer-start').addEventListener('click', function() {
+        if (isRunning) {
+            // Pause
+            clearInterval(timerInterval);
+            this.innerText = 'RESUME';
+            this.classList.add('secondary');
+            isRunning = false;
+        } else {
+            // Start
+            this.innerText = 'PAUSE';
+            this.classList.remove('secondary');
             isRunning = true;
-            btnStart.style.display = "none";
-            btnPause.style.display = "inline-block";
             timerInterval = setInterval(() => {
                 if (timeLeft > 0) {
                     timeLeft--;
-                    timeDisplay.textContent = formatTime(timeLeft);
-                    setCircle(timeLeft);
+                    updateDisplay();
+                    const percent = ((currentModeTime - timeLeft) / currentModeTime) * 100;
+                    setProgress(percent);
                 } else {
                     clearInterval(timerInterval);
                     isRunning = false;
-                    totalFocusMinutes += 25;
-                    statFocus.textContent = totalFocusMinutes + "m";
-                    alert("Focus session completed!");
+                    totalFocusTime += (currentModeTime / 60);
+                    localStorage.setItem('noxFocusTime', totalFocusTime);
+                    updateDashboardStats();
+                    alert('SESSION COMPLETE');
                     resetTimer();
                 }
             }, 1000);
         }
-    }
+    });
 
-    function pauseTimer() {
+    window.resetTimer = function() {
         clearInterval(timerInterval);
+        timeLeft = currentModeTime;
         isRunning = false;
-        btnStart.style.display = "inline-block";
-        btnPause.style.display = "none";
+        document.getElementById('timer-start').innerText = 'INITIALIZE';
+        document.getElementById('timer-start').classList.remove('secondary');
+        updateDisplay();
+        setProgress(0);
     }
 
-    function resetTimer() {
-        pauseTimer();
-        timeLeft = 1500;
-        timeDisplay.textContent = "25:00";
-        circleProgress.style.strokeDashoffset = 0;
-    }
+    // --- SUDOKU ENGINE (BACKTRACKING) ---
+    const sudokuGrid = document.getElementById('sudoku-grid');
+    let currentDiff = 'easy';
+    let solutionMatrix = [];
 
-    btnStart.addEventListener("click", startTimer);
-    btnPause.addEventListener("click", pauseTimer);
-    btnReset.addEventListener("click", resetTimer);
-
-    const sudokuBoard = document.getElementById("sudoku-board");
-    const diffBtns = document.querySelectorAll(".diff-btn");
-    let currentLevel = 'easy';
-
-    diffBtns.forEach(btn => {
-        btn.addEventListener("click", () => {
-            diffBtns.forEach(b => b.classList.remove("active"));
-            btn.classList.add("active");
-            currentLevel = btn.dataset.level;
+    document.querySelectorAll('.diff-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            document.querySelectorAll('.diff-chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            currentDiff = chip.dataset.diff;
+            generateNewGame();
         });
     });
 
-    function isValid(board, row, col, num) {
-        for (let x = 0; x < 9; x++) if (board[row][x] === num || board[x][col] === num) return false;
-        const startRow = row - row % 3, startCol = col - col % 3;
-        for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) if (board[i + startRow][j + startCol] === num) return false;
+    function isValid(board, row, col, k) {
+        for (let i = 0; i < 9; i++) {
+            if (board[i][col] === k) return false;
+            if (board[row][i] === k) return false;
+            if (board[3 * Math.floor(row / 3) + Math.floor(i / 3)][3 * Math.floor(col / 3) + i % 3] === k) return false;
+        }
         return true;
     }
 
-    function solve(board) {
-        for (let r = 0; r < 9; r++) {
-            for (let c = 0; c < 9; c++) {
-                if (board[r][c] === 0) {
-                    let nums = [1,2,3,4,5,6,7,8,9].sort(() => Math.random() - 0.5);
-                    for (let num of nums) {
-                        if (isValid(board, r, c, num)) {
-                            board[r][c] = num;
-                            if (solve(board)) return true;
-                            board[r][c] = 0;
+    function solveSudoku(board) {
+        for (let i = 0; i < 9; i++) {
+            for (let j = 0; j < 9; j++) {
+                if (board[i][j] === 0) {
+                    let nums = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+                    // Shuffle for randomness
+                    nums.sort(() => Math.random() - 0.5);
+                    
+                    for (let k of nums) {
+                        if (isValid(board, i, j, k)) {
+                            board[i][j] = k;
+                            if (solveSudoku(board)) return true;
+                            board[i][j] = 0;
                         }
                     }
                     return false;
@@ -191,75 +289,155 @@ document.addEventListener("DOMContentLoaded", () => {
         return true;
     }
 
-    function generateSudoku() {
-        let board = Array.from({length: 9}, () => Array(9).fill(0));
-        solve(board);
+    window.generateNewGame = function() {
+        // Create empty board
+        let board = Array.from({ length: 9 }, () => Array(9).fill(0));
         
-        let attempts = currentLevel === 'easy' ? 30 : currentLevel === 'medium' ? 45 : 55;
+        // Fill diagonal 3x3 matrices first (independent) for better randomization
+        for (let i = 0; i < 9; i = i + 3) {
+            fillBox(board, i, i);
+        }
+
+        // Solve the rest
+        solveSudoku(board);
+        
+        // Save solution
+        solutionMatrix = JSON.parse(JSON.stringify(board));
+
+        // Remove digits based on difficulty
+        let attempts = currentDiff === 'easy' ? 30 : currentDiff === 'medium' ? 45 : 55;
         while (attempts > 0) {
-            let r = Math.floor(Math.random() * 9);
-            let c = Math.floor(Math.random() * 9);
-            if (board[r][c] !== 0) {
-                board[r][c] = 0;
+            let row = Math.floor(Math.random() * 9);
+            let col = Math.floor(Math.random() * 9);
+            if (board[row][col] !== 0) {
+                board[row][col] = 0;
                 attempts--;
             }
         }
-        renderBoard(board);
+
+        renderSudoku(board);
     }
 
-    function renderBoard(board) {
-        sudokuBoard.innerHTML = "";
-        for (let i = 0; i < 9; i++) {
-            for (let j = 0; j < 9; j++) {
-                const div = document.createElement("div");
-                div.classList.add("cell");
-                if ((i + 1) % 3 === 0 && i < 8) div.classList.add("cell-row-3");
-                
-                if (board[i][j] !== 0) {
-                    div.textContent = board[i][j];
-                    div.style.fontWeight = "bold";
-                    div.dataset.val = board[i][j];
-                } else {
-                    const inp = document.createElement("input");
-                    inp.type = "text";
-                    inp.maxLength = 1;
-                    inp.addEventListener("input", function() {
-                        this.value = this.value.replace(/[^1-9]/g, "");
-                    });
-                    div.appendChild(inp);
-                }
-                sudokuBoard.appendChild(div);
+    function fillBox(board, row, col) {
+        let num;
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                do {
+                    num = Math.floor(Math.random() * 9) + 1;
+                } while (!isSafeInBox(board, row, col, num));
+                board[row + i][col + j] = num;
             }
         }
     }
 
-    document.getElementById("btn-new-game").addEventListener("click", generateSudoku);
-    
-    document.getElementById("btn-check-sudoku").addEventListener("click", () => {
-        alert("Tính năng check đang được cập nhật bởi Operator!");
-    });
+    function isSafeInBox(board, rowStart, colStart, num) {
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (board[rowStart + i][colStart + j] === num) return false;
+            }
+        }
+        return true;
+    }
 
-    generateSudoku(); 
+    function renderSudoku(board) {
+        sudokuGrid.innerHTML = '';
+        for (let i = 0; i < 9; i++) {
+            for (let j = 0; j < 9; j++) {
+                const cell = document.createElement('div');
+                cell.className = 'sudoku-cell';
+                
+                if (board[i][j] !== 0) {
+                    cell.classList.add('prefilled');
+                    cell.innerText = board[i][j];
+                } else {
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.maxLength = 1;
+                    input.className = 'sudoku-input';
+                    input.dataset.r = i;
+                    input.dataset.c = j;
+                    
+                    input.addEventListener('input', (e) => {
+                        const val = e.target.value;
+                        if (!/^[1-9]$/.test(val)) e.target.value = '';
+                    });
+                    
+                    cell.appendChild(input);
+                }
+                sudokuGrid.appendChild(cell);
+            }
+        }
+    }
 
-    const decideInput = document.getElementById("decide-input");
-    const spinBtn = document.getElementById("btn-spin");
-    const resultDisplay = document.getElementById("decide-result");
+    window.verifySolution = function() {
+        const inputs = document.querySelectorAll('.sudoku-input');
+        let isCorrect = true;
+        
+        inputs.forEach(input => {
+            const r = input.dataset.r;
+            const c = input.dataset.c;
+            const val = parseInt(input.value);
+            
+            if (val !== solutionMatrix[r][c]) {
+                input.style.color = '#ff3333'; // Error color
+                isCorrect = false;
+            } else {
+                input.style.color = '#00ff41'; // Success color
+            }
+        });
 
-    spinBtn.addEventListener("click", () => {
-        const lines = decideInput.value.split("\n").filter(line => line.trim() !== "");
-        if (lines.length < 2) {
-            resultDisplay.textContent = "Nhập ít nhất 2 lựa chọn!";
+        if (isCorrect) {
+            alert('SYSTEM STATUS: VERIFIED. EXCELLENT WORK.');
+        } else {
+            alert('SYSTEM STATUS: ERRORS DETECTED.');
+        }
+    }
+
+    // --- DECIDER MODULE ---
+    const decideBtn = document.getElementById('spin-btn');
+    const decideRes = document.getElementById('decision-result');
+    const decideInput = document.getElementById('decision-options');
+
+    decideBtn.addEventListener('click', () => {
+        const options = decideInput.value.split('\n').filter(opt => opt.trim() !== '');
+        
+        if (options.length < 2) {
+            decideRes.innerText = "INPUT ERROR";
+            decideRes.style.color = 'var(--danger)';
             return;
         }
-        
+
         let counter = 0;
+        decideRes.style.color = 'var(--text-main)';
+        
         const interval = setInterval(() => {
-            resultDisplay.textContent = lines[Math.floor(Math.random() * lines.length)];
+            decideRes.innerText = options[Math.floor(Math.random() * options.length)];
             counter++;
             if (counter > 20) {
                 clearInterval(interval);
-                resultDisplay.style.color = "#00ff41";
+                const finalChoice = options[Math.floor(Math.random() * options.length)];
+                decideRes.innerText = finalChoice;
+                decideRes.style.color = 'var(--accent)';
             }
-        }, 100);
+        }, 80);
     });
+
+    // --- GLOBAL STATS UPDATE ---
+    function updateDashboardStats() {
+        const doneCount = tasks.filter(t => t.status === 'completed').length;
+        const pendingCount = tasks.filter(t => t.status === 'pending').length;
+
+        // Sidebar
+        document.getElementById('sidebar-done').innerText = doneCount;
+        document.getElementById('sidebar-todo').innerText = pendingCount;
+        document.getElementById('sidebar-focus').innerText = Math.round(totalFocusTime) + 'm';
+
+        // Dashboard Card
+        document.getElementById('card-todo-count').innerText = pendingCount;
+    }
+
+    // Initial Load
+    renderTasks();
+    updateDashboardStats();
+    generateNewGame();
 });
