@@ -1,382 +1,444 @@
-/* --- HỆ THỐNG ĐIỀU HƯỚNG (ROUTER) --- */
-const Router = {
-    go: (id) => {
-        // Ẩn tất cả views
-        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-        // Bỏ active button menu
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        
-        // Hiện view cần đến
-        const target = document.getElementById(`view-${id}`);
-        if (target) target.classList.add('active');
-        
-        // Highlight button tương ứng (nếu có)
-        // Tìm button có onclick chứa id này
-        const btns = document.querySelectorAll('.nav-btn');
-        btns.forEach(btn => {
-            if(btn.getAttribute('onclick').includes(id)) {
-                btn.classList.add('active');
+document.addEventListener("DOMContentLoaded", () => {
+    const sfxNice = document.getElementById('sfxNice');
+    const sfxAlarm = document.getElementById('sfxAlarm');
+    const sfxError = document.getElementById('sfxError');
+    sfxAlarm.volume = 0.7;
+
+    function playSound(sound) {
+        sound.currentTime = 0;
+        sound.play().catch(() => {});
+    }
+
+    const canvas = document.getElementById('matrixCanvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    let columns;
+    let drops = [];
+    const matrixChars = '10'.split('');
+    const matrixColors = ['#0f0', '#00ff41', '#39ff14'];
+
+    function initMatrix() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        columns = Math.floor(width / 14);
+        drops = [];
+        for (let i = 0; i < columns; i++) {
+            drops[i] = Math.random() * -100;
+        }
+    }
+
+    function drawMatrix() {
+        ctx.fillStyle = 'rgba(2, 6, 23, 0.05)';
+        ctx.fillRect(0, 0, width, height);
+        ctx.font = '14px JetBrains Mono';
+        for (let i = 0; i < drops.length; i++) {
+            const char = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+            ctx.fillStyle = matrixColors[Math.floor(Math.random() * matrixColors.length)];
+            ctx.fillText(char, i * 14, drops[i] * 14);
+            if (drops[i] * 14 > height && Math.random() > 0.985) {
+                drops[i] = 0;
             }
-        });
+            drops[i]++;
+        }
+        requestAnimationFrame(drawMatrix);
     }
-};
+    initMatrix();
+    drawMatrix();
+    window.addEventListener('resize', initMatrix);
 
-/* --- HIỆU ỨNG MATRIX RAIN --- */
-const Matrix = {
-    init: () => {
-        const c = document.getElementById('matrixCanvas');
-        const ctx = c.getContext('2d');
-        let w = c.width = window.innerWidth;
-        let h = c.height = window.innerHeight;
-        
-        const cols = Math.floor(w / 20);
-        const drops = Array(cols).fill(1);
-        
-        const draw = () => {
-            // Tạo hiệu ứng mờ dần
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'; 
-            ctx.fillRect(0, 0, w, h);
-            
-            // Lấy màu chủ đạo từ CSS
-            ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--primary');
-            ctx.font = '14px monospace';
-            
-            drops.forEach((y, i) => {
-                const text = String.fromCharCode(0x30A0 + Math.random() * 96);
-                ctx.fillText(text, i * 20, y * 20);
-                
-                // Reset ngẫu nhiên khi chạm đáy
-                if(y * 20 > h && Math.random() > 0.975) drops[i] = 0;
-                drops[i]++;
+    const views = document.querySelectorAll('.view-section');
+    const navItems = document.querySelectorAll('.nav-item');
+    const quickCards = document.querySelectorAll('.quick-card');
+    const logoBtn = document.getElementById('logo');
+
+    function switchView(viewId) {
+        views.forEach(v => v.classList.remove('active', 'hidden'));
+        navItems.forEach(n => n.classList.remove('active'));
+        const target = document.querySelector(`[data-view="${viewId}"]`);
+        if (target) target.classList.add('active');
+        const activeNav = document.querySelector(`.nav-item[data-view="${viewId}"]`);
+        if (activeNav) activeNav.classList.add('active');
+        if (viewId !== 'main') playSound(sfxNice);
+    }
+
+    navItems.forEach(nav => nav.addEventListener('click', (e) => {
+        e.preventDefault();
+        switchView(nav.dataset.view);
+    }));
+
+    quickCards.forEach(card => card.addEventListener('click', () => {
+        switchView(card.dataset.viewTarget);
+    }));
+
+    logoBtn.addEventListener('click', () => switchView('main'));
+
+    const typingTextStr = "Initializing system... Protocol: NOXCODE. Status: Online. Ready to optimize.";
+    const typingTextEl = document.getElementById('typingText');
+    let charIdx = 0;
+    function typeWriter() {
+        if (charIdx < typingTextStr.length) {
+            typingTextEl.textContent += typingTextStr.charAt(charIdx);
+            charIdx++;
+            setTimeout(typeWriter, 40);
+        }
+    }
+    setTimeout(typeWriter, 500);
+
+    let practices = JSON.parse(localStorage.getItem("nox_practices")) || [];
+    const problemInput = document.getElementById('problemName');
+    const platformInput = document.getElementById('platform');
+    const addBtn = document.getElementById('addPractice');
+    const practiceList = document.getElementById('practiceList');
+    const doneCountEl = document.getElementById('doneCount');
+    const toDoCountEl = document.getElementById('toDoCount');
+    const totalCountEl = document.getElementById('totalCount');
+
+    function savePractices() {
+        localStorage.setItem("nox_practices", JSON.stringify(practices));
+        renderPractices();
+        updateStats();
+    }
+
+    function updateStats() {
+        const total = practices.length;
+        const done = practices.filter(p => p.status === 'done').length;
+        totalCountEl.textContent = total;
+        doneCountEl.textContent = done;
+        toDoCountEl.textContent = total - done;
+    }
+
+    function renderPractices() {
+        practiceList.innerHTML = '';
+        if (practices.length === 0) {
+            practiceList.innerHTML = '<li style="justify-content: center; opacity: 0.6;">Chưa có dữ liệu. Hãy thêm bài tập mới.</li>';
+            return;
+        }
+        practices.forEach((p, index) => {
+            const li = document.createElement('li');
+            li.className = `status-${p.status}`;
+            li.innerHTML = `
+                <div class="practice-details">
+                    <span class="problem-name">${p.name}</span>
+                    <span class="platform-tag">${p.platform || 'N/A'}</span>
+                </div>
+                <div class="item-actions">
+                    <button class="status-btn">${p.status === 'done' ? 'Hoàn thành' : 'Đang chờ'}</button>
+                    <span class="del-btn">✖</span>
+                </div>
+            `;
+            const statusBtn = li.querySelector('.status-btn');
+            statusBtn.addEventListener('click', () => {
+                p.status = p.status === 'todo' ? 'done' : 'todo';
+                savePractices();
+                playSound(sfxNice);
             });
-        };
-        
-        setInterval(draw, 33);
-        
-        window.onresize = () => { 
-            w = c.width = window.innerWidth; 
-            h = c.height = window.innerHeight; 
-        };
-    }
-};
-
-/* --- MODULE: PRACTICE TRACKER --- */
-const Tracker = {
-    data: JSON.parse(localStorage.getItem('nox_tasks')) || [],
-    
-    add: () => {
-        const n = document.getElementById('trackName');
-        const p = document.getElementById('trackPlat');
-        
-        if(!n.value) return;
-        
-        Tracker.data.unshift({
-            id: Date.now(), 
-            name: n.value, 
-            plat: p.value || 'General', 
-            done: false
+            const delBtn = li.querySelector('.del-btn');
+            delBtn.addEventListener('click', () => {
+                if(confirm('Xóa bài tập này?')) {
+                    practices.splice(index, 1);
+                    savePractices();
+                }
+            });
+            practiceList.appendChild(li);
         });
-        
-        n.value = ''; p.value = ''; 
-        Tracker.save();
-    },
-    
-    toggle: (id) => { 
-        const t = Tracker.data.find(x => x.id === id); 
-        if(t){ t.done = !t.done; Tracker.save(); } 
-    },
-    
-    del: (id) => { 
-        Tracker.data = Tracker.data.filter(x => x.id !== id); 
-        Tracker.save(); 
-    },
-    
-    save: () => { 
-        localStorage.setItem('nox_tasks', JSON.stringify(Tracker.data)); 
-        Tracker.render(); 
-    },
-    
-    render: () => {
-        const list = document.getElementById('taskList'); 
-        list.innerHTML = '';
-        
-        Tracker.data.forEach(t => {
-            list.innerHTML += `
-                <li class="task">
-                    <div class="task-info">
-                        <span style="font-weight:600; font-size:16px; text-decoration:${t.done?'line-through':''}">${t.name}</span>
-                        <span class="task-meta">${t.plat}</span>
-                    </div>
-                    <div class="task-actions">
-                        <span class="badge ${t.done?'done':'todo'}">${t.done?'DONE':'TODO'}</span>
-                        <button onclick="Tracker.toggle(${t.id})">✓</button>
-                        <button onclick="Tracker.del(${t.id})">X</button>
-                    </div>
-                </li>`;
-        });
-        
-        // Update stats sidebar
-        document.getElementById('statDone').innerText = Tracker.data.filter(x=>x.done).length;
-        document.getElementById('statPending').innerText = Tracker.data.filter(x=>!x.done).length;
     }
-};
 
-/* --- MODULE: FOCUS TIMER --- */
-const Focus = {
-    time: 1500, total: 1500, timer: null,
-    
-    set: (min, btn) => {
-        Focus.stop(); 
-        Focus.time = Focus.total = min * 60; 
-        Focus.update();
-        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    addBtn.addEventListener('click', () => {
+        const name = problemInput.value.trim();
+        const platform = platformInput.value.trim();
+        if (name) {
+            practices.unshift({ name, platform, status: 'todo', id: Date.now() });
+            problemInput.value = '';
+            platformInput.value = '';
+            savePractices();
+            playSound(sfxNice);
+        } else {
+            playSound(sfxError);
+            problemInput.focus();
+        }
+    });
+    renderPractices();
+    updateStats();
+
+    let timerInterval;
+    let timeLeft = 25 * 60;
+    let totalTime = 25 * 60;
+    let isRunning = false;
+    let sessionCount = 0;
+    const timerEl = document.getElementById('timer');
+    const startBtn = document.getElementById('startFocus');
+    const stopBtn = document.getElementById('stopFocus');
+    const resetBtn = document.getElementById('resetFocus');
+    const modeBtns = document.querySelectorAll('.mode-btn');
+    const sessionLabel = document.getElementById('sessionTypeLabel');
+    const sessionCountEl = document.getElementById('sessionCount');
+    const timerProgress = document.getElementById('timerProgress');
+    const FULL_DASH_ARRAY = 2 * Math.PI * 140;
+
+    timerProgress.style.strokeDasharray = `${FULL_DASH_ARRAY} ${FULL_DASH_ARRAY}`;
+
+    function updateTimerUI() {
+        const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+        const s = (timeLeft % 60).toString().padStart(2, '0');
+        timerEl.textContent = `${m}:${s}`;
+        document.title = isRunning ? `(${m}:${s}) NOXCODE Focus` : 'NOXCODE - Ultimate Productivity';
+        const rawOffset = FULL_DASH_ARRAY - (timeLeft / totalTime) * FULL_DASH_ARRAY;
+        const offset = Math.min(FULL_DASH_ARRAY, Math.max(0, rawOffset));
+        timerProgress.style.strokeDashoffset = offset;
+    }
+
+    function switchMode(mode, minutes, btn) {
+        if (isRunning) stopTimer();
+        timeLeft = totalTime = minutes * 60;
+        sessionLabel.textContent = mode === 'pomodoro' ? 'FOCUS SESSION' : 'BREAK TIME';
+        modeBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-    },
-    
-    start: () => {
-        if(Focus.timer) return;
-        document.getElementById('btnStart').classList.add('hidden');
-        document.getElementById('btnStop').classList.remove('hidden');
-        
-        Focus.timer = setInterval(() => {
-            Focus.time--; 
-            Focus.update();
-            if(Focus.time <= 0) { 
-                Focus.stop(); 
-                alert("Session Done!"); 
-                Focus.reset(); 
+        updateTimerUI();
+        resetBtn.classList.add('hidden');
+        playSound(sfxNice);
+    }
+
+    modeBtns.forEach(btn => {
+        btn.addEventListener('click', () => switchMode(btn.dataset.mode, parseInt(btn.dataset.time), btn));
+    });
+
+    function startTimer() {
+        if (isRunning) return;
+        isRunning = true;
+        startBtn.classList.add('hidden');
+        stopBtn.classList.remove('hidden');
+        resetBtn.classList.add('hidden');
+        sessionLabel.textContent = 'SESSION ACTIVE';
+        sessionLabel.style.color = 'var(--neon-green)';
+        playSound(sfxNice);
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            updateTimerUI();
+            if (timeLeft <= 0) {
+                handleTimerComplete();
             }
         }, 1000);
-    },
-    
-    stop: () => {
-        clearInterval(Focus.timer); 
-        Focus.timer = null;
-        document.getElementById('btnStart').classList.remove('hidden');
-        document.getElementById('btnStop').classList.add('hidden');
-    },
-    
-    reset: () => { 
-        Focus.stop(); 
-        Focus.time = Focus.total; 
-        Focus.update(); 
-    },
-    
-    update: () => {
-        const m = Math.floor(Focus.time / 60).toString().padStart(2,0);
-        const s = (Focus.time % 60).toString().padStart(2,0);
-        document.getElementById('timerDisplay').innerText = `${m}:${s}`;
-        
-        // Update SVG Circle (880 is approx circumference for r=140)
-        const off = 880 - (Focus.time / Focus.total) * 880;
-        document.getElementById('timerPath').style.strokeDashoffset = off;
     }
-};
 
-/* --- MODULE: SUDOKU ENGINE (BACKTRACKING) --- */
-const Sudoku = {
-    sel: null, board: [], sol: [], diff: 30,
-    
-    setDiff: (d, btn) => {
-        Sudoku.diff = d;
-        document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-    },
-    
-    newGame: () => {
-        const b = Array.from({length:9}, ()=>Array(9).fill(0));
-        // Fill diagonals first (safe)
-        for(let i=0; i<9; i+=3) Sudoku.fillBox(b, i, i);
-        // Solve to generate full board
-        Sudoku.solve(b); 
-        Sudoku.sol = JSON.parse(JSON.stringify(b));
-        // Remove cells based on difficulty
-        for(let i=0; i<Sudoku.diff; i++) {
-            let r = Math.floor(Math.random()*9);
-            let c = Math.floor(Math.random()*9);
-            b[r][c] = 0;
-        }
-        Sudoku.board = b; 
-        Sudoku.render();
-    },
-    
-    fillBox: (b,r,c) => {
-        let n; 
-        for(let i=0;i<3;i++) for(let j=0;j<3;j++) {
-            do{ n=Math.floor(Math.random()*9)+1 } while(!Sudoku.safeBox(b,r,c,n));
-            b[r+i][c+j] = n;
-        }
-    },
-    
-    safeBox: (b,r,c,n) => { 
-        for(let i=0;i<3;i++) for(let j=0;j<3;j++) if(b[r+i][c+j]==n) return false; 
-        return true; 
-    },
-    
-    solve: (b) => {
-        for(let r=0;r<9;r++) for(let c=0;c<9;c++) if(b[r][c]==0) {
-            for(let n=1;n<=9;n++) if(Sudoku.safe(b,r,c,n)) {
-                b[r][c]=n; 
-                if(Sudoku.solve(b)) return true; 
-                b[r][c]=0;
-            }
-            return false;
-        }
-        return true;
-    },
-    
-    safe: (b,r,c,n) => {
-        for(let x=0;x<9;x++) if(b[r][x]==n || b[x][c]==n) return false;
-        let sr=r-r%3, sc=c-c%3;
-        for(let i=0;i<3;i++) for(let j=0;j<3;j++) if(b[sr+i][sc+j]==n) return false;
-        return true;
-    },
-    
-    render: () => {
-        const g = document.getElementById('sudokuGrid'); 
-        g.innerHTML = '';
-        for(let r=0;r<9;r++) for(let c=0;c<9;c++) {
-            const d = document.createElement('div');
-            d.className = 'cell ' + (Sudoku.board[r][c]?'fixed':'');
-            d.innerText = Sudoku.board[r][c] || '';
-            if(!Sudoku.board[r][c]) {
-                d.onclick = () => {
-                    document.querySelectorAll('.cell').forEach(x=>x.classList.remove('selected'));
-                    d.classList.add('selected'); 
-                    Sudoku.sel = {r,c,el:d};
-                };
-            }
-            g.appendChild(d);
-        }
-        document.getElementById('errCount').innerText = "0";
-    },
-    
-    fill: (v) => {
-        if(!Sudoku.sel) return;
-        if(v==0) { 
-            Sudoku.sel.el.innerText = ''; 
-            Sudoku.sel.el.classList.remove('error');
-            return; 
-        }
-        
-        Sudoku.sel.el.innerText = v;
-        const correct = Sudoku.sol[Sudoku.sel.r][Sudoku.sel.c];
-        
-        if(v != correct) {
-            Sudoku.sel.el.classList.add('error');
-            let err = document.getElementById('errCount');
-            err.innerText = parseInt(err.innerText) + 1;
+    function stopTimer() {
+        clearInterval(timerInterval);
+        isRunning = false;
+        startBtn.classList.remove('hidden');
+        stopBtn.classList.add('hidden');
+        resetBtn.classList.remove('hidden');
+        sessionLabel.textContent = 'PAUSED';
+        sessionLabel.style.color = 'var(--neon-red)';
+    }
+
+    function resetTimer() {
+        stopTimer();
+        const activeModeBtn = document.querySelector('.mode-btn.active');
+        timeLeft = totalTime = parseInt(activeModeBtn.dataset.time) * 60;
+        updateTimerUI();
+        resetBtn.classList.add('hidden');
+        sessionLabel.textContent = 'READY';
+        sessionLabel.style.color = 'var(--neon-purple)';
+        playSound(sfxNice);
+    }
+
+    function handleTimerComplete() {
+        stopTimer();
+        playSound(sfxAlarm);
+        const activeMode = document.querySelector('.mode-btn.active').dataset.mode;
+        if (activeMode === 'pomodoro') {
+            sessionCount++;
+            sessionCountEl.textContent = `Phiên hoàn thành: ${sessionCount}`;
+            alert("🎉 Hoàn thành phiên làm việc! Hãy nghỉ ngơi chút đi.");
         } else {
-            Sudoku.sel.el.classList.remove('error');
+            alert("🔔 Hết giờ nghỉ! Quay lại làm việc nào.");
+        }
+        resetTimer();
+    }
+
+    startBtn.addEventListener('click', startTimer);
+    stopBtn.addEventListener('click', stopTimer);
+    resetBtn.addEventListener('click', resetTimer);
+    updateTimerUI();
+
+    const sudokuGridEl = document.getElementById('sudokuGrid9x9');
+    const newGameBtn = document.getElementById('newGameBtn');
+    const checkGameBtn = document.getElementById('checkGameBtn');
+    const sudokuStatus = document.getElementById('sudokuStatus');
+    const diffBtns = document.querySelectorAll('.diff-btn');
+    let currentDifficulty = 'easy';
+    let solutionBoard = [];
+
+    diffBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            diffBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentDifficulty = btn.dataset.diff;
+            playSound(sfxNice);
+        });
+    });
+
+    function isValidPlace(board, row, col, num) {
+        for (let i = 0; i < 9; i++) {
+            if (board[row][i] === num || board[i][col] === num) return false;
+        }
+        const startRow = Math.floor(row / 3) * 3;
+        const startCol = Math.floor(col / 3) * 3;
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (board[startRow + i][startCol + j] === num) return false;
+            }
+        }
+        return true;
+    }
+
+    function solveSudoku(board) {
+        for (let row = 0; row < 9; row++) {
+            for (let col = 0; col < 9; col++) {
+                if (board[row][col] === 0) {
+                    const nums = [1, 2, 3, 4, 5, 6, 7, 8, 9].sort(() => Math.random() - 0.5);
+                    for (let num of nums) {
+                        if (isValidPlace(board, row, col, num)) {
+                            board[row][col] = num;
+                            if (solveSudoku(board)) return true;
+                            board[row][col] = 0;
+                        }
+                    }
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    function generateSudoku() {
+        const board = Array.from({ length: 9 }, () => Array(9).fill(0));
+        solveSudoku(board);
+        solutionBoard = JSON.parse(JSON.stringify(board));
+        
+        let cellsToRemove;
+        switch (currentDifficulty) {
+            case 'hard': cellsToRemove = 55; break;
+            case 'medium': cellsToRemove = 40; break;
+            default: cellsToRemove = 25;
+        }
+
+        while (cellsToRemove > 0) {
+            const row = Math.floor(Math.random() * 9);
+            const col = Math.floor(Math.random() * 9);
+            if (board[row][col] !== 0) {
+                board[row][col] = 0;
+                cellsToRemove--;
+            }
+        }
+        return board;
+    }
+
+    function renderSudoku(board) {
+        sudokuGridEl.innerHTML = '';
+        sudokuStatus.textContent = ''; sudokuStatus.className = 'status-message';
+        for (let i = 0; i < 9; i++) {
+            for (let j = 0; j < 9; j++) {
+                const cell = document.createElement('div');
+                cell.className = 'sudoku-cell-pro';
+                if ((j + 1) % 3 === 0 && j < 8) cell.classList.add('thick-right');
+                if ((i + 1) % 3 === 0 && i < 8) cell.classList.add('thick-bottom');
+                
+                if (board[i][j] !== 0) {
+                    cell.classList.add('fixed');
+                    cell.textContent = board[i][j];
+                } else {
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.className = 'sudoku-input';
+                    input.maxLength = 1;
+                    input.dataset.row = i;
+                    input.dataset.col = j;
+                    input.addEventListener('input', (e) => {
+                        const val = e.target.value;
+                        if (!/^[1-9]$/.test(val)) e.target.value = '';
+                    });
+                    cell.appendChild(input);
+                }
+                sudokuGridEl.appendChild(cell);
+            }
         }
     }
-};
 
-/* --- MODULE: DECISION MAKER --- */
-const Decide = {
-    run: () => {
-        const txt = document.getElementById('decideInput').value;
-        const opts = txt.split('\n').filter(x=>x.trim());
-        
-        if(opts.length<2) { alert('Enter 2+ options'); return; }
-        
-        const res = document.getElementById('decideResult');
-        let i=0; 
-        const t = setInterval(() => {
-            res.innerText = opts[Math.floor(Math.random()*opts.length)];
-            if(++i>20) clearInterval(t);
-        }, 50);
-    }
-};
+    newGameBtn.addEventListener('click', () => {
+        const board = generateSudoku();
+        renderSudoku(board);
+        playSound(sfxNice);
+    });
 
-/* --- COMMAND PALETTE (CTRL+K) --- */
-const Cmd = {
-    list: [
-        {k:'goto dashboard', d:'Go Home', f:()=>Router.go('dashboard')},
-        {k:'goto tracker', d:'Manage Tasks', f:()=>Router.go('tracker')},
-        {k:'goto focus', d:'Pomodoro Timer', f:()=>Router.go('focus')},
-        {k:'goto sudoku', d:'Play Sudoku', f:()=>Router.go('sudoku')},
-        {k:'goto decide', d:'Randomizer', f:()=>Router.go('decide')},
-        {k:'theme blue', d:'Cyber Blue Theme', f:()=>document.body.setAttribute('data-theme','blue')},
-        {k:'theme red', d:'Alert Red Theme', f:()=>document.body.setAttribute('data-theme','red')},
-        {k:'theme gold', d:'Industrial Theme', f:()=>document.body.setAttribute('data-theme','gold')},
-        {k:'theme green', d:'Matrix Theme', f:()=>document.body.removeAttribute('data-theme')},
-        {k:'clear', d:'Clear Done Tasks', f:()=>{ 
-            Tracker.data = Tracker.data.filter(x=>!x.done); 
-            Tracker.save(); 
-        }}
-    ],
-    
-    init: () => {
-        // Toggle Listener
-        document.addEventListener('keydown', e => {
-            if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()=='k') {
-                e.preventDefault();
-                const ol = document.getElementById('cmdOverlay');
-                ol.classList.toggle('show');
-                if(ol.classList.contains('show')) {
-                    document.getElementById('cmdInput').value = '';
-                    document.getElementById('cmdInput').focus();
-                    Cmd.render(Cmd.list);
-                }
-            }
-            if(e.key=='Escape') document.getElementById('cmdOverlay').classList.remove('show');
+    checkGameBtn.addEventListener('click', () => {
+        const inputs = sudokuGridEl.querySelectorAll('.sudoku-input');
+        let isFull = true;
+        let isCorrect = true;
+        inputs.forEach(input => {
+            if (!input.value) isFull = false;
         });
 
-        // Input Listener
-        document.getElementById('cmdInput').addEventListener('input', e => {
-            const val = e.target.value.toLowerCase();
-            const filtered = Cmd.list.filter(c => c.k.includes(val));
-            Cmd.render(filtered);
-        });
+        if (!isFull) {
+            sudokuStatus.textContent = 'Vui lòng điền đầy đủ các ô trống!';
+            sudokuStatus.className = 'status-message error';
+            playSound(sfxError);
+            return;
+        }
 
-        // Enter Listener
-        document.getElementById('cmdInput').addEventListener('keydown', e => {
-            if(e.key=='Enter') {
-                const val = e.target.value.toLowerCase();
-                const cmd = Cmd.list.find(c => c.k === val);
-                if(cmd) { 
-                    cmd.f(); 
-                    document.getElementById('cmdOverlay').classList.remove('show'); 
-                } else {
-                    // Nếu ấn enter mà chưa chọn chính xác, chạy cái đầu tiên trong list gợi ý
-                    const first = document.querySelector('.cmd-item');
-                    if(first) first.click();
-                }
+        inputs.forEach(input => {
+            const row = parseInt(input.dataset.row);
+            const col = parseInt(input.dataset.col);
+            if (parseInt(input.value) !== solutionBoard[row][col]) {
+                isCorrect = false;
             }
         });
-    },
 
-    render: (items) => {
-        const l = document.getElementById('cmdList');
-        l.innerHTML = '';
-        items.forEach(c => {
-            l.innerHTML += `
-                <div class="cmd-item" onclick="Cmd.exec('${c.k}')">
-                    <span>${c.k}</span>
-                    <span>${c.d}</span>
-                </div>`;
-        });
-    },
+        if (isCorrect) {
+            sudokuStatus.textContent = '🎉 CHÍNH XÁC! Bạn là một thiên tài!';
+            sudokuStatus.className = 'status-message success';
+            playSound(sfxNice);
+        } else {
+            sudokuStatus.textContent = '❌ Vẫn còn sai sót. Hãy kiểm tra lại!';
+            sudokuStatus.className = 'status-message error';
+            playSound(sfxError);
+        }
+    });
 
-    exec: (key) => {
-        const cmd = Cmd.list.find(c => c.k === key);
-        if(cmd) cmd.f();
-        document.getElementById('cmdOverlay').classList.remove('show');
-    }
-};
+    const spinBtn = document.getElementById('spinButton');
+    const decisionInput = document.getElementById('decisionInput');
+    const finalResult = document.getElementById('finalResult');
+    let isSpinning = false;
 
-/* --- INITIALIZATION --- */
-window.onload = () => {
-    Matrix.init(); 
-    Tracker.render(); 
-    Sudoku.newGame(); 
-    Cmd.init();
-    
-    // Typing Effect on Dashboard
-    const t = "Initializing NOXCODE V3.5... System Ready.";
-    let i=0; const el = document.getElementById('typing');
-    el.innerText='';
-    const type = () => { if(i<t.length){el.innerText+=t.charAt(i++); setTimeout(type,30)} };
-    type();
-};
+    spinBtn.addEventListener('click', () => {
+        if (isSpinning) return;
+        const options = decisionInput.value.split('\n').filter(opt => opt.trim() !== '');
+        if (options.length < 2) {
+            finalResult.textContent = 'Cần ít nhất 2 lựa chọn!';
+            finalResult.style.color = 'var(--neon-red)';
+            playSound(sfxError);
+            return;
+        }
+
+        isSpinning = true;
+        spinBtn.disabled = true;
+        finalResult.classList.add('thinking');
+        finalResult.style.color = 'var(--neon-purple)';
+        
+        let count = 0;
+        const spinInterval = setInterval(() => {
+            finalResult.textContent = options[Math.floor(Math.random() * options.length)];
+            count++;
+            if (count > 20) {
+                clearInterval(spinInterval);
+                const winner = options[Math.floor(Math.random() * options.length)];
+                finalResult.textContent = winner;
+                finalResult.classList.remove('thinking');
+                finalResult.style.color = 'var(--neon-cyan)';
+                finalResult.style.textShadow = '0 0 30px var(--neon-cyan)';
+                playSound(sfxNice);
+                isSpinning = false;
+                spinBtn.disabled = false;
+            }
+        }, 100);
+    });
+});
