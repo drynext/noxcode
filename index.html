@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOXCODE SYSTEM V3.0</title>
+    <title>NOXCODE OS V3.1</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -11,6 +11,26 @@
     <canvas id="matrixCanvas"></canvas>
     <div class="scanline"></div>
     <div class="vignette"></div>
+
+    <div id="cmdOverlay" class="cmd-overlay hidden">
+        <div class="cmd-backdrop"></div>
+        <div class="cmd-container">
+            <div class="cmd-header">
+                <span class="cmd-prompt">>_</span>
+                <input type="text" id="cmdInput" placeholder="Type a command (goto, add, theme)..." autocomplete="off">
+                <span class="cmd-shortcut">ESC</span>
+            </div>
+            <div class="cmd-results" id="cmdResults">
+                <div class="cmd-item active" data-action="help">
+                    <span class="cmd-icon">?</span>
+                    <span class="cmd-text">Type 'help' to see available commands</span>
+                </div>
+            </div>
+            <div class="cmd-footer">
+                <span>NOXCODE COMMAND LINE INTERFACE V1.0</span>
+            </div>
+        </div>
+    </div>
 
     <div class="root-layout">
         <aside class="sidebar-panel">
@@ -28,27 +48,27 @@
                 <button class="nav-btn active" data-target="dashboard">
                     <span class="icon-box">▣</span>
                     <span class="nav-label">DASHBOARD</span>
-                    <span class="hover-effect"></span>
+                    <span class="shortcut-hint">G D</span>
                 </button>
                 <button class="nav-btn" data-target="tracker">
                     <span class="icon-box">⚡</span>
                     <span class="nav-label">TRACKER</span>
-                    <span class="hover-effect"></span>
+                    <span class="shortcut-hint">G T</span>
                 </button>
                 <button class="nav-btn" data-target="focus">
                     <span class="icon-box">◎</span>
                     <span class="nav-label">FOCUS</span>
-                    <span class="hover-effect"></span>
+                    <span class="shortcut-hint">G F</span>
                 </button>
                 <button class="nav-btn" data-target="sudoku">
                     <span class="icon-box">▦</span>
                     <span class="nav-label">SUDOKU</span>
-                    <span class="hover-effect"></span>
+                    <span class="shortcut-hint">G S</span>
                 </button>
                 <button class="nav-btn" data-target="decide">
                     <span class="icon-box">◈</span>
                     <span class="nav-label">DECIDE</span>
-                    <span class="hover-effect"></span>
+                    <span class="shortcut-hint">G X</span>
                 </button>
             </nav>
 
@@ -57,18 +77,18 @@
                     <div class="widget-header">SESSION STATS</div>
                     <div class="stat-line">
                         <span class="stat-label">Tasks Done</span>
-                        <span class="stat-val neon-green" id="statDone">0</span>
+                        <span class="stat-val neon-main" id="statDone">0</span>
                     </div>
                     <div class="stat-line">
                         <span class="stat-label">Pending</span>
-                        <span class="stat-val neon-red" id="statPending">0</span>
+                        <span class="stat-val neon-warn" id="statPending">0</span>
                     </div>
                     <div class="stat-line">
                         <span class="stat-label">Focus Time</span>
-                        <span class="stat-val neon-blue" id="statTime">0m</span>
+                        <span class="stat-val neon-accent" id="statTime">0m</span>
                     </div>
                 </div>
-                <div class="system-version">VER 3.0.1 BUILD 2025</div>
+                <div class="system-tip">Hint: Press Ctrl+K to toggle Command Palette</div>
             </div>
         </aside>
 
@@ -164,10 +184,6 @@
                     <div class="timer-display-area">
                         <svg class="timer-svg" width="360" height="360" viewBox="0 0 360 360">
                             <defs>
-                                <linearGradient id="neonGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                    <stop offset="0%" style="stop-color:#00ff41;stop-opacity:1" />
-                                    <stop offset="100%" style="stop-color:#008F11;stop-opacity:1" />
-                                </linearGradient>
                                 <filter id="glow">
                                     <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
                                     <feMerge>
@@ -215,7 +231,7 @@
                             <button class="diff-select" data-level="hard">HARD</button>
                         </div>
                         <div class="game-info">
-                            <p>Errors: <span id="errorCount" class="neon-red">0</span>/3</p>
+                            <p>Errors: <span id="errorCount" class="neon-warn">0</span>/3</p>
                             <div id="sudokuTimer">00:00</div>
                         </div>
                         <button id="btnNewGame" class="btn-action">GENERATE NEW</button>
