@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOXCODE SYSTEM v2.0 | HUB</title>
+    <title>NOXCODE SYSTEM v3.0 | DASHBOARD</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;300;400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
@@ -16,7 +16,7 @@
     <div class="main-interface">
         <aside class="sidebar-panel">
             <div class="sidebar-clock-wrapper">
-                <div class="sidebar-label"><i class="fas fa-satellite-dish"></i> SERVER TIME</div>
+                <div class="sidebar-label"><i class="fas fa-satellite-dish"></i> SYSTEM_TIME_UTC</div>
                 <div id="system-clock" class="sidebar-clock-display">00:00:00</div>
             </div>
 
@@ -27,7 +27,7 @@
                 </div>
                 <div class="system-status">
                     <span class="status-indicator"></span>
-                    <span class="status-text sys-blink">SYSTEM V2.0 ONLINE</span>
+                    <span class="status-text sys-blink">SYSTEM ONLINE</span>
                 </div>
             </div>
 
@@ -38,7 +38,7 @@
                 <button class="nav-item" data-target="tracker-view">
                     <span class="nav-icon">⚡</span> <span class="nav-label">TRACKER</span>
                 </button>
-                 <button class="nav-item" data-target="minigames-view">
+                <button class="nav-item" data-target="minigames-view">
                     <span class="nav-icon">🎮</span> <span class="nav-label">MINI-GAMES</span>
                 </button>
                 <button class="nav-item" data-target="blog-view">
@@ -53,24 +53,21 @@
             </nav>
 
             <div class="sidebar-footer">
-                <div class="stats-box">
-                    <div class="stat-line"><span class="stat-label">Tasks Done</span><span class="stat-value" id="sidebar-done">0</span></div>
-                    <div class="stat-line"><span class="stat-label">Pending</span><span class="stat-value" id="sidebar-todo">0</span></div>
-                    <div class="stat-line"><span class="stat-label">Focus Total</span><span class="stat-value" id="sidebar-focus">0m</span></div>
-                    <div class="stat-line"><span class="stat-label">Net Rep</span><span class="stat-value" id="sidebar-rep">0</span></div>
+                <div class="stats-mini">
+                    <div><span>Tasks:</span> <strong id="sidebar-done">0</strong></div>
+                    <div><span>Focus:</span> <strong id="sidebar-focus">0m</strong></div>
                 </div>
-                <div class="user-id">OP: DAI_DANG_CS [<span style="color:var(--primary)">ONLINE</span>]</div>
+                <div class="user-id">OP: DAI_DANG_CS</div>
             </div>
         </aside>
 
         <main class="content-area">
             <header class="top-bar">
-                <div class="breadcrumbs">SYSTEM // <span id="current-module">DASHBOARD</span></div>
-                
+                <div class="breadcrumbs">ROOT / <span id="current-module">DASHBOARD</span></div>
                 <a href="profile.html" class="profile-widget">
                     <div class="profile-info">
                         <span class="p-name">Đặng Đức Đại</span>
-                        <span class="p-role">LV.2 SYSADMIN</span>
+                        <span class="p-role">LV.10 ADMIN</span>
                     </div>
                     <div class="avatar-circle">
                         <img src="https://i.pinimg.com/736x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg" alt="Avatar">
@@ -83,54 +80,86 @@
                     <h2 class="welcome-text">WELCOME BACK, OPERATOR.</h2>
                     <div class="console-output">
                         <span class="prompt">root@nox:~$</span>
-                        <span id="typing-effect">Initializing core environment v2.0... All systems nominal.</span>
+                        <span id="typing-effect"></span>
                         <span class="cursor-blink">█</span>
                     </div>
                 </div>
                 <div class="modules-grid">
-                    <div class="module-card" onclick="NOXSYSTEM.navigate('tracker-view')"><div class="card-glow"></div><div class="card-content"><div class="card-icon">⚡</div><h3 class="card-title">Practice Tracker</h3><p class="card-desc">Manage algorithms & coding tasks.</p><div class="card-stat">Active: <span id="card-todo-count">0</span></div></div></div>
-                    <div class="module-card" onclick="NOXSYSTEM.navigate('minigames-view')"><div class="card-glow"></div><div class="card-content"><div class="card-icon">🎮</div><h3 class="card-title">Mini-Games Hub</h3><p class="card-desc">Sudoku Protocol & SnakeByte.</p><div class="card-stat">Games: 2 Active</div></div></div>
-                    <div class="module-card" onclick="NOXSYSTEM.navigate('blog-view')"><div class="card-glow"></div><div class="card-content"><div class="card-icon">📰</div><h3 class="card-title">Neural Net</h3><p class="card-desc">Internal knowledge base & articles.</p><div class="card-stat">Latest updates...</div></div></div>
-                    <div class="module-card" onclick="NOXSYSTEM.navigate('focus-view')"><div class="card-glow"></div><div class="card-content"><div class="card-icon">◎</div><h3 class="card-title">Deep Focus</h3><p class="card-desc">Pomodoro timer protocol.</p><div class="card-stat">Status: READY</div></div></div>
+                    <div class="module-card" onclick="NOXSYSTEM.navigate('tracker-view')">
+                        <div class="card-glow"></div>
+                        <div class="card-icon">⚡</div>
+                        <h3 class="card-title">Task Protocol</h3>
+                        <p class="card-desc">Manage coding assignments & algorithms.</p>
+                        <div class="card-stat">Pending: <span id="card-todo-count">0</span></div>
+                    </div>
+                    <div class="module-card" onclick="NOXSYSTEM.navigate('minigames-view')">
+                        <div class="card-glow"></div>
+                        <div class="card-icon">🎮</div>
+                        <h3 class="card-title">Game Center</h3>
+                        <p class="card-desc">SnakeByte & Sudoku Matrix.</p>
+                        <div class="card-stat">Play Now</div>
+                    </div>
+                    <div class="module-card" onclick="NOXSYSTEM.navigate('blog-view')">
+                        <div class="card-glow"></div>
+                        <div class="card-icon">📰</div>
+                        <h3 class="card-title">Neural Net</h3>
+                        <p class="card-desc">Personal knowledge base & articles.</p>
+                        <div class="card-stat">Read</div>
+                    </div>
+                    <div class="module-card" onclick="NOXSYSTEM.navigate('focus-view')">
+                        <div class="card-glow"></div>
+                        <div class="card-icon">◎</div>
+                        <h3 class="card-title">Deep Focus</h3>
+                        <p class="card-desc">Pomodoro technique timer.</p>
+                        <div class="card-stat">Status: IDLE</div>
+                    </div>
                 </div>
             </div>
 
             <div id="tracker-view" class="view-container">
-                <div class="section-header"><h2 class="section-title">PRACTICE TRACKER</h2><div class="section-controls"><button class="control-btn danger" id="clear-tasks-btn">PURGE ALL DATA</button></div></div>
+                <div class="section-header">
+                    <h2 class="section-title">PRACTICE TRACKER</h2>
+                    <button class="control-btn danger" id="clear-tasks-btn">PURGE DATA</button>
+                </div>
                 <div class="tracker-interface">
-                    <div class="input-wrapper"><input type="text" id="new-task-input" placeholder="> Enter task protocol..."><button id="add-task-btn" class="action-btn">EXECUTE</button></div>
+                    <div class="input-wrapper">
+                        <input type="text" id="new-task-input" placeholder="> Enter new protocol...">
+                        <button id="add-task-btn" class="action-btn">ADD TASK</button>
+                    </div>
                     <div class="task-lists-container">
-                        <div class="list-column"><h3 class="list-head">PENDING QUEUE [<span id="pending-count-alt">0</span>]</h3><ul id="todo-list" class="styled-list"></ul></div>
-                        <div class="list-column"><h3 class="list-head">ARCHIVED [<span id="done-count-alt">0</span>]</h3><ul id="done-list" class="styled-list"></ul></div>
+                        <div class="list-column">
+                            <h3 class="list-head">PENDING QUEUE</h3>
+                            <ul id="todo-list" class="styled-list"></ul>
+                        </div>
+                        <div class="list-column">
+                            <h3 class="list-head">COMPLETED LOGS</h3>
+                            <ul id="done-list" class="styled-list"></ul>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div id="minigames-view" class="view-container">
-                 <div class="section-header"><h2 class="section-title">MINI-GAMES PROTOCOL</h2></div>
+                 <div class="section-header"><h2 class="section-title">ENTERTAINMENT PROTOCOLS</h2></div>
                  <div class="modules-grid game-hub-grid">
-                    <div class="module-card game-card" onclick="NOXSYSTEM.navigate('sudoku-view')">
+                     <div class="module-card game-card" onclick="NOXSYSTEM.navigate('sudoku-view')">
                         <div class="card-glow"></div>
-                        <div class="card-content">
-                            <div class="card-icon">▦</div>
-                            <h3 class="card-title">SUDOKU ENGINE</h3>
-                            <p class="card-desc">Logic training matrix (9x9).</p>
-                        </div>
+                        <div class="card-icon">▦</div>
+                        <h3 class="card-title">SUDOKU ENGINE</h3>
+                        <p class="card-desc">Logic training matrix (9x9).</p>
                     </div>
-                    <div class="module-card game-card special-game" onclick="NOXSYSTEM.navigate('snake-view')">
+                     <div class="module-card game-card special-game" onclick="NOXSYSTEM.navigate('snake-view')">
                         <div class="card-glow" style="background: radial-gradient(circle at top right, rgba(212, 255, 0, 0.15), transparent 60%);"></div>
-                        <div class="card-content">
-                            <div class="card-icon" style="color: var(--accent);">🐍</div>
-                            <h3 class="card-title" style="color: var(--accent);">SNAKE BYTE</h3>
-                            <p class="card-desc">Retro cyber-serpent simulation.</p>
-                        </div>
+                        <div class="card-icon" style="color: var(--accent);">🐍</div>
+                        <h3 class="card-title" style="color: var(--accent);">SNAKE BYTE</h3>
+                        <p class="card-desc">Retro cyber-serpent simulation.</p>
                     </div>
                  </div>
             </div>
             
             <div id="sudoku-view" class="view-container sub-view">
                 <div class="sub-view-header">
-                    <button class="back-btn" onclick="NOXSYSTEM.navigate('minigames-view')">← BACK TO HUB</button>
+                    <button class="back-btn" onclick="NOXSYSTEM.navigate('minigames-view')">← RETURN</button>
                     <h2 class="section-title">SUDOKU ENGINE</h2>
                 </div>
                 <div class="section-header no-border">
@@ -139,68 +168,96 @@
                         <button class="diff-chip" data-diff="medium">MEDIUM</button>
                         <button class="diff-chip" data-diff="hard">HARD</button>
                     </div>
-                    <div class="timer-display" id="sudoku-timer">TIME: 00:00</div>
+                    <div class="timer-display" id="sudoku-timer">00:00</div>
                 </div>
                 <div class="sudoku-wrapper">
                     <div id="sudoku-grid" class="game-grid"></div>
                     <div class="game-controls">
-                        <button class="game-btn" id="sudoku-new-btn">NEW SEQUENCE</button>
-                        <button class="game-btn highlight" id="sudoku-verify-btn">VERIFY INTEGRITY</button>
+                        <button class="game-btn" id="sudoku-new-btn">NEW GAME</button>
+                        <button class="game-btn highlight" id="sudoku-verify-btn">VERIFY</button>
                     </div>
                 </div>
             </div>
 
             <div id="snake-view" class="view-container sub-view">
                  <div class="sub-view-header">
-                    <button class="back-btn" onclick="NOXSYSTEM.navigate('minigames-view'); NOX_SNAKE.stop();">← BACK TO HUB</button>
+                    <button class="back-btn" onclick="NOXSYSTEM.navigate('minigames-view'); NOX_SNAKE.stop();">← RETURN</button>
                     <h2 class="section-title" style="color: var(--accent)">SNAKE BYTE v1.0</h2>
                 </div>
                 <div class="snake-wrapper">
                     <div class="snake-stats">
                         <div>SCORE: <span id="snake-score" style="color:var(--accent)">0</span></div>
-                        <div>HIGH SCORE: <span id="snake-highscore">0</span></div>
+                        <div>HIGH: <span id="snake-highscore">0</span></div>
                     </div>
                     <canvas id="snake-canvas" width="600" height="400"></canvas>
-                    <div class="game-controls snake-controls">
-                         <button class="game-btn highlight" id="snake-start-btn" style="border-color: var(--accent); color: var(--accent);">INITIALIZE_SNAKE.exe</button>
-                         <p class="control-hint">USE ARROW KEYS OR WASD TO NAVIGATE</p>
+                    <div class="game-controls">
+                         <button class="game-btn highlight" id="snake-start-btn">INITIALIZE</button>
                     </div>
+                    <p class="control-hint">USE ARROWS / WASD TO NAVIGATE</p>
                 </div>
             </div>
             
             <div id="blog-view" class="view-container">
                  <div class="section-header">
-                    <h2 class="section-title">NEURAL NET // ARTICLES</h2>
+                    <h2 class="section-title">NEURAL NET // LOGS</h2>
                     <button class="action-btn" onclick="NOX_BLOG.showCreateModal()">+ NEW ENTRY</button>
                  </div>
-                 <div class="blog-list-container" id="blog-posts-list">
-                     </div>
+                 <div class="blog-list-container" id="blog-posts-list"></div>
             </div>
 
              <div id="post-detail-view" class="view-container sub-view">
                 </div>
 
-
-            <div id="focus-view" class="view-container"><div class="focus-layout"><div class="timer-display-area"><svg class="progress-ring" width="360" height="360"><circle class="progress-ring__circle-bg" stroke="#1a1a1a" stroke-width="8" fill="transparent" r="170" cx="180" cy="180"/><circle class="progress-ring__circle" stroke="#00ff41" stroke-width="8" fill="transparent" r="170" cx="180" cy="180"/></svg><div class="time-text" id="timer-val">25:00</div><div class="time-label" id="timer-label">FOCUS SESSION</div></div><div class="timer-controls"><div class="mode-switcher"><button class="mode-btn active" data-time="25">POMODORO</button><button class="mode-btn" data-time="5">SHORT BREAK</button><button class="mode-btn" data-time="15">LONG BREAK</button></div><div class="action-buttons"><button id="timer-start" class="large-btn">INITIALIZE</button><button id="timer-reset" class="large-btn secondary">RESET</button></div></div></div></div>
+            <div id="focus-view" class="view-container">
+                <div class="focus-layout">
+                    <div class="timer-display-area">
+                        <svg class="progress-ring" width="300" height="300">
+                            <circle class="progress-ring__circle-bg" stroke="#1a1a1a" stroke-width="8" fill="transparent" r="140" cx="150" cy="150"/>
+                            <circle class="progress-ring__circle" stroke="#00ff41" stroke-width="8" fill="transparent" r="140" cx="150" cy="150"/>
+                        </svg>
+                        <div class="time-text" id="timer-val">25:00</div>
+                        <div class="time-label" id="timer-label">FOCUS</div>
+                    </div>
+                    <div class="timer-controls">
+                        <div class="mode-switcher">
+                            <button class="mode-btn active" data-time="25">25m</button>
+                            <button class="mode-btn" data-time="5">5m</button>
+                            <button class="mode-btn" data-time="15">15m</button>
+                        </div>
+                        <button id="timer-start" class="large-btn">START SEQUENCE</button>
+                        <button id="timer-reset" class="large-btn secondary">RESET</button>
+                    </div>
+                </div>
+            </div>
             
-            <div id="decide-view" class="view-container"><div class="decide-layout"><h2 class="section-title">DECISION MATRIX</h2><div class="input-area"><textarea id="decision-options" placeholder="> Enter variables (one per line)..."></textarea></div><button id="spin-btn" class="spin-button">EXECUTE RANDOMIZER</button><div class="result-area"><div class="result-label">RESULT OUTPUT:</div><div id="decision-result" class="result-value">---</div></div></div></div>
+            <div id="decide-view" class="view-container">
+                <div class="decide-layout">
+                    <h2 class="section-title">DECISION MATRIX</h2>
+                    <textarea id="decision-options" placeholder="> Enter options (one per line)..."></textarea>
+                    <button id="spin-btn" class="spin-button">EXECUTE RANDOMIZER</button>
+                    <div class="result-area">
+                        <div class="result-label">RESULT OUTPUT:</div>
+                        <div id="decision-result" class="result-value">---</div>
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 
     <div id="post-modal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>CREATE NEW ENTRY</h3>
+                <h3>NEW LOG ENTRY</h3>
                 <button class="modal-close" onclick="NOX_BLOG.hideCreateModal()">×</button>
             </div>
             <div class="modal-body">
-                <input type="text" id="post-title-input" class="nox-input full-width" placeholder="> Entry Title...">
-                <textarea id="post-content-input" class="nox-input full-width" rows="10" placeholder="> Entry Content (Markdown supported)..."></textarea>
+                <input type="text" id="post-title-input" class="nox-input full-width" placeholder="> Title...">
+                <textarea id="post-content-input" class="nox-input full-width" rows="10" placeholder="> Content..."></textarea>
                 <input type="text" id="post-tags-input" class="nox-input full-width" placeholder="> Tags (comma separated)...">
             </div>
             <div class="modal-footer">
                  <button class="control-btn" onclick="NOX_BLOG.hideCreateModal()">CANCEL</button>
-                 <button class="action-btn" onclick="NOX_BLOG.savePost()">PUBLISH TO NET</button>
+                 <button class="action-btn" onclick="NOX_BLOG.savePost()">PUBLISH</button>
             </div>
         </div>
     </div>
