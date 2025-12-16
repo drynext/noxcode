@@ -54,7 +54,7 @@
         <main class="content-area">
             <section id="mainDashboard" class="view-section active" data-view="main">
                 <div class="hero-header">
-                    <h1 class="mega-logo glitch" data-text="NOXCODE">NOXCODE</h1>
+                    <h1 class="mega-logo" data-text="NOXCODE">NOXCODE</h1>
                     <h2 class="welcome-message">Chào mừng trở lại, Operator.</h2>
                     <div class="typing-container">
                         <p class="subtitle typing-text" id="typingText"></p>
@@ -91,12 +91,12 @@
                 </header>
                 <div class="tracker-interface module-box">
                     <div class="input-group tracker-inputs">
-                        <input type="text" id="problemName" class="cyber-input" placeholder="Tên bài tập (VD: Two Sum)">
-                        <input type="text" id="platform" class="cyber-input" placeholder="Platform (VD: LeetCode)">
-                        <button id="addPractice" class="cyber-button primary">THÊM BÀI +</button>
+                        <input type="text" id="problemName" class="cyber-input" placeholder="Tên bài tập">
+                        <input type="text" id="platform" class="cyber-input" placeholder="Platform">
+                        <button id="addPractice" class="cyber-button primary">THÊM +</button>
                     </div>
                     <div class="list-header">
-                        <span>Danh sách công việc</span>
+                        <span>Danh sách</span>
                         <span id="practiceCountLabel" class="neon-blue">0 tasks waiting</span>
                     </div>
                     <ul id="practiceList" class="cyber-list"></ul>
@@ -106,7 +106,6 @@
             <section id="focusSection" class="view-section hidden" data-view="focus">
                 <header class="section-header">
                     <h2><span class="neon-text">⏱ DEEP FOCUS PROTOCOL</span></h2>
-                    <p class="section-subtitle">Kỹ thuật Pomodoro - Tối đa hóa sự tập trung.</p>
                 </header>
                 <div class="focus-interface module-box center-content">
                     <div class="timer-wrapper">
@@ -119,41 +118,33 @@
                             <span id="sessionTypeLabel" class="session-label">READY</span>
                         </div>
                     </div>
-                    
                     <div class="control-panel">
                         <button id="startFocus" class="cyber-button primary large-btn">▶ BẮT ĐẦU</button>
                         <button id="stopFocus" class="cyber-button danger hidden">■ DỪNG LẠI</button>
                         <button id="resetFocus" class="cyber-button secondary hidden">↺ ĐẶT LẠI</button>
                     </div>
                     <div class="mode-selector">
-                        <button class="mode-btn active" data-mode="pomodoro" data-time="25">Pomodoro (25m)</button>
-                        <button class="mode-btn" data-mode="shortBreak" data-time="5">Nghỉ Ngắn (5m)</button>
-                        <button class="mode-btn" data-mode="longBreak" data-time="15">Nghỉ Dài (15m)</button>
-                    </div>
-                    <div class="stats-readout neon-purple">
-                        <span id="sessionCount">Phiên hoàn thành: 0</span>
+                        <button class="mode-btn active" data-mode="pomodoro" data-time="25">25m</button>
+                        <button class="mode-btn" data-mode="shortBreak" data-time="5">5m</button>
+                        <button class="mode-btn" data-mode="longBreak" data-time="15">15m</button>
                     </div>
                 </div>
             </section>
 
             <section id="sudokuSection" class="view-section hidden" data-view="sudoku">
                 <header class="section-header">
-                    <h2><span class="neon-text">🧩 SUDOKU PRO (9x9)</span></h2>
-                    <p class="section-subtitle">Điền số 1-9 sao cho mỗi hàng, cột và khối 3x3 là duy nhất.</p>
+                    <h2><span class="neon-text">🧩 SUDOKU PRO</span></h2>
                 </header>
                 <div class="sudoku-interface module-box center-content">
                     <div class="difficulty-selector">
-                        <span class="selector-label">Độ khó:</span>
                         <button class="diff-btn active neon-green" data-diff="easy">EASY</button>
                         <button class="diff-btn neon-blue" data-diff="medium">MEDIUM</button>
                         <button class="diff-btn neon-red" data-diff="hard">HARD</button>
                     </div>
-
                     <div id="sudokuGrid9x9" class="sudoku-grid-pro"></div>
-                    
                     <div class="sudoku-actions">
-                        <button id="newGameBtn" class="cyber-button primary">VÁN MỚI ↻</button>
-                        <button id="checkGameBtn" class="cyber-button secondary">KIỂM TRA ✓</button>
+                        <button id="newGameBtn" class="cyber-button primary">VÁN MỚI</button>
+                        <button id="checkGameBtn" class="cyber-button secondary">KIỂM TRA</button>
                     </div>
                     <div id="sudokuStatus" class="status-message"></div>
                 </div>
@@ -162,26 +153,22 @@
             <section id="decideSection" class="view-section hidden" data-view="decide">
                 <header class="section-header">
                     <h2><span class="neon-text">🎲 DECISION MAKER</span></h2>
-                    <p class="section-subtitle">Nhập các lựa chọn và để hệ thống quyết định.</p>
                 </header>
                 <div class="decide-interface module-box center-content">
-                    <textarea id="decisionInput" class="cyber-textarea" placeholder="Nhập lựa chọn 1&#10;Nhập lựa chọn 2&#10;Nhập lựa chọn 3..."></textarea>
-                    <div class="decide-actions">
-                        <button id="spinButton" class="cyber-button primary large-btn">QUAY NGẪU NHIÊN ⌘</button>
-                    </div>
+                    <textarea id="decisionInput" class="cyber-textarea" placeholder="Nhập mỗi lựa chọn 1 dòng..."></textarea>
+                    <button id="spinButton" class="cyber-button primary large-btn">QUAY NGẪU NHIÊN</button>
                     <div class="result-display neon-border-purple">
                         <span class="result-label">KẾT QUẢ:</span>
                         <h3 id="finalResult" class="neon-text">---</h3>
                     </div>
                 </div>
             </section>
-
         </main>
     </div>
 
-    <audio id="sfxNice" src="https://assets.mixkit.co/sfx/preview/mixkit-positive-interface-beep-221.mp3" preload="auto"></audio>
-    <audio id="sfxAlarm" src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3" preload="auto"></audio>
-    <audio id="sfxError" src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3" preload="auto"></audio>
+    <audio id="sfxNice" src="https://assets.mixkit.co/sfx/preview/mixkit-positive-interface-beep-221.mp3"></audio>
+    <audio id="sfxAlarm" src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3"></audio>
+    <audio id="sfxError" src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3"></audio>
 
     <script src="js/main.js"></script>
 </body>
