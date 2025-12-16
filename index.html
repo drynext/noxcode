@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOXCODE OS V3.1</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>NOXCODE OS V3.2</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;300;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <canvas id="matrixCanvas"></canvas>
+    <div class="bg-matrix"><canvas id="matrixCanvas"></canvas></div>
     <div class="scanline"></div>
     <div class="vignette"></div>
 
@@ -16,18 +16,13 @@
         <div class="cmd-backdrop"></div>
         <div class="cmd-container">
             <div class="cmd-header">
-                <span class="cmd-prompt">>_</span>
-                <input type="text" id="cmdInput" placeholder="Type a command (goto, add, theme)..." autocomplete="off">
-                <span class="cmd-shortcut">ESC</span>
+                <span class="cmd-prompt">root@nox:~#</span>
+                <input type="text" id="cmdInput" placeholder="Enter command (try 'goto sudoku' or 'theme blue')..." autocomplete="off">
+                <span class="cmd-badge">ESC to close</span>
             </div>
-            <div class="cmd-results" id="cmdResults">
-                <div class="cmd-item active" data-action="help">
-                    <span class="cmd-icon">?</span>
-                    <span class="cmd-text">Type 'help' to see available commands</span>
-                </div>
-            </div>
+            <div class="cmd-results" id="cmdResults"></div>
             <div class="cmd-footer">
-                <span>NOXCODE COMMAND LINE INTERFACE V1.0</span>
+                <span>NOXCODE TERMINAL V3.2</span>
             </div>
         </div>
     </div>
@@ -35,243 +30,183 @@
     <div class="root-layout">
         <aside class="sidebar-panel">
             <div class="sidebar-header">
-                <div class="logo-wrapper">
-                    <h1 class="brand-glitch" data-text="NOXCODE">NOXCODE</h1>
-                    <div class="status-indicator">
-                        <span class="status-dot"></span>
-                        <span class="status-text">SYSTEM ONLINE</span>
-                    </div>
+                <h1 class="brand-glitch" data-text="NOXCODE">NOXCODE</h1>
+                <div class="status-indicator">
+                    <span class="status-dot"></span>
+                    <span class="status-text">SYSTEM ONLINE</span>
                 </div>
             </div>
 
             <nav class="navigation-menu">
                 <button class="nav-btn active" data-target="dashboard">
-                    <span class="icon-box">▣</span>
-                    <span class="nav-label">DASHBOARD</span>
-                    <span class="shortcut-hint">G D</span>
+                    <div class="nav-content">
+                        <span class="icon-box">▣</span>
+                        <span class="nav-label">DASHBOARD</span>
+                    </div>
+                    <span class="shortcut-hint">CMD+D</span>
                 </button>
                 <button class="nav-btn" data-target="tracker">
-                    <span class="icon-box">⚡</span>
-                    <span class="nav-label">TRACKER</span>
-                    <span class="shortcut-hint">G T</span>
+                    <div class="nav-content">
+                        <span class="icon-box">⚡</span>
+                        <span class="nav-label">TRACKER</span>
+                    </div>
+                    <span class="shortcut-hint">CMD+T</span>
                 </button>
                 <button class="nav-btn" data-target="focus">
-                    <span class="icon-box">◎</span>
-                    <span class="nav-label">FOCUS</span>
-                    <span class="shortcut-hint">G F</span>
+                    <div class="nav-content">
+                        <span class="icon-box">◎</span>
+                        <span class="nav-label">FOCUS</span>
+                    </div>
+                    <span class="shortcut-hint">CMD+F</span>
                 </button>
                 <button class="nav-btn" data-target="sudoku">
-                    <span class="icon-box">▦</span>
-                    <span class="nav-label">SUDOKU</span>
-                    <span class="shortcut-hint">G S</span>
+                    <div class="nav-content">
+                        <span class="icon-box">▦</span>
+                        <span class="nav-label">SUDOKU</span>
+                    </div>
+                    <span class="shortcut-hint">CMD+S</span>
                 </button>
                 <button class="nav-btn" data-target="decide">
-                    <span class="icon-box">◈</span>
-                    <span class="nav-label">DECIDE</span>
-                    <span class="shortcut-hint">G X</span>
+                    <div class="nav-content">
+                        <span class="icon-box">◈</span>
+                        <span class="nav-label">DECIDE</span>
+                    </div>
+                    <span class="shortcut-hint">CMD+X</span>
                 </button>
             </nav>
 
             <div class="sidebar-footer">
                 <div class="stats-widget">
-                    <div class="widget-header">SESSION STATS</div>
+                    <div class="widget-header">SESSION DATA</div>
                     <div class="stat-line">
-                        <span class="stat-label">Tasks Done</span>
-                        <span class="stat-val neon-main" id="statDone">0</span>
+                        <span>Tasks Done</span>
+                        <span class="val-green" id="statDone">0</span>
                     </div>
                     <div class="stat-line">
-                        <span class="stat-label">Pending</span>
-                        <span class="stat-val neon-warn" id="statPending">0</span>
+                        <span>Pending</span>
+                        <span class="val-red" id="statPending">0</span>
                     </div>
                     <div class="stat-line">
-                        <span class="stat-label">Focus Time</span>
-                        <span class="stat-val neon-accent" id="statTime">0m</span>
+                        <span>Focus Time</span>
+                        <span class="val-blue" id="statTime">0m</span>
                     </div>
                 </div>
-                <div class="system-tip">Hint: Press Ctrl+K to toggle Command Palette</div>
+                <div class="system-tip">Press <strong>Ctrl + K</strong> to execute commands</div>
             </div>
         </aside>
 
         <main class="main-viewport">
             <div id="view-dashboard" class="view-container active">
                 <div class="dashboard-hero">
-                    <div class="hero-content">
-                        <h1 class="hero-title">WELCOME BACK, OPERATOR.</h1>
-                        <div class="terminal-loader">
-                            <span class="terminal-prefix">></span>
-                            <span id="typingEffect">Initializing core modules...</span>
-                            <span class="cursor-block">█</span>
-                        </div>
+                    <h1 class="hero-title">WELCOME BACK, OPERATOR.</h1>
+                    <div class="terminal-line">
+                        <span class="prompt">></span>
+                        <span id="typingEffect"></span>
+                        <span class="cursor">_</span>
                     </div>
                 </div>
 
                 <div class="grid-shortcuts">
-                    <div class="shortcut-card card-tracker" onclick="window.router('tracker')">
-                        <div class="card-bg"></div>
-                        <div class="card-icon">⚡</div>
-                        <h3 class="card-title">Practice Tracker</h3>
-                        <p class="card-desc">Quản lý bài tập thuật toán & tiến độ.</p>
-                        <div class="card-glow"></div>
+                    <div class="shortcut-card" onclick="window.router('tracker')">
+                        <span class="card-icon">⚡</span>
+                        <h3>Practice Tracker</h3>
+                        <p>Manage algorithms & tasks.</p>
                     </div>
-                    <div class="shortcut-card card-focus" onclick="window.router('focus')">
-                        <div class="card-bg"></div>
-                        <div class="card-icon">◎</div>
-                        <h3 class="card-title">Deep Focus</h3>
-                        <p class="card-desc">Kích hoạt trạng thái tập trung sâu.</p>
-                        <div class="card-glow"></div>
+                    <div class="shortcut-card" onclick="window.router('focus')">
+                        <span class="card-icon">◎</span>
+                        <h3>Deep Focus</h3>
+                        <p>Pomodoro timer system.</p>
                     </div>
-                    <div class="shortcut-card card-sudoku" onclick="window.router('sudoku')">
-                        <div class="card-bg"></div>
-                        <div class="card-icon">▦</div>
-                        <h3 class="card-title">Sudoku Engine</h3>
-                        <p class="card-desc">Rèn luyện tư duy logic 9x9.</p>
-                        <div class="card-glow"></div>
+                    <div class="shortcut-card" onclick="window.router('sudoku')">
+                        <span class="card-icon">▦</span>
+                        <h3>Sudoku Engine</h3>
+                        <p>Logic puzzle generator.</p>
                     </div>
-                    <div class="shortcut-card card-decide" onclick="window.router('decide')">
-                        <div class="card-bg"></div>
-                        <div class="card-icon">◈</div>
-                        <h3 class="card-title">Decision Maker</h3>
-                        <p class="card-desc">Hệ thống lựa chọn ngẫu nhiên.</p>
-                        <div class="card-glow"></div>
+                    <div class="shortcut-card" onclick="window.router('decide')">
+                        <span class="card-icon">◈</span>
+                        <h3>Decision Maker</h3>
+                        <p>Random selection tool.</p>
                     </div>
                 </div>
             </div>
 
             <div id="view-tracker" class="view-container">
                 <div class="module-header">
-                    <h2 class="module-title">PRACTICE TRACKER</h2>
-                    <div class="module-line"></div>
+                    <h2>PRACTICE TRACKER</h2>
+                    <div class="line"></div>
                 </div>
-                <div class="tracker-wrapper">
-                    <div class="input-panel">
-                        <div class="input-group">
-                            <label>PROBLEM NAME</label>
-                            <input type="text" id="trackName" placeholder="Enter problem name...">
-                        </div>
-                        <div class="input-group">
-                            <label>PLATFORM</label>
-                            <input type="text" id="trackPlatform" placeholder="LeetCode, CF, etc...">
-                        </div>
-                        <button id="btnAddTrack" class="btn-action">
-                            <span>ADD ENTRY</span>
-                        </button>
+                <div class="tracker-layout">
+                    <div class="input-row">
+                        <input type="text" id="trackName" placeholder="Task Name...">
+                        <input type="text" id="trackPlatform" placeholder="Platform...">
+                        <button id="btnAddTrack">ADD TASK</button>
                     </div>
-                    
-                    <div class="filter-bar">
-                        <button class="filter-btn active" data-filter="all">ALL</button>
-                        <button class="filter-btn" data-filter="todo">PENDING</button>
-                        <button class="filter-btn" data-filter="done">COMPLETED</button>
-                    </div>
-
-                    <div class="list-container">
-                        <div class="list-header-row">
-                            <span>STATUS</span>
-                            <span>PROBLEM</span>
-                            <span>PLATFORM</span>
-                            <span>ACTIONS</span>
-                        </div>
-                        <ul id="trackerList" class="scrollable-list"></ul>
-                    </div>
+                    <ul id="trackerList"></ul>
                 </div>
             </div>
 
             <div id="view-focus" class="view-container">
                 <div class="module-header">
-                    <h2 class="module-title">DEEP FOCUS PROTOCOL</h2>
-                    <div class="module-line"></div>
+                    <h2>DEEP FOCUS PROTOCOL</h2>
+                    <div class="line"></div>
                 </div>
-                <div class="focus-wrapper">
-                    <div class="timer-display-area">
-                        <svg class="timer-svg" width="360" height="360" viewBox="0 0 360 360">
-                            <defs>
-                                <filter id="glow">
-                                    <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
-                                    <feMerge>
-                                        <feMergeNode in="coloredBlur"/>
-                                        <feMergeNode in="SourceGraphic"/>
-                                    </feMerge>
-                                </filter>
-                            </defs>
-                            <circle class="timer-bg" cx="180" cy="180" r="170"></circle>
-                            <circle class="timer-bar" id="timerBar" cx="180" cy="180" r="170"></circle>
+                <div class="focus-layout">
+                    <div class="timer-box">
+                        <svg class="timer-svg" viewBox="0 0 100 100">
+                            <circle class="timer-bg" cx="50" cy="50" r="45"></circle>
+                            <circle class="timer-path" id="timerPath" cx="50" cy="50" r="45"></circle>
                         </svg>
-                        <div class="timer-text-group">
-                            <div id="timerValue" class="timer-digits">25:00</div>
-                            <div id="timerLabel" class="timer-state">STANDBY</div>
-                        </div>
+                        <div class="timer-text" id="timerValue">25:00</div>
                     </div>
-
-                    <div class="focus-controls">
-                        <div class="mode-switcher">
-                            <button class="mode-pill active" data-time="25" data-mode="pomodoro">POMODORO</button>
-                            <button class="mode-pill" data-time="5" data-mode="short">SHORT BREAK</button>
-                            <button class="mode-pill" data-time="15" data-mode="long">LONG BREAK</button>
-                        </div>
-                        
-                        <div class="action-buttons">
-                            <button id="btnTimerStart" class="btn-main-action">INITIALIZE</button>
-                            <button id="btnTimerStop" class="btn-sub-action hidden">TERMINATE</button>
-                            <button id="btnTimerReset" class="btn-sub-action">RESET</button>
-                        </div>
+                    <div class="controls">
+                        <button id="btnStartFocus" class="btn-primary">START SESSION</button>
+                        <button id="btnStopFocus" class="btn-secondary hidden">STOP</button>
+                        <button id="btnResetFocus" class="btn-secondary">RESET</button>
                     </div>
                 </div>
             </div>
 
             <div id="view-sudoku" class="view-container">
                 <div class="module-header">
-                    <h2 class="module-title">LOGIC ENGINE: SUDOKU</h2>
-                    <div class="module-line"></div>
+                    <h2>SUDOKU ENGINE</h2>
+                    <div class="line"></div>
                 </div>
-                <div class="sudoku-wrapper">
-                    <div class="sudoku-sidebar">
-                        <div class="difficulty-panel">
-                            <h3>DIFFICULTY LEVEL</h3>
-                            <button class="diff-select active" data-level="easy">EASY</button>
-                            <button class="diff-select" data-level="medium">MEDIUM</button>
-                            <button class="diff-select" data-level="hard">HARD</button>
+                <div class="sudoku-layout">
+                    <div class="sudoku-side">
+                        <div class="diff-group">
+                            <button class="diff-btn active" data-level="easy">EASY</button>
+                            <button class="diff-btn" data-level="medium">MED</button>
+                            <button class="diff-btn" data-level="hard">HARD</button>
                         </div>
-                        <div class="game-info">
-                            <p>Errors: <span id="errorCount" class="neon-warn">0</span>/3</p>
-                            <div id="sudokuTimer">00:00</div>
-                        </div>
-                        <button id="btnNewGame" class="btn-action">GENERATE NEW</button>
+                        <button id="btnNewSudoku" class="btn-primary full">NEW GAME</button>
                     </div>
-
-                    <div class="sudoku-board-container">
-                        <div id="sudokuBoard" class="sudoku-grid"></div>
-                    </div>
-
+                    <div id="sudokuGrid" class="sudoku-grid"></div>
                     <div class="numpad">
-                        <button class="num-btn" data-val="1">1</button>
-                        <button class="num-btn" data-val="2">2</button>
-                        <button class="num-btn" data-val="3">3</button>
-                        <button class="num-btn" data-val="4">4</button>
-                        <button class="num-btn" data-val="5">5</button>
-                        <button class="num-btn" data-val="6">6</button>
-                        <button class="num-btn" data-val="7">7</button>
-                        <button class="num-btn" data-val="8">8</button>
-                        <button class="num-btn" data-val="9">9</button>
-                        <button class="num-btn action" id="btnErase">⌫</button>
+                        <button class="num" data-val="1">1</button>
+                        <button class="num" data-val="2">2</button>
+                        <button class="num" data-val="3">3</button>
+                        <button class="num" data-val="4">4</button>
+                        <button class="num" data-val="5">5</button>
+                        <button class="num" data-val="6">6</button>
+                        <button class="num" data-val="7">7</button>
+                        <button class="num" data-val="8">8</button>
+                        <button class="num" data-val="9">9</button>
+                        <button class="num action" id="btnErase">Del</button>
                     </div>
                 </div>
             </div>
 
             <div id="view-decide" class="view-container">
                 <div class="module-header">
-                    <h2 class="module-title">PROBABILITY CALCULATOR</h2>
-                    <div class="module-line"></div>
+                    <h2>DECISION MAKER</h2>
+                    <div class="line"></div>
                 </div>
-                <div class="decide-wrapper">
-                    <div class="decide-input-area">
-                        <textarea id="decideOptions" placeholder="INPUT DATA STREAMS (One per line)..."></textarea>
+                <div class="decide-layout">
+                    <textarea id="decideInput" placeholder="Enter options (one per line)..."></textarea>
+                    <div class="decide-screen">
+                        <h1 id="decideResult">READY</h1>
                     </div>
-                    <div class="decide-output-area">
-                        <div class="decide-screen">
-                            <div class="scan-line"></div>
-                            <h1 id="decideResult">AWAITING INPUT</h1>
-                        </div>
-                        <button id="btnDecide" class="btn-action large">EXECUTE SELECTION</button>
-                    </div>
+                    <button id="btnSpin" class="btn-primary large">EXECUTE</button>
                 </div>
             </div>
         </main>
