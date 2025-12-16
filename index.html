@@ -6,19 +6,9 @@
     <title>NOXCODE - Productivity Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-    
-    <style>
-        .stars-container {
-            background-image: url('https://img.freepik.com/hinh-chup-cao-cap/nen-khong-gian-tinh-van-sao-ket-cau-vu-tru-bau-troi-thien-van-hoc-vu-tru_301927-2535.jpg'); 
-            background-size: cover;
-            background-position: center;
-        }
-    </style>
 </head>
 <body>
-    <div class="stars-container">
-        <div id="stars-shooting"></div> 
-    </div>
+    <canvas id="matrixBackground"></canvas>
 
     <div class="app">
         <aside class="sidebar">
@@ -31,7 +21,7 @@
                 <a href="#" data-view="decide">Decide</a>
             </nav>
             <div class="stats-summary" id="statsSummary">
-                <h3>💡 Tóm tắt</h3>
+                <h3>Tóm tắt</h3>
                 <p>Bài đã hoàn thành: <span id="doneCount">0</span></p>
                 <p>Tổng bài: <span id="totalCount">0</span></p>
             </div>
@@ -41,7 +31,7 @@
             <div class="main-center">
                 <h1 class="logo-center" id="logoCenter">NOXCODE</h1>
                 <h2 class="welcome-text">Chào mừng trở lại.</h2>
-                <p class="subtitle typing-text"><span id="typingText"></span></p>
+                <p class="subtitle typing-text"><span id="typingText">Code in the dark. Track in silence. Achieve mastery.</span></p>
             </div>
             <div class="cards">
                 <div class="card" data-view-target="tracker">
@@ -51,7 +41,7 @@
                     ⏱ Focus Timer (25m)
                 </div>
                 <div class="card" data-view-target="sudoku">
-                    🧩 Mini Sudoku
+                    🧩 Advanced Sudoku
                 </div>
                 <div class="card" data-view-target="decide">
                     🎲 Decision Maker
@@ -72,36 +62,41 @@
         </section>
 
         <section id="focus" class="module hidden" data-view="focus">
-            <h2>⏱ Focus Timer (Pomodoro)</h2>
-            <p class="focus-subtitle">Tập trung làm việc trong <span id="sessionType">25 phút</span>.</p>
+            <h2>⏱ Deep Focus (Pomodoro)</h2>
+            <p class="focus-subtitle">Kỹ thuật Pomodoro - Đắm mình vào công việc.</p>
             <div class="focus-container">
-                <div class="timer-display-box">
-                    <span id="timer">25:00</span>
+                <div class="timer-circle-wrap">
+                    <svg class="timer-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle class="timer-base" cx="50" cy="50" r="45"></circle>
+                        <circle class="timer-progress" id="timerProgress" cx="50" cy="50" r="45"></circle>
+                    </svg>
+                    <div class="timer-display-box">
+                        <span id="timer">25:00</span>
+                    </div>
                 </div>
+                
                 <div class="focus-buttons">
-                    <button id="startFocus">▶ Bắt đầu</button>
-                    <button id="stopFocus">■ Dừng</button>
-                    <button id="resetFocus">↺ Đặt lại</button>
+                    <button id="startFocus" class="control-btn primary">▶ Bắt đầu</button>
+                    <button id="stopFocus" class="control-btn">■ Dừng</button>
+                    <button id="resetFocus" class="control-btn">↺ Đặt lại</button>
                 </div>
                 <div class="mode-buttons">
-                    <button id="pomodoroMode" class="active">Pomodoro (25m)</button>
-                    <button id="shortBreakMode">Nghỉ ngắn (5m)</button>
-                    <button id="longBreakMode">Nghỉ dài (15m)</button>
+                    <button id="pomodoroMode" data-time="25" class="mode-btn active">Focus (25m)</button>
+                    <button id="shortBreakMode" data-time="5" class="mode-btn">Nghỉ ngắn (5m)</button>
+                    <button id="longBreakMode" data-time="15" class="mode-btn">Nghỉ dài (15m)</button>
                 </div>
-                <div class="progress-bar">
-                    <div id="progress"></div>
-                </div>
+                <p id="sessionInfo" class="session-info">Pomodoro: 0</p>
             </div>
         </section>
 
         <section id="sudoku" class="module hidden" data-view="sudoku">
-            <h2>🧩 Mini Sudoku (4x4)</h2>
-            <p class="sudoku-subtitle">Điền số 1, 2, 3, 4 vào mỗi hàng, cột và khối 2x2.</p>
+            <h2>🧩 Advanced Sudoku (9x9)</h2>
+            <p class="sudoku-subtitle">Điền số 1-9 vào mỗi hàng, cột và khối 3x3. (Chỉ cho phép 1-9)</p>
             <div id="sudokuGrid" class="sudoku-grid">
             </div>
             <div class="sudoku-controls">
-                <button id="newSudoku">Tạo mới</button>
-                <button id="checkSudoku">Kiểm tra</button>
+                <button id="newSudoku" class="control-btn primary">Tạo mới</button>
+                <button id="checkSudoku" class="control-btn">Kiểm tra</button>
                 <p id="sudokuMessage" class="sudoku-message"></p>
             </div>
         </section>
@@ -111,7 +106,7 @@
             <p class="decide-subtitle">Khi bạn không thể quyết định, hãy để NOXCODE chọn hộ bạn.</p>
             <textarea id="decisionOptions" placeholder="Nhập các lựa chọn, mỗi lựa chọn một dòng (VD: Codeforces, LeetCode, Nghỉ ngơi)"></textarea>
             <div class="decide-controls">
-                <button id="spinDecide">Quay Ngẫu Nhiên</button>
+                <button id="spinDecide" class="control-btn primary">Quay Ngẫu Nhiên</button>
             </div>
             <div class="result-box">
                 <p>Lựa chọn chiến thắng:</p>
@@ -121,7 +116,7 @@
 
     </div>
 
-    <audio id="alarmSound" src="assets/alarm.mp3" preload="auto"></audio> 
+    <audio id="alarmSound" src="assets/alarm.mp3" preload="auto"></audio>
 
     <script src="js/main.js"></script>
 </body>
