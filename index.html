@@ -3,22 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOXCODE SYSTEM | DASHBOARD 2.0</title>
+    <title>NOXCODE SYSTEM | DASHBOARD 3.0</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;300;400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div class="scanlines"></div>
+    <div class="arcaea-bg"></div>
     <div id="system-overlay"></div>
     <canvas id="matrix-rain"></canvas>
     <div id="toast-container"></div>
+
+    <div id="calendar-modal" class="modal-overlay">
+        <div class="calendar-box">
+            <div class="cal-header">
+                <button id="prev-month"><i class="fas fa-chevron-left"></i></button>
+                <span id="cal-month-year">...</span>
+                <button id="next-month"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="cal-days-header">
+                <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+            </div>
+            <div id="cal-days-grid" class="cal-grid"></div>
+            <button class="close-modal-btn" onclick="toggleCalendar()">CLOSE MATRIX</button>
+        </div>
+    </div>
 
     <div class="main-interface">
         <aside class="sidebar-panel">
             <div class="sidebar-clock-wrapper">
                 <div class="sidebar-label">SERVER TIME</div>
                 <div id="system-clock" class="sidebar-clock-display">00:00:00</div>
+                <div class="date-row">
+                    <span id="system-date">YYYY-MM-DD</span>
+                    <button id="open-cal-btn" class="hover-sound" onclick="toggleCalendar()">
+                        <i class="far fa-calendar-alt"></i>
+                    </button>
+                </div>
             </div>
 
             <div class="brand-section">
@@ -48,6 +72,9 @@
                 <button class="nav-item hover-sound" data-target="decide-view">
                     <span class="nav-icon">◈</span> <span class="nav-label">DECIDER</span>
                 </button>
+                <button class="nav-item hover-sound" data-target="compiler-view">
+                    <span class="nav-icon">⌨</span> <span class="nav-label">IDE / COMPILER</span>
+                </button>
             </nav>
 
             <div class="sidebar-footer">
@@ -63,10 +90,13 @@
 
         <main class="content-area">
             <header class="top-bar">
-                <div style="display: flex; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 15px;">
                     <div class="breadcrumbs">SYSTEM / <span id="current-module">DASHBOARD</span></div>
-                    <button id="theme-toggle" class="theme-btn hover-sound">
+                    <button id="theme-toggle" class="theme-btn hover-sound" title="Light/Dark Mode">
                         <i class="fas fa-sun"></i>
+                    </button>
+                    <button id="arcaea-toggle" class="theme-btn hover-sound arcaea-btn" title="Arcaea Dimension">
+                        <i class="fas fa-gem"></i>
                     </button>
                 </div>
                 
@@ -86,7 +116,7 @@
                     <h2 class="welcome-text">WELCOME BACK, OPERATOR.</h2>
                     <div class="console-output">
                         <span class="prompt">></span>
-                        <span id="typing-effect">Initializing core environment...</span>
+                        <span id="typing-effect">Initializing...</span>
                         <span class="cursor-blink">_</span>
                     </div>
                 </div>
@@ -105,8 +135,41 @@
             <div id="sudoku-view" class="view-container"><div class="section-header"><h2 class="section-title">SUDOKU ENGINE</h2><div class="difficulty-toggles"><button class="diff-chip active hover-sound" data-diff="easy">EASY</button><button class="diff-chip hover-sound" data-diff="medium">MEDIUM</button><button class="diff-chip hover-sound" data-diff="hard">HARD</button></div></div><div class="sudoku-wrapper"><div id="sudoku-grid" class="game-grid"></div><div class="game-controls"><button class="game-btn hover-sound" onclick="generateNewGame()">NEW GAME</button><button class="game-btn highlight hover-sound" onclick="verifySolution()">VERIFY SOLUTION</button></div></div></div>
             
             <div id="decide-view" class="view-container"><div class="decide-layout"><h2 class="section-title">DECISION MATRIX</h2><div class="input-area"><textarea id="decision-options" placeholder="Enter options here (one per line)..."></textarea></div><button id="spin-btn" class="spin-button hover-sound">EXECUTE RANDOMIZER</button><div class="result-area"><div class="result-label">RESULT:</div><div id="decision-result" class="result-value">---</div></div></div></div>
+
+             <div id="compiler-view" class="view-container">
+                <div class="section-header">
+                    <h2 class="section-title">C++ TERMINAL</h2>
+                    <div class="section-controls">
+                         <select id="cpp-std" class="std-selector hover-sound">
+                            <option value="c++11">GNU G++11 7.3.0</option>
+                            <option value="c++14">GNU G++14 9.2.0</option>
+                            <option value="c++17" selected>GNU G++17 11.2.0 (64bit)</option>
+                            <option value="c++20">GNU G++20 12.1.0 (Experimental)</option>
+                        </select>
+                        <button class="control-btn hover-sound" onclick="runFakeCode()">▶ EXECUTE</button>
+                    </div>
+                </div>
+                <div class="ide-layout" style="display:flex; flex-direction:column; gap:20px; height: calc(100vh - 200px);">
+                    <div class="editor-box" style="flex: 2; border: 1px solid var(--border); font-size: 14px;"><textarea id="cpp-code">#include <iostream>
+using namespace std;
+
+int main() {
+    // NOXCODE SYSTEM
+    cout << "Hello Operator Dai!" << endl;
+    return 0;
+}</textarea></div>
+                    <div class="terminal-box" style="flex: 1; background: #000; border: 1px solid var(--border); padding: 15px; font-family: monospace; overflow-y: auto;">
+                        <div style="color: #666; border-bottom: 1px solid #333; margin-bottom: 10px; padding-bottom: 5px;">OUTPUT_CONSOLE //</div>
+                        <div id="terminal-output" style="color: var(--text-main); white-space: pre-wrap;">Waiting for source code...</div>
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/closebrackets.min.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
