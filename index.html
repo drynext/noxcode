@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NOXCODE SYSTEM | DASHBOARD 2.0</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;300;400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div class="scanlines"></div>
     <div id="system-overlay"></div>
     <canvas id="matrix-rain"></canvas>
-
     <div id="toast-container"></div>
 
     <div class="main-interface">
@@ -63,7 +63,12 @@
 
         <main class="content-area">
             <header class="top-bar">
-                <div class="breadcrumbs">SYSTEM / <span id="current-module">DASHBOARD</span></div>
+                <div style="display: flex; align-items: center;">
+                    <div class="breadcrumbs">SYSTEM / <span id="current-module">DASHBOARD</span></div>
+                    <button id="theme-toggle" class="theme-btn hover-sound">
+                        <i class="fas fa-sun"></i>
+                    </button>
+                </div>
                 
                 <a href="profile.html" class="profile-widget hover-sound">
                     <div class="profile-info">
