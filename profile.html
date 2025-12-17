@@ -10,22 +10,25 @@
 </head>
 <body>
     <div class="scanlines"></div>
+    <div class="arcaea-bg"></div>
     <div id="system-overlay"></div>
     <canvas id="matrix-rain"></canvas>
     <div id="toast-container"></div>
 
     <div class="pro-navbar">
-        <div style="display: flex; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 15px;">
             <div class="pro-brand">NOXCODE_SYSTEM // PROFILE</div>
             <button id="theme-toggle" class="theme-btn hover-sound">
                 <i class="fas fa-sun"></i>
+            </button>
+            <button id="arcaea-toggle" class="theme-btn hover-sound arcaea-btn">
+                <i class="fas fa-gem"></i>
             </button>
         </div>
         <a href="index.html" class="pro-back-btn hover-sound"><i class="fas fa-terminal"></i> RETURN_TO_ROOT</a>
     </div>
 
     <div class="pro-container">
-        
         <aside class="pro-sidebar">
             <div class="user-card">
                 <div class="uc-avatar">
@@ -79,7 +82,6 @@
         </aside>
 
         <main class="pro-main">
-            
             <div class="pro-panel badges-panel">
                 <div class="panel-head">
                     <span><i class="fas fa-award"></i> EARNED_BADGES</span>
@@ -153,7 +155,6 @@
                     </tbody>
                 </table>
             </div>
-
         </main>
     </div>
     <script src="js/main.js"></script>
