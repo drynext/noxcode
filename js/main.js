@@ -1,11 +1,5 @@
-/* NOXCODE SYSTEM CORE 2.1
-   OPERATOR: DAI_DANG_CS
-   UPDATES: Added Dark/Light Mode Toggle
-*/
-
 document.addEventListener('DOMContentLoaded', () => {
-    
-    // --- 1. SYSTEM AUDIO ENGINE (WEB AUDIO API) ---
+
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     let soundEnabled = true;
 
@@ -45,35 +39,172 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 2. DARK/LIGHT MODE TOGGLE (NEW) ---
     const themeToggleBtn = document.getElementById('theme-toggle');
+    const arcaeaBtn = document.getElementById('arcaea-toggle');
     const body = document.body;
-    const icon = themeToggleBtn ? themeToggleBtn.querySelector('i') : null;
+    const themeIcon = themeToggleBtn ? themeToggleBtn.querySelector('i') : null;
 
-    // Check LocalStorage on load
-    const currentTheme = localStorage.getItem('noxTheme');
-    if (currentTheme === 'light') {
+    const savedTheme = localStorage.getItem('noxTheme');
+    if (savedTheme === 'light') {
         body.classList.add('light-mode');
-        if(icon) icon.classList.replace('fa-sun', 'fa-moon');
+        if(themeIcon) themeIcon.classList.replace('fa-sun', 'fa-moon');
+    } else if (savedTheme === 'arcaea') {
+        body.classList.add('theme-arcaea');
     }
 
-    if (themeToggleBtn && icon) {
+    if (themeToggleBtn) {
         themeToggleBtn.addEventListener('click', () => {
+            body.classList.remove('theme-arcaea');
             body.classList.toggle('light-mode');
             
             if (body.classList.contains('light-mode')) {
-                icon.classList.replace('fa-sun', 'fa-moon');
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
                 localStorage.setItem('noxTheme', 'light');
-                playBeep(1000, 0.05); // Higher pitch for light mode
+                playBeep(1000, 0.05);
             } else {
-                icon.classList.replace('fa-moon', 'fa-sun');
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
                 localStorage.setItem('noxTheme', 'dark');
-                playBeep(600, 0.05); // Lower pitch for dark mode
+                playBeep(600, 0.05);
             }
         });
     }
 
-    // --- 3. NOTIFICATION SYSTEM (TOAST) ---
+    if (arcaeaBtn) {
+        arcaeaBtn.addEventListener('click', () => {
+            body.classList.remove('light-mode');
+            if(themeIcon) themeIcon.classList.replace('fa-moon', 'fa-sun');
+            
+            body.classList.toggle('theme-arcaea');
+            if (body.classList.contains('theme-arcaea')) {
+                localStorage.setItem('noxTheme', 'arcaea');
+                playBeep(1200, 0.1, 'sine');
+                showToast('DIMENSION SHIFT: ARCAEA');
+            } else {
+                localStorage.setItem('noxTheme', 'dark');
+                playBeep(400, 0.1, 'sawtooth');
+            }
+        });
+    }
+
+    const quotes = [
+        "Code is like humor. When you have to explain it, it’s bad.",
+        "Fix the cause, not the symptom.",
+        "Simplicity is the soul of efficiency.",
+        "Make it work, make it right, make it fast.",
+        "Talk is cheap. Show me the code.",
+        "Experience is the name everyone gives to their mistakes.",
+        "In order to be irreplaceable, one must always be different.",
+        "Knowledge is power.",
+        "Stay hungry, stay foolish.",
+        "It’s not a bug, it’s a feature.",
+        "First, solve the problem. Then, write the code.",
+        "Optimism is an occupational hazard of programming.",
+        "The only way to do great work is to love what you do.",
+        "Pain is temporary. Quitting lasts forever.",
+        "Don't watch the clock; do what it does. Keep going.",
+        "Dream big and dare to fail.",
+        "Your limitation—it's only your imagination.",
+        "Push yourself, because no one else is going to do it for you.",
+        "Great things never come from comfort zones.",
+        "Success doesn’t just find you. You have to go out and get it."
+    ];
+
+    function getDailyQuote() {
+        const now = new Date();
+        const start = new Date(now.getFullYear(), 0, 0);
+        const diff = now - start;
+        const oneDay = 1000 * 60 * 60 * 24;
+        const dayOfYear = Math.floor(diff / oneDay);
+        const quoteIndex = dayOfYear % quotes.length;
+        return quotes[quoteIndex];
+    }
+
+    const typeEl = document.getElementById('typing-effect');
+    if(typeEl) {
+        const textToType = `> ${getDailyQuote()}`;
+        let charIndex = 0;
+        typeEl.innerHTML = ""; 
+        typeEl.style.color = "var(--primary)";
+        
+        function typeWriter() {
+            if (charIndex < textToType.length) {
+                typeEl.innerHTML += textToType.charAt(charIndex);
+                charIndex++;
+                if(Math.random() > 0.8) playBeep(800, 0.005, 'sawtooth');
+                setTimeout(typeWriter, 40);
+            }
+        }
+        setTimeout(typeWriter, 1000);
+    }
+
+    const dateEl = document.getElementById('system-date');
+    let currentDate = new Date();
+    
+    function updateDateDisplay() {
+        const now = new Date();
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        if(dateEl) dateEl.innerText = now.toLocaleDateString('en-CA', options);
+    }
+    updateDateDisplay();
+
+    const calModal = document.getElementById('calendar-modal');
+    const calGrid = document.getElementById('cal-days-grid');
+    const calMonthYear = document.getElementById('cal-month-year');
+    
+    window.toggleCalendar = function() {
+        if(!calModal) return;
+        calModal.classList.toggle('open');
+        if(calModal.classList.contains('open')) {
+            renderCalendar(currentDate);
+            playBeep(600, 0.1);
+        } else {
+            playBeep(300, 0.1);
+        }
+    }
+
+    function renderCalendar(date) {
+        if(!calGrid) return;
+        calGrid.innerHTML = '';
+        
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        
+        calMonthYear.innerText = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        
+        for(let i=0; i<firstDay; i++) {
+            const div = document.createElement('div');
+            div.className = 'cal-day empty';
+            calGrid.appendChild(div);
+        }
+        
+        const today = new Date();
+        for(let i=1; i<=daysInMonth; i++) {
+            const div = document.createElement('div');
+            div.className = 'cal-day';
+            div.innerText = i;
+            if(i === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
+                div.classList.add('today');
+            }
+            div.addEventListener('mouseenter', () => playBeep(500, 0.01));
+            calGrid.appendChild(div);
+        }
+    }
+
+    document.getElementById('prev-month')?.addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        renderCalendar(currentDate);
+        playBeep(400, 0.05);
+    });
+    
+    document.getElementById('next-month')?.addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        renderCalendar(currentDate);
+        playBeep(400, 0.05);
+    });
+
     window.showToast = function(msg, type = 'success') {
         const container = document.getElementById('toast-container');
         if(!container) return;
@@ -91,7 +222,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     }
 
-    // --- 4. MATRIX RAIN ENGINE ---
     const canvas = document.getElementById('matrix-rain');
     if (canvas) {
         const ctx = canvas.getContext('2d');
@@ -104,11 +234,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const drops = Array(Math.floor(columns)).fill(1);
 
         function drawMatrix() {
-            // Adjust fade effect based on mode
             ctx.fillStyle = document.body.classList.contains('light-mode') ? 'rgba(240, 242, 245, 0.1)' : 'rgba(5, 5, 5, 0.05)';
             ctx.fillRect(0, 0, width, height);
             
-            ctx.fillStyle = document.body.classList.contains('light-mode') ? '#00c641' : '#0F0';
+            ctx.fillStyle = document.body.classList.contains('theme-arcaea') ? '#cba3ff' : (document.body.classList.contains('light-mode') ? '#00c641' : '#0F0');
             ctx.font = fontSize + 'px monospace';
             
             for (let i = 0; i < drops.length; i++) {
@@ -128,7 +257,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 5. SYSTEM CLOCK ---
     function updateClock() {
         const now = new Date();
         const timeString = now.toLocaleTimeString('en-US', { hour12: false });
@@ -138,7 +266,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateClock, 1000);
     updateClock();
 
-    // --- 6. NAVIGATION LOGIC ---
     const navItems = document.querySelectorAll('.nav-item');
     const views = document.querySelectorAll('.view-container');
     const breadcrumb = document.getElementById('current-module');
@@ -160,24 +287,6 @@ document.addEventListener('DOMContentLoaded', () => {
         item.addEventListener('click', () => navigateTo(item.dataset.target));
     });
 
-    // --- 7. TYPEWRITER EFFECT ---
-    const typeEl = document.getElementById('typing-effect');
-    if(typeEl) {
-        const textToType = "System optimized for Operator Dai. Ready to code.";
-        let charIndex = 0;
-        typeEl.innerHTML = ""; 
-        function typeWriter() {
-            if (charIndex < textToType.length) {
-                typeEl.innerHTML += textToType.charAt(charIndex);
-                charIndex++;
-                if(Math.random() > 0.5) playBeep(800, 0.01, 'sawtooth');
-                setTimeout(typeWriter, 50);
-            }
-        }
-        setTimeout(typeWriter, 1000);
-    }
-
-    // --- 8. TRACKER MODULE ---
     const taskInput = document.getElementById('new-task-input');
     const addTaskBtn = document.getElementById('add-task-btn');
     const todoList = document.getElementById('todo-list');
@@ -250,7 +359,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 9. FOCUS TIMER ---
     let timerInterval;
     let timeLeft = 25 * 60;
     let totalFocusTime = parseInt(localStorage.getItem('noxFocusTime')) || 0;
@@ -343,7 +451,6 @@ document.addEventListener('DOMContentLoaded', () => {
         setProgress(0);
     }
 
-    // --- 10. SUDOKU ENGINE ---
     const sudokuGrid = document.getElementById('sudoku-grid');
     let solutionMatrix = [];
     
@@ -467,7 +574,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 11. DECIDER ---
     const decideBtn = document.getElementById('spin-btn');
     const decideRes = document.getElementById('decision-result');
     const decideInput = document.getElementById('decision-options');
@@ -493,7 +599,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 12. STATS UPDATE ---
     function updateDashboardStats() {
         const doneCount = tasks.filter(t => t.status === 'completed').length;
         const pendingCount = tasks.filter(t => t.status === 'pending').length;
@@ -509,7 +614,142 @@ document.addEventListener('DOMContentLoaded', () => {
         if(cardTodoCount) cardTodoCount.innerText = pendingCount;
     }
 
-    // Init
+    let myCodeEditor;
+    const textArea = document.getElementById('cpp-code');
+
+    if (textArea && !myCodeEditor) {
+        myCodeEditor = CodeMirror.fromTextArea(textArea, {
+            mode: "text/x-c++src",
+            theme: "dracula",
+            lineNumbers: true,
+            autoCloseBrackets: true,
+            indentUnit: 4,
+            tabSize: 4
+        });
+        setTimeout(() => myCodeEditor.refresh(), 100);
+    }
+
+    const ideNavBtn = document.querySelector('.nav-item[data-target="compiler-view"]');
+    if(ideNavBtn) {
+        ideNavBtn.addEventListener('click', () => {
+            setTimeout(() => {
+                if(myCodeEditor) myCodeEditor.refresh();
+            }, 50);
+        });
+    }
+
+    window.runFakeCode = function() {
+        const outputConsole = document.getElementById('terminal-output');
+        const code = myCodeEditor.getValue();
+        const stdVersion = document.getElementById('cpp-std').value; 
+        
+        if(!code.trim()) {
+            showToast('ERROR: Empty Source Code', 'error');
+            return;
+        }
+
+        outputConsole.innerHTML = `<span style="color:#888">$ g++ solution.cpp -o solution -std=${stdVersion} -O2 -Wall</span>\n`;
+        outputConsole.innerHTML += '<span style="color:yellow">Compiling source...</span>';
+        playBeep(200, 0.1, 'square');
+
+        let delayTime = stdVersion === 'c++20' ? 1500 : 800;
+
+        setTimeout(() => {
+            outputConsole.innerHTML += '\n<span style="color:#666">Linking objects...</span>';
+            playBeep(300, 0.1, 'square');
+            
+            setTimeout(() => {
+                outputConsole.innerHTML = '';
+                let fakeOutput = "";
+                const lines = code.split('\n');
+                let hasOutput = false;
+
+                lines.forEach(line => {
+                    if(line.includes('cout')) {
+                        const match = line.match(/"([^"]+)"/);
+                        if(match) {
+                            fakeOutput += match[1] + '\n';
+                            hasOutput = true;
+                        }
+                    }
+                });
+
+                if(!hasOutput) fakeOutput = "Program exited with code 0.\n(No standard output)";
+
+                outputConsole.innerHTML = `
+<span style="color:#888">$ ./solution</span>
+${fakeOutput}
+<span style="color: #666; font-size: 11px; border-top: 1px dashed #333; display:block; margin-top:10px; padding-top:5px;">
+--------------------------------
+Standard: ${stdVersion.toUpperCase()}
+Process finished with exit code 0
+Execution time: 0.0${Math.floor(Math.random() * 9)}s
+Memory used: ${Math.floor(Math.random() * 500) + 100}KB
+</span>`;
+                
+                showToast(`Build Successful (${stdVersion.toUpperCase()})`, 'success');
+                playBeep(1000, 0.2); 
+            }, delayTime);
+        }, 600);
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+        switch(e.key.toLowerCase()) {
+            case '1': navigateTo('dashboard-view'); break;
+            case '2': navigateTo('tracker-view'); break;
+            case '3': navigateTo('focus-view'); break;
+            case '4': navigateTo('sudoku-view'); break;
+            case '5': navigateTo('decide-view'); break;
+            case 'm': 
+                const soundBtn = document.getElementById('toggle-sound');
+                if(soundBtn) soundBtn.click();
+                break;
+            case 'l': 
+                const themeBtn = document.getElementById('theme-toggle');
+                if(themeBtn) themeBtn.click();
+                break;
+            case 'a':
+                const arcBtn = document.getElementById('arcaea-toggle');
+                if(arcBtn) arcBtn.click();
+                break;
+            case 'f':
+                toggleFullScreen();
+                break;
+        }
+    });
+
+    function toggleFullScreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(err => {
+                console.log(`Error attempting to enable full-screen mode: ${err.message}`);
+            });
+            showToast('FULLSCREEN MODE: ON');
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+                showToast('FULLSCREEN MODE: OFF');
+            }
+        }
+        playBeep(500, 0.1);
+    }
+
+    let secretCode = '';
+    document.addEventListener('keydown', (e) => {
+        secretCode += e.key;
+        if (secretCode.length > 4) secretCode = secretCode.slice(-4);
+        
+        if (secretCode === 'hack') {
+            document.documentElement.style.setProperty('--primary', '#ff0055');
+            document.documentElement.style.setProperty('--primary-dim', 'rgba(255, 0, 85, 0.15)');
+            document.documentElement.style.setProperty('--primary-glow', 'rgba(255, 0, 85, 0.4)');
+            showToast('SYSTEM BREACH DETECTED!', 'error');
+            playBeep(150, 0.5, 'sawtooth');
+            secretCode = '';
+        }
+    });
+
     renderTasks();
     updateDashboardStats();
     if(sudokuGrid) generateNewGame();
