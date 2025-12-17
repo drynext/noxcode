@@ -15,9 +15,33 @@
     <canvas id="matrix-rain"></canvas>
     <div id="toast-container"></div>
 
+    <div id="ctx-menu" class="ctx-menu">
+        <div class="ctx-item" onclick="location.href='index.html'"><i class="fas fa-home"></i> Back to Root</div>
+        <div class="ctx-item" onclick="toggleCalendar()"><i class="far fa-calendar-alt"></i> Calendar</div>
+        <div class="ctx-hr"></div>
+        <div class="ctx-item text-danger" onclick="location.reload()"><i class="fas fa-power-off"></i> Refresh Profile</div>
+    </div>
+
+    <div id="calendar-modal" class="modal-overlay">
+        <div class="calendar-box">
+            <div class="cal-header">
+                <button id="prev-month"><i class="fas fa-chevron-left"></i></button>
+                <span id="cal-month-year">...</span>
+                <button id="next-month"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="cal-days-header">
+                <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+            </div>
+            <div id="cal-days-grid" class="cal-grid"></div>
+            <button class="close-modal-btn" onclick="toggleCalendar()">CLOSE MATRIX</button>
+        </div>
+    </div>
+
     <div class="pro-navbar">
         <div style="display: flex; align-items: center; gap: 15px;">
-            <div class="pro-brand">NOXCODE_SYSTEM // PROFILE</div>
+            <a href="index.html" class="logo-link hover-sound">
+                <div class="pro-brand force-red">NOXCODE_SYSTEM // PROFILE</div>
+            </a>
             <button id="theme-toggle" class="theme-btn hover-sound">
                 <i class="fas fa-sun"></i>
             </button>
@@ -151,7 +175,6 @@
                         <tr><td><a href="#">#289102</a></td><td><a href="#" class="prob-link">A. Watermelon</a></td><td>C++17</td><td class="verdict-ac">Accepted</td><td>30 ms</td><td>0 KB</td></tr>
                         <tr><td><a href="#">#289098</a></td><td><a href="#" class="prob-link">B. Matrix Rotation</a></td><td>C++17</td><td class="verdict-ac">Accepted</td><td>15 ms</td><td>200 KB</td></tr>
                         <tr><td><a href="#">#288112</a></td><td><a href="#" class="prob-link">C. Dynamic Array</a></td><td>Python 3</td><td class="verdict-wa">Wrong Answer</td><td>1020 ms</td><td>4000 KB</td></tr>
-                        <tr><td><a href="#">#288005</a></td><td><a href="#" class="prob-link">A. A+B Problem</a></td><td>C++17</td><td class="verdict-ac">Accepted</td><td>1 ms</td><td>0 KB</td></tr>
                     </tbody>
                 </table>
             </div>
