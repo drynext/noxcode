@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOXCODE SYSTEM | DASHBOARD 3.0</title>
+    <title>NOXCODE SYSTEM | OS EDITION</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;300;400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
@@ -15,7 +15,41 @@
     <div class="arcaea-bg"></div>
     <div id="system-overlay"></div>
     <canvas id="matrix-rain"></canvas>
+    
     <div id="toast-container"></div>
+    
+    <div id="ctx-menu" class="ctx-menu">
+        <div class="ctx-item" onclick="navigateTo('dashboard-view')"><i class="fas fa-home"></i> Dashboard</div>
+        <div class="ctx-item" onclick="navigateTo('compiler-view')"><i class="fas fa-code"></i> Open IDE</div>
+        <div class="ctx-item" onclick="toggleScratchpad()"><i class="fas fa-sticky-note"></i> Toggle Notes</div>
+        <div class="ctx-item" onclick="toggleCalendar()"><i class="far fa-calendar-alt"></i> Calendar</div>
+        <div class="ctx-hr"></div>
+        <div class="ctx-item text-danger" onclick="location.reload()"><i class="fas fa-power-off"></i> Reboot System</div>
+    </div>
+
+    <div id="cmd-overlay" class="cmd-overlay">
+        <div class="cmd-box">
+            <div class="cmd-header">
+                <i class="fas fa-terminal"></i> RUN_COMMAND
+            </div>
+            <input type="text" id="cmd-input" placeholder="Type a command (e.g., 'Dark', 'Task', 'Music')...">
+            <div class="cmd-list" id="cmd-list">
+                </div>
+            <div class="cmd-footer">
+                <span><kbd>↑</kbd> <kbd>↓</kbd> to navigate</span>
+                <span><kbd>↵</kbd> to execute</span>
+                <span><kbd>Esc</kbd> to close</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="scratchpad" class="floating-window">
+        <div class="win-header" id="scratchpad-header">
+            <span><i class="fas fa-pen-square"></i> QUICK_NOTES.txt</span>
+            <button class="win-close" onclick="toggleScratchpad()">×</button>
+        </div>
+        <textarea class="win-content" placeholder="Draft algorithms or ideas here..."></textarea>
+    </div>
 
     <div id="calendar-modal" class="modal-overlay">
         <div class="calendar-box">
@@ -43,13 +77,18 @@
                         <i class="far fa-calendar-alt"></i>
                     </button>
                 </div>
+                <div class="weather-widget">
+                    <i class="fas fa-cloud-moon-rain"></i> Da Nang: 24°C
+                </div>
             </div>
 
             <div class="brand-section">
-                <div class="logo-container">
-                    <h1 class="logo-text">NOXCODE</h1>
-                    <div class="logo-glitch">NOXCODE</div>
-                </div>
+                <a href="index.html" class="logo-link hover-sound">
+                    <div class="logo-container">
+                        <h1 class="logo-text force-red">NOXCODE</h1>
+                        <div class="logo-glitch force-red">NOXCODE</div>
+                    </div>
+                </a>
                 <div class="system-status">
                     <span class="status-indicator"></span>
                     <span class="status-text">SYSTEM ONLINE</span>
@@ -77,11 +116,20 @@
                 </button>
             </nav>
 
+            <div class="music-widget hover-sound" onclick="toggleMusic()">
+                <div class="music-info">
+                    <span class="music-status">LOFI STATION</span>
+                    <span class="music-track">Coding Chill Mix</span>
+                </div>
+                <div class="visualizer">
+                    <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                </div>
+            </div>
+
             <div class="sidebar-footer">
                 <div class="stats-box">
-                    <div class="stat-line"><span class="stat-label">Tasks Done</span><span class="stat-value" id="sidebar-done">0</span></div>
-                    <div class="stat-line"><span class="stat-label">Pending</span><span class="stat-value" id="sidebar-todo">0</span></div>
-                    <div class="stat-line"><span class="stat-label">Focus Total</span><span class="stat-value" id="sidebar-focus">0m</span></div>
+                    <div class="stat-line"><span class="stat-label">Tasks</span><span class="stat-value" id="sidebar-done">0</span></div>
+                    <div class="stat-line"><span class="stat-label">Focus</span><span class="stat-value" id="sidebar-focus">0m</span></div>
                 </div>
                 <div class="user-id">OP: DAI_DANG_CS</div>
                 <button id="toggle-sound" class="control-btn" style="width:100%; margin-top:10px;">[ SOUND: ON ]</button>
@@ -92,18 +140,15 @@
             <header class="top-bar">
                 <div style="display: flex; align-items: center; gap: 15px;">
                     <div class="breadcrumbs">SYSTEM / <span id="current-module">DASHBOARD</span></div>
-                    <button id="theme-toggle" class="theme-btn hover-sound" title="Light/Dark Mode">
-                        <i class="fas fa-sun"></i>
-                    </button>
-                    <button id="arcaea-toggle" class="theme-btn hover-sound arcaea-btn" title="Arcaea Dimension">
-                        <i class="fas fa-gem"></i>
-                    </button>
+                    <button id="theme-toggle" class="theme-btn hover-sound" title="Light/Dark Mode"><i class="fas fa-sun"></i></button>
+                    <button id="arcaea-toggle" class="theme-btn hover-sound arcaea-btn" title="Arcaea Dimension"><i class="fas fa-gem"></i></button>
+                    <button class="theme-btn hover-sound" onclick="toggleScratchpad()" title="Quick Notes"><i class="fas fa-pen"></i></button>
                 </div>
                 
                 <a href="profile.html" class="profile-widget hover-sound">
                     <div class="profile-info">
                         <span class="p-name">Đặng Đức Đại</span>
-                        <span class="p-role">LV.1 ADMIN</span>
+                        <span class="p-role">LV.99 MANAGER</span>
                     </div>
                     <div class="avatar-circle">
                         <img src="https://i.pinimg.com/736x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg" alt="Avatar">
@@ -121,30 +166,30 @@
                     </div>
                 </div>
                 <div class="modules-grid">
-                    <div class="module-card hover-sound" onclick="navigateTo('tracker-view')"><div class="card-glow"></div><div class="card-content"><div class="card-icon">⚡</div><h3 class="card-title">Practice Tracker</h3><p class="card-desc">Manage algorithms & coding tasks.</p><div class="card-stat">Active: <span id="card-todo-count">0</span></div></div></div>
-                    <div class="module-card hover-sound" onclick="navigateTo('focus-view')"><div class="card-glow"></div><div class="card-content"><div class="card-icon">◎</div><h3 class="card-title">Deep Focus</h3><p class="card-desc">Pomodoro timer protocol.</p><div class="card-stat">Status: READY</div></div></div>
-                    <div class="module-card hover-sound" onclick="navigateTo('sudoku-view')"><div class="card-glow"></div><div class="card-content"><div class="card-icon">▦</div><h3 class="card-title">Sudoku Engine</h3><p class="card-desc">Logic training matrix (9x9).</p><div class="card-stat">Level: ADAPTIVE</div></div></div>
-                    <div class="module-card hover-sound" onclick="navigateTo('decide-view')"><div class="card-glow"></div><div class="card-content"><div class="card-icon">◈</div><h3 class="card-title">Decision Maker</h3><p class="card-desc">Random choice generator.</p><div class="card-stat">Waiting input...</div></div></div>
+                    <div class="module-card hover-sound" onclick="navigateTo('tracker-view')"><div class="card-glow"></div><div class="card-content"><div class="card-icon">⚡</div><h3 class="card-title">Practice Tracker</h3><p class="card-desc">Algorithms & tasks.</p><div class="card-stat">Active: <span id="card-todo-count">0</span></div></div></div>
+                    <div class="module-card hover-sound" onclick="navigateTo('focus-view')"><div class="card-glow"></div><div class="card-content"><div class="card-icon">◎</div><h3 class="card-title">Deep Focus</h3><p class="card-desc">Pomodoro protocol.</p><div class="card-stat">Status: READY</div></div></div>
+                    <div class="module-card hover-sound" onclick="navigateTo('sudoku-view')"><div class="card-glow"></div><div class="card-content"><div class="card-icon">▦</div><h3 class="card-title">Sudoku Engine</h3><p class="card-desc">Logic matrix (9x9).</p><div class="card-stat">Level: ADAPTIVE</div></div></div>
+                    <div class="module-card hover-sound" onclick="navigateTo('compiler-view')"><div class="card-glow"></div><div class="card-content"><div class="card-icon">⌨</div><h3 class="card-title">C++ Compiler</h3><p class="card-desc">Dev Environment.</p><div class="card-stat">v17.02</div></div></div>
                 </div>
             </div>
 
-            <div id="tracker-view" class="view-container"><div class="section-header"><h2 class="section-title">PRACTICE TRACKER</h2><div class="section-controls"><button class="control-btn danger hover-sound" onclick="clearAllTasks()">CLEAR ALL</button></div></div><div class="tracker-interface"><div class="input-wrapper"><input type="text" id="new-task-input" placeholder="Enter problem name or algorithm..."><button id="add-task-btn" class="action-btn hover-sound">ADD TO QUEUE</button></div><div class="task-lists-container"><div class="list-column"><h3 class="list-head">PENDING TASKS</h3><ul id="todo-list" class="styled-list"></ul></div><div class="list-column"><h3 class="list-head">COMPLETED</h3><ul id="done-list" class="styled-list"></ul></div></div></div></div>
+            <div id="tracker-view" class="view-container"><div class="section-header"><h2 class="section-title">PRACTICE TRACKER</h2><div class="section-controls"><button class="control-btn danger hover-sound" onclick="clearAllTasks()">CLEAR ALL</button></div></div><div class="tracker-interface"><div class="input-wrapper"><input type="text" id="new-task-input" placeholder="Enter task..."><button id="add-task-btn" class="action-btn hover-sound">ADD</button></div><div class="task-lists-container"><div class="list-column"><h3 class="list-head">PENDING</h3><ul id="todo-list" class="styled-list"></ul></div><div class="list-column"><h3 class="list-head">DONE</h3><ul id="done-list" class="styled-list"></ul></div></div></div></div>
             
-            <div id="focus-view" class="view-container"><div class="focus-layout"><div class="timer-display-area"><svg class="progress-ring" width="360" height="360"><circle class="progress-ring__circle-bg" stroke="#1a1a1a" stroke-width="8" fill="transparent" r="170" cx="180" cy="180"/><circle class="progress-ring__circle" stroke="#00ff41" stroke-width="8" fill="transparent" r="170" cx="180" cy="180"/></svg><div class="time-text" id="timer-val">25:00</div><div class="time-label" id="timer-label">FOCUS SESSION</div></div><div class="timer-controls"><div class="mode-switcher"><button class="mode-btn active hover-sound" data-time="25">POMODORO</button><button class="mode-btn hover-sound" data-time="5">SHORT BREAK</button><button class="mode-btn hover-sound" data-time="15">LONG BREAK</button></div><div class="action-buttons"><button id="timer-start" class="large-btn hover-sound">INITIALIZE</button><button id="timer-reset" class="large-btn secondary hover-sound">RESET</button></div></div></div></div>
+            <div id="focus-view" class="view-container"><div class="focus-layout"><div class="timer-display-area"><svg class="progress-ring" width="360" height="360"><circle class="progress-ring__circle-bg" stroke="#1a1a1a" stroke-width="8" fill="transparent" r="170" cx="180" cy="180"/><circle class="progress-ring__circle" stroke="#00ff41" stroke-width="8" fill="transparent" r="170" cx="180" cy="180"/></svg><div class="time-text" id="timer-val">25:00</div><div class="time-label" id="timer-label">FOCUS SESSION</div></div><div class="timer-controls"><div class="mode-switcher"><button class="mode-btn active hover-sound" data-time="25">POMODORO</button><button class="mode-btn hover-sound" data-time="5">SHORT</button><button class="mode-btn hover-sound" data-time="15">LONG</button></div><div class="action-buttons"><button id="timer-start" class="large-btn hover-sound">START</button><button id="timer-reset" class="large-btn secondary hover-sound">RESET</button></div></div></div></div>
             
-            <div id="sudoku-view" class="view-container"><div class="section-header"><h2 class="section-title">SUDOKU ENGINE</h2><div class="difficulty-toggles"><button class="diff-chip active hover-sound" data-diff="easy">EASY</button><button class="diff-chip hover-sound" data-diff="medium">MEDIUM</button><button class="diff-chip hover-sound" data-diff="hard">HARD</button></div></div><div class="sudoku-wrapper"><div id="sudoku-grid" class="game-grid"></div><div class="game-controls"><button class="game-btn hover-sound" onclick="generateNewGame()">NEW GAME</button><button class="game-btn highlight hover-sound" onclick="verifySolution()">VERIFY SOLUTION</button></div></div></div>
+            <div id="sudoku-view" class="view-container"><div class="section-header"><h2 class="section-title">SUDOKU</h2><div class="difficulty-toggles"><button class="diff-chip active hover-sound" data-diff="easy">EASY</button><button class="diff-chip hover-sound" data-diff="medium">MEDIUM</button><button class="diff-chip hover-sound" data-diff="hard">HARD</button></div></div><div class="sudoku-wrapper"><div id="sudoku-grid" class="game-grid"></div><div class="game-controls"><button class="game-btn hover-sound" onclick="generateNewGame()">NEW GAME</button><button class="game-btn highlight hover-sound" onclick="verifySolution()">CHECK</button></div></div></div>
             
-            <div id="decide-view" class="view-container"><div class="decide-layout"><h2 class="section-title">DECISION MATRIX</h2><div class="input-area"><textarea id="decision-options" placeholder="Enter options here (one per line)..."></textarea></div><button id="spin-btn" class="spin-button hover-sound">EXECUTE RANDOMIZER</button><div class="result-area"><div class="result-label">RESULT:</div><div id="decision-result" class="result-value">---</div></div></div></div>
+            <div id="decide-view" class="view-container"><div class="decide-layout"><h2 class="section-title">DECISION MATRIX</h2><div class="input-area"><textarea id="decision-options" placeholder="Options (one per line)..."></textarea></div><button id="spin-btn" class="spin-button hover-sound">RANDOMIZE</button><div class="result-area"><div class="result-label">RESULT:</div><div id="decision-result" class="result-value">---</div></div></div></div>
 
              <div id="compiler-view" class="view-container">
                 <div class="section-header">
                     <h2 class="section-title">C++ TERMINAL</h2>
                     <div class="section-controls">
                          <select id="cpp-std" class="std-selector hover-sound">
-                            <option value="c++11">GNU G++11 7.3.0</option>
-                            <option value="c++14">GNU G++14 9.2.0</option>
-                            <option value="c++17" selected>GNU G++17 11.2.0 (64bit)</option>
-                            <option value="c++20">GNU G++20 12.1.0 (Experimental)</option>
+                            <option value="c++11">GNU G++11</option>
+                            <option value="c++14">GNU G++14</option>
+                            <option value="c++17" selected>GNU G++17</option>
+                            <option value="c++20">GNU G++20</option>
                         </select>
                         <button class="control-btn hover-sound" onclick="runFakeCode()">▶ EXECUTE</button>
                     </div>
@@ -154,7 +199,7 @@
 using namespace std;
 
 int main() {
-    // NOXCODE SYSTEM
+    // NOXCODE SYSTEM OS
     cout << "Hello Operator Dai!" << endl;
     return 0;
 }</textarea></div>
