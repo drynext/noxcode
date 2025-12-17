@@ -12,9 +12,15 @@
     <div class="scanlines"></div>
     <div id="system-overlay"></div>
     <canvas id="matrix-rain"></canvas>
+    <div id="toast-container"></div>
 
     <div class="pro-navbar">
-        <div class="pro-brand">NOXCODE_SYSTEM // PROFILE</div>
+        <div style="display: flex; align-items: center;">
+            <div class="pro-brand">NOXCODE_SYSTEM // PROFILE</div>
+            <button id="theme-toggle" class="theme-btn hover-sound">
+                <i class="fas fa-sun"></i>
+            </button>
+        </div>
         <a href="index.html" class="pro-back-btn hover-sound"><i class="fas fa-terminal"></i> RETURN_TO_ROOT</a>
     </div>
 
@@ -152,18 +158,16 @@
     </div>
     <script src="js/main.js"></script>
     <script>
-        // Heatmap riêng cho profile
         const hm = document.getElementById('heatmap-area');
         if(hm) {
             for(let i=0; i<300; i++) {
                 let d = document.createElement('div');
                 d.className = 'hm-cell';
                 let rand = Math.random();
-                if(rand > 0.9) d.style.background = '#00ff41';
-                else if(rand > 0.7) d.style.background = '#008f11';
-                else if(rand > 0.4) d.style.background = '#0e4429';
-                else d.style.background = '#161b22';
-                // Thêm hiệu ứng hover sound cho từng ô
+                if(rand > 0.9) d.style.background = 'var(--primary)';
+                else if(rand > 0.7) d.style.background = 'var(--secondary)';
+                else if(rand > 0.4) d.style.background = 'rgba(0, 255, 65, 0.2)';
+                else d.style.background = 'var(--bg-panel)';
                 d.addEventListener('mouseenter', () => window.playBeep(800, 0.02)); 
                 hm.appendChild(d);
             }
