@@ -1,20 +1,17 @@
-/* NOXCODE SYSTEM CORE 2.0
+/* NOXCODE SYSTEM CORE 2.1
    OPERATOR: DAI_DANG_CS
-   UPDATES: Added Sound Engine, Toast Notifications, Matrix Optimization
+   UPDATES: Added Dark/Light Mode Toggle
 */
 
 document.addEventListener('DOMContentLoaded', () => {
     
     // --- 1. SYSTEM AUDIO ENGINE (WEB AUDIO API) ---
-    // Không cần file mp3, tự tạo âm thanh điện tử
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     let soundEnabled = true;
 
     window.playBeep = function(freq = 600, duration = 0.05, type = 'square') {
-        if (!soundEnabled || audioCtx.state === 'suspended') {
-            audioCtx.resume();
-        }
         if (!soundEnabled) return;
+        if (audioCtx.state === 'suspended') audioCtx.resume();
 
         const osc = audioCtx.createOscillator();
         const gainNode = audioCtx.createGain();
@@ -32,28 +29,54 @@ document.addEventListener('DOMContentLoaded', () => {
         osc.stop(audioCtx.currentTime + duration);
     }
 
-    // Gắn âm thanh hover cho các element có class .hover-sound
     document.body.addEventListener('mouseenter', (e) => {
         if (e.target.classList && e.target.classList.contains('hover-sound')) {
             playBeep(400, 0.03, 'sine');
         }
     }, true);
 
-    // Toggle Sound Button
     const soundBtn = document.getElementById('toggle-sound');
     if(soundBtn) {
         soundBtn.addEventListener('click', () => {
             soundEnabled = !soundEnabled;
             soundBtn.innerText = soundEnabled ? '[ SOUND: ON ]' : '[ SOUND: OFF ]';
-            soundBtn.style.color = soundEnabled ? 'var(--primary)' : '#555';
+            soundBtn.style.color = soundEnabled ? 'var(--primary)' : 'var(--text-muted)';
             playBeep(soundEnabled ? 800 : 200, 0.1);
         });
     }
 
-    // --- 2. NOTIFICATION SYSTEM (TOAST) ---
+    // --- 2. DARK/LIGHT MODE TOGGLE (NEW) ---
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const body = document.body;
+    const icon = themeToggleBtn ? themeToggleBtn.querySelector('i') : null;
+
+    // Check LocalStorage on load
+    const currentTheme = localStorage.getItem('noxTheme');
+    if (currentTheme === 'light') {
+        body.classList.add('light-mode');
+        if(icon) icon.classList.replace('fa-sun', 'fa-moon');
+    }
+
+    if (themeToggleBtn && icon) {
+        themeToggleBtn.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                icon.classList.replace('fa-sun', 'fa-moon');
+                localStorage.setItem('noxTheme', 'light');
+                playBeep(1000, 0.05); // Higher pitch for light mode
+            } else {
+                icon.classList.replace('fa-moon', 'fa-sun');
+                localStorage.setItem('noxTheme', 'dark');
+                playBeep(600, 0.05); // Lower pitch for dark mode
+            }
+        });
+    }
+
+    // --- 3. NOTIFICATION SYSTEM (TOAST) ---
     window.showToast = function(msg, type = 'success') {
         const container = document.getElementById('toast-container');
-        if(!container) return; // Nếu đang ở trang profile có thể không có container này thì thôi
+        if(!container) return;
 
         const toast = document.createElement('div');
         toast.className = `toast ${type}`;
@@ -68,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     }
 
-    // --- 3. MATRIX RAIN ENGINE (OPTIMIZED) ---
+    // --- 4. MATRIX RAIN ENGINE ---
     const canvas = document.getElementById('matrix-rain');
     if (canvas) {
         const ctx = canvas.getContext('2d');
@@ -81,10 +104,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const drops = Array(Math.floor(columns)).fill(1);
 
         function drawMatrix() {
-            ctx.fillStyle = 'rgba(5, 5, 5, 0.05)';
+            // Adjust fade effect based on mode
+            ctx.fillStyle = document.body.classList.contains('light-mode') ? 'rgba(240, 242, 245, 0.1)' : 'rgba(5, 5, 5, 0.05)';
             ctx.fillRect(0, 0, width, height);
             
-            ctx.fillStyle = '#0F0'; 
+            ctx.fillStyle = document.body.classList.contains('light-mode') ? '#00c641' : '#0F0';
             ctx.font = fontSize + 'px monospace';
             
             for (let i = 0; i < drops.length; i++) {
@@ -104,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 4. SYSTEM CLOCK ---
+    // --- 5. SYSTEM CLOCK ---
     function updateClock() {
         const now = new Date();
         const timeString = now.toLocaleTimeString('en-US', { hour12: false });
@@ -114,13 +138,13 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateClock, 1000);
     updateClock();
 
-    // --- 5. NAVIGATION LOGIC ---
+    // --- 6. NAVIGATION LOGIC ---
     const navItems = document.querySelectorAll('.nav-item');
     const views = document.querySelectorAll('.view-container');
     const breadcrumb = document.getElementById('current-module');
 
     window.navigateTo = function(targetId) {
-        if(!document.getElementById(targetId)) return; // Check exists
+        if(!document.getElementById(targetId)) return;
         navItems.forEach(item => item.classList.remove('active'));
         views.forEach(view => view.classList.remove('active'));
 
@@ -136,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
         item.addEventListener('click', () => navigateTo(item.dataset.target));
     });
 
-    // --- 6. TYPEWRITER EFFECT ---
+    // --- 7. TYPEWRITER EFFECT ---
     const typeEl = document.getElementById('typing-effect');
     if(typeEl) {
         const textToType = "System optimized for Operator Dai. Ready to code.";
@@ -146,14 +170,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (charIndex < textToType.length) {
                 typeEl.innerHTML += textToType.charAt(charIndex);
                 charIndex++;
-                if(Math.random() > 0.5) playBeep(800, 0.01, 'sawtooth'); // Âm thanh gõ phím
+                if(Math.random() > 0.5) playBeep(800, 0.01, 'sawtooth');
                 setTimeout(typeWriter, 50);
             }
         }
         setTimeout(typeWriter, 1000);
     }
 
-    // --- 7. TRACKER MODULE ---
+    // --- 8. TRACKER MODULE ---
     const taskInput = document.getElementById('new-task-input');
     const addTaskBtn = document.getElementById('add-task-btn');
     const todoList = document.getElementById('todo-list');
@@ -182,7 +206,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     <button class="icon-btn trash hover-sound" onclick="deleteTask(${index})">✕</button>
                 </div>
             `;
-            // Re-attach hover sound for dynamic elements
             li.addEventListener('mouseenter', () => playBeep(400, 0.03));
 
             if (task.status === 'pending') todoList.appendChild(li);
@@ -227,7 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 8. FOCUS TIMER ---
+    // --- 9. FOCUS TIMER ---
     let timerInterval;
     let timeLeft = 25 * 60;
     let totalFocusTime = parseInt(localStorage.getItem('noxFocusTime')) || 0;
@@ -295,7 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         localStorage.setItem('noxFocusTime', totalFocusTime);
                         updateDashboardStats();
                         showToast('SESSION COMPLETE! GOOD JOB.');
-                        playBeep(1500, 0.5); // Long beep
+                        playBeep(1500, 0.5);
                         resetTimer();
                     }
                 }, 1000);
@@ -320,7 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setProgress(0);
     }
 
-    // --- 9. SUDOKU ENGINE ---
+    // --- 10. SUDOKU ENGINE ---
     const sudokuGrid = document.getElementById('sudoku-grid');
     let solutionMatrix = [];
     
@@ -333,7 +356,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // ... (Giữ nguyên logic isValid, solveSudoku, fillBox, isSafeInBox từ code cũ của bạn vì nó đã chuẩn) ...
     function isValid(board, row, col, k) {
         for (let i = 0; i < 9; i++) {
             if (board[i][col] === k) return false;
@@ -384,7 +406,6 @@ document.addEventListener('DOMContentLoaded', () => {
         solveSudoku(board);
         solutionMatrix = JSON.parse(JSON.stringify(board));
         
-        // Remove logic
         const diff = document.querySelector('.diff-chip.active').dataset.diff;
         let attempts = diff === 'easy' ? 30 : diff === 'medium' ? 45 : 55;
         while (attempts > 0) {
@@ -414,7 +435,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     input.dataset.r = i; input.dataset.c = j;
                     input.addEventListener('input', (e) => {
                         if (!/^[1-9]$/.test(e.target.value)) e.target.value = '';
-                        else playBeep(800, 0.05); // Sound on input
+                        else playBeep(800, 0.05);
                     });
                     cell.appendChild(input);
                 }
@@ -446,7 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 10. DECIDER ---
+    // --- 11. DECIDER ---
     const decideBtn = document.getElementById('spin-btn');
     const decideRes = document.getElementById('decision-result');
     const decideInput = document.getElementById('decision-options');
@@ -462,7 +483,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const interval = setInterval(() => {
                 decideRes.innerText = options[Math.floor(Math.random() * options.length)];
                 counter++;
-                playBeep(400 + (counter * 20), 0.03); // Rising pitch
+                playBeep(400 + (counter * 20), 0.03);
                 if (counter > 20) {
                     clearInterval(interval);
                     playBeep(1200, 0.2);
@@ -472,7 +493,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 11. STATS UPDATE ---
+    // --- 12. STATS UPDATE ---
     function updateDashboardStats() {
         const doneCount = tasks.filter(t => t.status === 'completed').length;
         const pendingCount = tasks.filter(t => t.status === 'pending').length;
