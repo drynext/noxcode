@@ -1,7 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
-    function runSuperNova() {
+   function runSuperNova() {
         const overlay = document.getElementById('mega-intro');
-        
+
+        setTimeout(() => {
+            if(overlay && overlay.style.display !== 'none') {
+                overlay.style.display = 'none';
+            }
+        }, 4000);
+
         const perf = window.performance.getEntriesByType("navigation")[0];
         const isReload = perf ? perf.type === 'reload' : false;
         const hasIntroRun = sessionStorage.getItem('noxIntroShown');
@@ -14,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
         sessionStorage.setItem('noxIntroShown', 'true');
 
         const canvas = document.getElementById('explosion-canvas');
+        if (!canvas) { overlay.style.display = 'none'; return; }
         const ctx = canvas.getContext('2d');
         const title = document.getElementById('intro-title');
         
@@ -23,15 +30,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const colors = ['#ffffff', '#f0f0f0', '#e0e0e0', '#dcdcdc'];
         
         let particles = [];
-        const particleCount = 200; 
+        const particleCount = 150;
         let phase = 1; 
-        let explosionTriggered = false;
 
         for (let i = 0; i < particleCount; i++) {
             particles.push({
                 x: Math.random() * width,
                 y: Math.random() * height,
-                speed: Math.random() * 15 + 10, 
+                speed: Math.random() * 15 + 5, 
                 angle: Math.random() * Math.PI * 2,
                 size: Math.random() * 3 + 1,
                 color: colors[Math.floor(Math.random() * colors.length)],
@@ -48,7 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const centerX = width / 2;
             const centerY = height / 2;
-            let particlesInCenter = 0;
 
             particles.forEach(p => {
                 if (phase === 1) {
@@ -56,19 +61,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     const dy = centerY - p.y;
                     const dist = Math.sqrt(dx * dx + dy * dy);
                     
-                    p.x += (dx / dist) * p.speed;
-                    p.y += (dy / dist) * p.speed;
+                    p.x += (dx / dist) * p.speed * 1.5;
+                    p.y += (dy / dist) * p.speed * 1.5;
                     
-                    if (dist < 10) {
-                        particlesInCenter++;
-                        p.alpha = 0;
-                    }
+                    if (dist < 5) p.alpha = 0;
                 } else {
                     p.x += Math.cos(p.angle) * p.speed;
                     p.y += Math.sin(p.angle) * p.speed;
                     p.speed *= p.friction;
                     p.size *= 0.95;
-                    p.alpha -= 0.02;
+                    p.alpha -= 0.03;
                 }
 
                 if(p.alpha > 0) {
@@ -81,37 +83,39 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            if (phase === 1 && particlesInCenter > particleCount * 0.9) { 
-                if (!explosionTriggered) {
-                    explosionTriggered = true;
-                    title.style.opacity = 1;
-                    
-                    if(window.playBeep) window.playBeep(600, 0.05);
-
-                    setTimeout(() => {
-                        phase = 2; 
-                        title.classList.add('detonate');
-                        
-                        particles.forEach(p => {
-                            p.x = centerX + (Math.random() - 0.5) * 5;
-                            p.y = centerY + (Math.random() - 0.5) * 5;
-                            p.speed = Math.random() * 40 + 20; 
-                            p.alpha = 1;
-                            p.size = Math.random() * 5 + 2;
-                        });
-
-                        if(window.playBeep) window.playBeep(150, 0.4, 'sawtooth');
-                        setTimeout(finishIntro, 400); 
-                    }, 300); 
-                }
-            }
-
             requestAnimationFrame(animate);
         }
 
+        setTimeout(() => {
+            if(phase === 1) {
+                phase = 2;
+                
+                if(title) {
+                    title.style.opacity = 1;
+                    title.classList.add('detonate');
+                }
+
+                const centerX = width / 2;
+                const centerY = height / 2;
+                particles.forEach(p => {
+                    p.x = centerX + (Math.random() - 0.5) * 10;
+                    p.y = centerY + (Math.random() - 0.5) * 10;
+                    p.speed = Math.random() * 30 + 15;
+                    p.alpha = 1;
+                    p.size = Math.random() * 4 + 2;
+                });
+
+                if(window.playBeep && typeof window.playBeep === 'function') {
+                    window.playBeep(150, 0.5, 'sawtooth');
+                }
+
+                setTimeout(finishIntro, 500);
+            }
+        }, 1200);
+
         function finishIntro() {
             phase = 3;
-            overlay.style.display = 'none';
+            if(overlay) overlay.style.display = 'none';
             document.body.classList.add('after-shock');
             setTimeout(() => {
                  document.body.classList.remove('after-shock');
@@ -122,6 +126,10 @@ document.addEventListener('DOMContentLoaded', () => {
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
         });
+
+        if(window.playBeep && typeof window.playBeep === 'function') {
+             window.playBeep(800, 0.1);
+        }
 
         animate();
     }
