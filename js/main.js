@@ -1,22 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
-   function runSuperNova() {
+   function runDeepSeaIntro() {
         const overlay = document.getElementById('mega-intro');
 
         setTimeout(() => {
             if(overlay && overlay.style.display !== 'none') {
-                overlay.style.display = 'none';
+                finishIntro();
             }
-        }, 4000);
+        }, 5000);
 
         const perf = window.performance.getEntriesByType("navigation")[0];
         const isReload = perf ? perf.type === 'reload' : false;
         const hasIntroRun = sessionStorage.getItem('noxIntroShown');
-
         if (hasIntroRun && !isReload) {
             overlay.style.display = 'none';
             return;
         }
-
         sessionStorage.setItem('noxIntroShown', 'true');
 
         const canvas = document.getElementById('explosion-canvas');
@@ -27,134 +25,127 @@ document.addEventListener('DOMContentLoaded', () => {
         let width = canvas.width = window.innerWidth;
         let height = canvas.height = window.innerHeight;
         
-        const colors = ['#ffffff', '#ffffff', '#a6e4ff', '#e0c3fc'];
+        const colors = ['#00ffff', '#00ff99', '#ad00ff', '#4deeea'];
         
-        let particles = [];
-        const particleCount = 180;
+        let fishSchool = [];
+        const fishCount = 150;
         let phase = 1; 
-        let shockwave = 0;
 
-        for (let i = 0; i < particleCount; i++) {
-            particles.push({
+        for (let i = 0; i < fishCount; i++) {
+            fishSchool.push({
                 x: Math.random() * width,
                 y: Math.random() * height,
-                vx: 0,
-                vy: 0,
-                angle: Math.random() * Math.PI * 2,
-                dist: Math.random() * (Math.sqrt(width*width + height*height)/2),
-                speed: Math.random() * 0.05 + 0.02,
-                size: Math.random() * 2 + 0.5,
+                vx: Math.random() * 4 - 2,
+                vy: Math.random() * 2 - 1, 
+                size: Math.random() * 3 + 1,
                 color: colors[Math.floor(Math.random() * colors.length)],
-                alpha: 1
+                angle: Math.random() * Math.PI * 2, 
+                oscillationSpeed: Math.random() * 0.05 + 0.02,
+                history: [] 
             });
         }
 
         function animate() {
-            if (phase === 3) return; 
+            if (phase === 4) return;
 
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+            ctx.fillStyle = 'rgba(0, 10, 20, 0.2)';
             ctx.fillRect(0, 0, width, height);
             ctx.globalCompositeOperation = 'lighter';
 
             const centerX = width / 2;
             const centerY = height / 2;
 
-            if (phase === 2 && shockwave < width) {
-                ctx.beginPath();
-                ctx.arc(centerX, centerY, shockwave, 0, Math.PI * 2);
-                ctx.strokeStyle = 'rgba(255, 255, 255, ' + (1 - shockwave/width) + ')';
-                ctx.lineWidth = 50 * (1 - shockwave/width);
-                ctx.stroke();
-                shockwave += 40;
-            }
+            fishSchool.forEach(f => {
+                f.history.push({x: f.x, y: f.y});
+                if(f.history.length > 10) f.history.shift();
 
-            particles.forEach(p => {
                 if (phase === 1) {
-                    p.dist -= p.dist * p.speed;
-                    p.angle += p.speed * 2;
+                    f.angle += f.oscillationSpeed;
+                    f.x += f.vx + Math.sin(f.angle) * 0.5;
+                    f.y += f.vy + Math.cos(f.angle * 0.7) * 0.2;
+
+                    if (f.x < 0 || f.x > width) f.vx *= -1;
+                    if (f.y < 0 || f.y > height) f.vy *= -1;
+
+                } else if (phase === 2) {
+                    const dx = centerX - f.x;
+                    const dy = centerY - f.y;
+                    f.x += dx * 0.08;
+                    f.y += dy * 0.08;
+                    if (Math.abs(dx) < 50 && Math.abs(dy) < 50) {
+                         f.size = Math.min(f.size + 0.1, 6);
+                    }
+                } else if (phase === 3) {
+                    const dx = f.x - centerX;
+                    const dy = f.y - centerY;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    const angle = Math.atan2(dy, dx);
                     
-                    p.x = centerX + Math.cos(p.angle) * p.dist;
-                    p.y = centerY + Math.sin(p.angle) * p.dist;
-                    
-                    if (p.dist < 5) p.alpha = 0;
-                } else {
-                    p.x += p.vx;
-                    p.y += p.vy;
-                    p.vx *= 0.95;
-                    p.vy *= 0.95;
-                    p.size *= 0.96;
-                    p.alpha -= 0.02;
+                    f.x += Math.cos(angle) * 30;
+                    f.y += Math.sin(angle) * 30;
+                    f.size *= 0.96; 
                 }
 
-                if(p.alpha > 0) {
-                    ctx.beginPath();
-                    if (phase === 2) {
-                        ctx.moveTo(p.x, p.y);
-                        ctx.lineTo(p.x - p.vx * 3, p.y - p.vy * 3);
-                        ctx.strokeStyle = p.color;
-                        ctx.lineWidth = p.size;
-                        ctx.stroke();
-                    } else {
-                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                        ctx.fillStyle = p.color;
-                        ctx.fill();
+                ctx.beginPath();
+                if(f.history.length > 1) {
+                    ctx.moveTo(f.history[0].x, f.history[0].y);
+                    for(let i = 1; i < f.history.length; i++) {
+                        ctx.lineTo(f.history[i].x, f.history[i].y);
                     }
+                    ctx.strokeStyle = f.color;
+                    ctx.lineWidth = f.size * 0.5;
+                    ctx.globalAlpha = 0.5;
+                    ctx.stroke();
                 }
+                
+                ctx.beginPath();
+                ctx.arc(f.x, f.y, f.size, 0, Math.PI * 2);
+                ctx.fillStyle = f.color;
+                ctx.globalAlpha = 1;
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = f.color;
+                ctx.fill();
+                ctx.shadowBlur = 0;
             });
 
             requestAnimationFrame(animate);
         }
 
         setTimeout(() => {
-            if(phase === 1) {
-                phase = 2;
-                
-                if(title) {
-                    title.style.opacity = 1;
-                    title.classList.add('detonate');
-                }
-
-                particles.forEach(p => {
-                    const angle = Math.random() * Math.PI * 2;
-                    const speed = Math.random() * 25 + 10;
-                    p.vx = Math.cos(angle) * speed;
-                    p.vy = Math.sin(angle) * speed;
-                    p.x = width / 2;
-                    p.y = height / 2;
-                    p.alpha = 1;
-                    p.size = Math.random() * 3 + 1;
-                });
-
-                if(window.playBeep && typeof window.playBeep === 'function') {
-                    window.playBeep(150, 0.5, 'sawtooth');
-                }
-
-                setTimeout(finishIntro, 600);
+            phase = 2;
+            if(title) {
+                title.style.opacity = 1;
+                if(window.playBeep) window.playBeep(400, 0.1);
             }
-        }, 1300);
+            setTimeout(() => {
+                phase = 3;
+                if(title) title.classList.add('detonate');
+                if(window.playBeep) window.playBeep(150, 0.6, 'sawtooth');
+                
+                setTimeout(finishIntro, 600);
+            }, 800);
+        }, 1800);
 
         function finishIntro() {
-            phase = 3;
-            if(overlay) overlay.style.display = 'none';
+            phase = 4;
+            overlay.style.opacity = 0;
             document.body.classList.add('after-shock');
             setTimeout(() => {
+                 overlay.style.display = 'none';
                  document.body.classList.remove('after-shock');
-            }, 500);
+            }, 1000);
         }
 
         window.addEventListener('resize', () => {
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
         });
-
-        if(window.playBeep && typeof window.playBeep === 'function') {
-             window.playBeep(600, 0.05);
-        }
+        if(window.playBeep) window.playBeep(50, 0.05, 'sine');
 
         animate();
     }
-    
-    runSuperNova();
+
+    runDeepSeaIntro();
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     let soundEnabled = true;
 
