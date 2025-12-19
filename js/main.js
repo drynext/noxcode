@@ -11,8 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const colors = ['#00ff41', '#cba3ff', '#ff0055', '#00ffff', '#ffff00'];
         
         let particles = [];
-        const particleCount = width < 768 ? 300 : 600; 
-        let phase = 1;
+        const particleCount = width < 768 ? 50 : 120; 
+        let phase = 1; 
         let explosionTriggered = false;
 
         for (let i = 0; i < particleCount; i++) {
@@ -21,19 +21,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 y: Math.random() * height,
                 speed: Math.random() * 8 + 4,
                 angle: Math.random() * Math.PI * 2,
-                size: Math.random() * 3 + 1,
+                size: Math.random() * 4 + 2, 
                 color: colors[Math.floor(Math.random() * colors.length)],
-                friction: 0.95 + Math.random() * 0.03,
+                friction: 0.96,
                 alpha: 1
             });
         }
 
         function animate() {
-            if (phase === 3) return;
-
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
-            ctx.fillRect(0, 0, width, height);
-
+            if (phase === 3) return; 
+            ctx.clearRect(0, 0, width, height);
+            
             ctx.globalCompositeOperation = 'lighter';
 
             const centerX = width / 2;
@@ -58,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     p.y += Math.sin(p.angle) * p.speed;
                     p.speed *= p.friction;
                     p.size *= 0.98;
-                    p.alpha -= 0.01; 
+                    p.alpha -= 0.015; 
                 }
 
                 if(p.alpha > 0) {
@@ -66,46 +64,33 @@ document.addEventListener('DOMContentLoaded', () => {
                     ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
                     ctx.fillStyle = p.color;
                     ctx.globalAlpha = p.alpha;
-                    ctx.shadowBlur = 10; 
-                    ctx.shadowColor = p.color;
                     ctx.fill();
                     ctx.globalAlpha = 1;
-                    ctx.shadowBlur = 0;
                 }
             });
 
-            if (phase === 1 && particlesInCenter > particleCount * 0.7) {
+            if (phase === 1 && particlesInCenter > particleCount * 0.8) { 
                 if (!explosionTriggered) {
                     explosionTriggered = true;
-                    
                     title.style.opacity = 1;
-                    if(window.playBeep) {
-                         let count = 0;
-                         let int = setInterval(() => {
-                             window.playBeep(400 + count*100, 0.05, 'square');
-                             count++;
-                             if(count > 5) clearInterval(int);
-                         }, 100);
-                    }
+                    
+                    if(window.playBeep) window.playBeep(400, 0.1); 
 
                     setTimeout(() => {
-                        phase = 2;
+                        phase = 2; 
+                        title.classList.add('detonate');
                         
-                        title.classList.add('detonate'); 
-                    
                         particles.forEach(p => {
-                            p.x = centerX + (Math.random() - 0.5) * 20;
-                            p.y = centerY + (Math.random() - 0.5) * 20;
-                            p.speed = Math.random() * 30 + 20;
+                            p.x = centerX + (Math.random() - 0.5) * 10;
+                            p.y = centerY + (Math.random() - 0.5) * 10;
+                            p.speed = Math.random() * 25 + 15;
                             p.alpha = 1;
-                            p.size = Math.random() * 5 + 3;
+                            p.size = Math.random() * 6 + 3;
                         });
 
-                        if(window.playBeep) window.playBeep(150, 0.8, 'sawtooth');
-
-                        setTimeout(finishIntro, 1000);
-
-                    }, 800); 
+                        if(window.playBeep) window.playBeep(150, 0.6, 'sawtooth');
+                        setTimeout(finishIntro, 800); 
+                    }, 600); 
                 }
             }
 
@@ -116,7 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
             phase = 3;
             overlay.style.display = 'none';
             document.body.classList.add('after-shock');
-
             setTimeout(() => {
                  document.body.classList.remove('after-shock');
             }, 1000);
