@@ -27,21 +27,24 @@ document.addEventListener('DOMContentLoaded', () => {
         let width = canvas.width = window.innerWidth;
         let height = canvas.height = window.innerHeight;
         
-        const colors = ['#ffffff', '#f0f0f0', '#e0e0e0', '#dcdcdc'];
+        const colors = ['#ffffff', '#ffffff', '#a6e4ff', '#e0c3fc'];
         
         let particles = [];
-        const particleCount = 150;
+        const particleCount = 180;
         let phase = 1; 
+        let shockwave = 0;
 
         for (let i = 0; i < particleCount; i++) {
             particles.push({
                 x: Math.random() * width,
                 y: Math.random() * height,
-                speed: Math.random() * 15 + 5, 
+                vx: 0,
+                vy: 0,
                 angle: Math.random() * Math.PI * 2,
-                size: Math.random() * 3 + 1,
+                dist: Math.random() * (Math.sqrt(width*width + height*height)/2),
+                speed: Math.random() * 0.05 + 0.02,
+                size: Math.random() * 2 + 0.5,
                 color: colors[Math.floor(Math.random() * colors.length)],
-                friction: 0.95,
                 alpha: 1
             });
         }
@@ -49,37 +52,53 @@ document.addEventListener('DOMContentLoaded', () => {
         function animate() {
             if (phase === 3) return; 
 
-            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+            ctx.fillRect(0, 0, width, height);
             ctx.globalCompositeOperation = 'lighter';
 
             const centerX = width / 2;
             const centerY = height / 2;
 
+            if (phase === 2 && shockwave < width) {
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, shockwave, 0, Math.PI * 2);
+                ctx.strokeStyle = 'rgba(255, 255, 255, ' + (1 - shockwave/width) + ')';
+                ctx.lineWidth = 50 * (1 - shockwave/width);
+                ctx.stroke();
+                shockwave += 40;
+            }
+
             particles.forEach(p => {
                 if (phase === 1) {
-                    const dx = centerX - p.x;
-                    const dy = centerY - p.y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    p.dist -= p.dist * p.speed;
+                    p.angle += p.speed * 2;
                     
-                    p.x += (dx / dist) * p.speed * 1.5;
-                    p.y += (dy / dist) * p.speed * 1.5;
+                    p.x = centerX + Math.cos(p.angle) * p.dist;
+                    p.y = centerY + Math.sin(p.angle) * p.dist;
                     
-                    if (dist < 5) p.alpha = 0;
+                    if (p.dist < 5) p.alpha = 0;
                 } else {
-                    p.x += Math.cos(p.angle) * p.speed;
-                    p.y += Math.sin(p.angle) * p.speed;
-                    p.speed *= p.friction;
-                    p.size *= 0.95;
-                    p.alpha -= 0.03;
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vx *= 0.95;
+                    p.vy *= 0.95;
+                    p.size *= 0.96;
+                    p.alpha -= 0.02;
                 }
 
                 if(p.alpha > 0) {
                     ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                    ctx.fillStyle = p.color;
-                    ctx.globalAlpha = p.alpha;
-                    ctx.fill();
-                    ctx.globalAlpha = 1;
+                    if (phase === 2) {
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p.x - p.vx * 3, p.y - p.vy * 3);
+                        ctx.strokeStyle = p.color;
+                        ctx.lineWidth = p.size;
+                        ctx.stroke();
+                    } else {
+                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                        ctx.fillStyle = p.color;
+                        ctx.fill();
+                    }
                 }
             });
 
@@ -95,23 +114,24 @@ document.addEventListener('DOMContentLoaded', () => {
                     title.classList.add('detonate');
                 }
 
-                const centerX = width / 2;
-                const centerY = height / 2;
                 particles.forEach(p => {
-                    p.x = centerX + (Math.random() - 0.5) * 10;
-                    p.y = centerY + (Math.random() - 0.5) * 10;
-                    p.speed = Math.random() * 30 + 15;
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = Math.random() * 25 + 10;
+                    p.vx = Math.cos(angle) * speed;
+                    p.vy = Math.sin(angle) * speed;
+                    p.x = width / 2;
+                    p.y = height / 2;
                     p.alpha = 1;
-                    p.size = Math.random() * 4 + 2;
+                    p.size = Math.random() * 3 + 1;
                 });
 
                 if(window.playBeep && typeof window.playBeep === 'function') {
                     window.playBeep(150, 0.5, 'sawtooth');
                 }
 
-                setTimeout(finishIntro, 500);
+                setTimeout(finishIntro, 600);
             }
-        }, 1200);
+        }, 1300);
 
         function finishIntro() {
             phase = 3;
@@ -128,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         if(window.playBeep && typeof window.playBeep === 'function') {
-             window.playBeep(800, 0.1);
+             window.playBeep(600, 0.05);
         }
 
         animate();
