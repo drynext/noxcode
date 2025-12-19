@@ -1,6 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
     function runSuperNova() {
         const overlay = document.getElementById('mega-intro');
+        
+        const perf = window.performance.getEntriesByType("navigation")[0];
+        const isReload = perf ? perf.type === 'reload' : false;
+        const hasIntroRun = sessionStorage.getItem('noxIntroShown');
+
+        if (hasIntroRun && !isReload) {
+            overlay.style.display = 'none';
+            return;
+        }
+
+        sessionStorage.setItem('noxIntroShown', 'true');
+
         const canvas = document.getElementById('explosion-canvas');
         const ctx = canvas.getContext('2d');
         const title = document.getElementById('intro-title');
@@ -8,10 +20,10 @@ document.addEventListener('DOMContentLoaded', () => {
         let width = canvas.width = window.innerWidth;
         let height = canvas.height = window.innerHeight;
         
-        const colors = ['#00ff41', '#cba3ff', '#ff0055', '#00ffff', '#ffff00'];
+        const colors = ['#ffffff', '#f0f0f0', '#e0e0e0', '#dcdcdc'];
         
         let particles = [];
-        const particleCount = width < 768 ? 50 : 120; 
+        const particleCount = 200; 
         let phase = 1; 
         let explosionTriggered = false;
 
@@ -19,19 +31,19 @@ document.addEventListener('DOMContentLoaded', () => {
             particles.push({
                 x: Math.random() * width,
                 y: Math.random() * height,
-                speed: Math.random() * 8 + 4,
+                speed: Math.random() * 15 + 10, 
                 angle: Math.random() * Math.PI * 2,
-                size: Math.random() * 4 + 2, 
+                size: Math.random() * 3 + 1,
                 color: colors[Math.floor(Math.random() * colors.length)],
-                friction: 0.96,
+                friction: 0.95,
                 alpha: 1
             });
         }
 
         function animate() {
             if (phase === 3) return; 
+
             ctx.clearRect(0, 0, width, height);
-            
             ctx.globalCompositeOperation = 'lighter';
 
             const centerX = width / 2;
@@ -47,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     p.x += (dx / dist) * p.speed;
                     p.y += (dy / dist) * p.speed;
                     
-                    if (dist < 20) {
+                    if (dist < 10) {
                         particlesInCenter++;
                         p.alpha = 0;
                     }
@@ -55,8 +67,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     p.x += Math.cos(p.angle) * p.speed;
                     p.y += Math.sin(p.angle) * p.speed;
                     p.speed *= p.friction;
-                    p.size *= 0.98;
-                    p.alpha -= 0.015; 
+                    p.size *= 0.95;
+                    p.alpha -= 0.02;
                 }
 
                 if(p.alpha > 0) {
@@ -69,28 +81,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            if (phase === 1 && particlesInCenter > particleCount * 0.8) { 
+            if (phase === 1 && particlesInCenter > particleCount * 0.9) { 
                 if (!explosionTriggered) {
                     explosionTriggered = true;
                     title.style.opacity = 1;
                     
-                    if(window.playBeep) window.playBeep(400, 0.1); 
+                    if(window.playBeep) window.playBeep(600, 0.05);
 
                     setTimeout(() => {
                         phase = 2; 
                         title.classList.add('detonate');
                         
                         particles.forEach(p => {
-                            p.x = centerX + (Math.random() - 0.5) * 10;
-                            p.y = centerY + (Math.random() - 0.5) * 10;
-                            p.speed = Math.random() * 25 + 15;
+                            p.x = centerX + (Math.random() - 0.5) * 5;
+                            p.y = centerY + (Math.random() - 0.5) * 5;
+                            p.speed = Math.random() * 40 + 20; 
                             p.alpha = 1;
-                            p.size = Math.random() * 6 + 3;
+                            p.size = Math.random() * 5 + 2;
                         });
 
-                        if(window.playBeep) window.playBeep(150, 0.6, 'sawtooth');
-                        setTimeout(finishIntro, 800); 
-                    }, 600); 
+                        if(window.playBeep) window.playBeep(150, 0.4, 'sawtooth');
+                        setTimeout(finishIntro, 400); 
+                    }, 300); 
                 }
             }
 
@@ -103,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.classList.add('after-shock');
             setTimeout(() => {
                  document.body.classList.remove('after-shock');
-            }, 1000);
+            }, 500);
         }
 
         window.addEventListener('resize', () => {
